@@ -39,14 +39,6 @@ export const Login = () => {
     }
   };
 
-  const openPopup = () => {
-    setIsOpen(true);
-  };
-
-  // const closePopup = () => {
-  //   setIsOpen(false);
-  // };
-
   const isFormValid =
     emailOrPhone && password && Object.keys(errors).length === 0;
 
@@ -147,9 +139,9 @@ export const Login = () => {
 
           <button
             type="submit"
-            className={`w-full text-white font-semibold py-2 px-4 rounded-md ${
+            className={`w-full font-semibold py-2 px-4 rounded-md ${
               isFormValid
-                ? "bg-gradient-to-r from-[#FE512E] to-[#F09619]"
+                ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white"
                 : "bg-[#F6F8FB] text-[#A7A7A7]"
             }`}
             disabled={!isFormValid}
