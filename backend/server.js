@@ -16,10 +16,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/users', userRouter);
 
 app.get("/", (req, res) => {
-    res.send("Server is ready");
-});
+
+    res.send("Welcome...!!")
+
+})
 
 
-app.listen(port, () => {
-    console.log(`Server is started on port ${port}`);
-});
+app.listen(5000, () => {
+    console.log("server is running on 5000");
+})
