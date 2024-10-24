@@ -1,11 +1,14 @@
-import logo from './logo.svg';
+import { Route, Routes } from 'react-router-dom';
 import './App.css';
+import Main from './pages/auth/Main';
 
 function App() {
   return (
-    <div className="App">
-    <h1>meet</h1>
-    </div>
+    <>
+      <Routes>
+        <Route path='/' element={<Main />} />
+      </Routes>
+    </>
   );
 }
 
