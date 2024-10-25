@@ -57,7 +57,7 @@ const OtpScreen = () => {
   const isOtpValid = otp.every((digit) => digit.length === 1);
 
   return (
-    <div className="w-full max-w-lg p-10 border bg-white shadow rounded-md">
+    <div className="w-full max-w-lg p-10 bg-white shadow rounded-md">
       <h2 className="text-3xl font-bold mb-3 text-gray-800">Enter OTP</h2>
       <p className="text-gray-600 text-sm mb-4">
         Please enter the 6-digit code that was sent to your phone number.

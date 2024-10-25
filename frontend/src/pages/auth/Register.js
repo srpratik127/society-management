@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { CreateSociety } from "../../components/models/CreateSociety";
+import Select from "react-select";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -25,33 +26,68 @@ const Register = () => {
     setFormData({ ...formData, [name]: value });
   };
 
+  const handleSelectChange = (selectedOption) => {
+    selectedOption.value === "create_society"
+      ? setIsOpen(true)
+      : setFormData((prev) => ({ ...prev, society: selectedOption }));
+  };
+
   const validate = () => {
     const newErrors = {};
-    if (!formData.firstname) newErrors.firstname = "First name is required";
-    if (!formData.lastname) newErrors.lastname = "Last name is required";
-    if (!formData.email) newErrors.email = "Email is required";
-    if (!formData.phone) newErrors.phone = "Phone number is required";
-    if (!formData.country) newErrors.country = "Country is required";
-    if (!formData.state) newErrors.state = "State is required";
-    if (!formData.city) newErrors.city = "City is required";
-    if (!formData.society) newErrors.society = "Society selection is required";
-    if (!formData.password) newErrors.password = "Password is required";
+    [
+      "firstname",
+      "lastname",
+      "email",
+      "phone",
+      "country",
+      "state",
+      "city",
+      "society",
+      "password",
+    ].forEach((field) => {
+      if (!formData[field])
+        newErrors[field] = `${
+          field.charAt(0).toUpperCase() + field.slice(1)
+        } is required`;
+    });
     if (formData.password !== formData.confirmPassword)
       newErrors.confirmPassword = "Passwords do not match";
-
     return newErrors;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const validationErrors = validate();
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-    } else {
+    if (Object.keys(validationErrors).length > 0) setErrors(validationErrors);
+    else {
       console.log("Form submitted:", formData);
       setErrors({});
     }
   };
+
+  const options = [
+    { value: "shantigram_residency", label: "Shantigram Residency" },
+    { value: "russett_house_park", label: "Russett House Park" },
+    { value: "saurya_residency", label: "Saurya Residency" },
+    { value: "create_society", label: "Create Society", isButton: true },
+  ];
+
+  const CustomOption = ({ data, innerRef, innerProps }) =>
+    data.isButton ? (
+      <div
+        ref={innerRef}
+        {...innerProps}
+        onClick={() => setIsOpen(true)}
+        className="text-white text-center font-semibold cursor-pointer py-2 px-4 mx-1 rounded-md"
+        style={{ background: "linear-gradient(to right, #FE512E, #F09619)" }}
+      >
+        {data.label}
+      </div>
+    ) : (
+      <div ref={innerRef} {...innerProps} className="cursor-pointer px-4 py-2">
+        {data.label}
+      </div>
+    );
 
   return (
     <div className="flex justify-center items-center">
@@ -59,8 +95,8 @@ const Register = () => {
         <h1 className="text-3xl font-bold text-gray-800 mb-4 text-left">
           Registration
         </h1>
-        <form className="space-y-3" onSubmit={handleSubmit}>
-          <div className="grid grid-cols-2 gap-4 mb-4">
+        <form className="space-y-5" onSubmit={handleSubmit}>
+          <div className="grid grid-cols-2 gap-4">
             <div>
               <label
                 htmlFor="firstname"
@@ -75,14 +111,15 @@ const Register = () => {
                 onChange={handleChange}
                 placeholder="first name"
                 className={`w-full px-4 py-2 border ${
-                  errors.firstname ? "border-[#E74C3C]" : "border-gray-300"
+                  errors.firstname
+                    ? "border-[#E74C3C] focus:ring-0"
+                    : "border-gray-300"
                 } rounded-md focus:outline-none focus:ring-1 focus:ring-slate-600`}
               />
               {errors.firstname && (
                 <p className="text-red-500 text-sm">{errors.firstname}</p>
               )}
             </div>
-
             <div>
               <label
                 htmlFor="lastname"
@@ -97,7 +134,9 @@ const Register = () => {
                 onChange={handleChange}
                 placeholder="last name"
                 className={`w-full px-4 py-2 border ${
-                  errors.lastname ? "border-[#E74C3C]" : "border-gray-300"
+                  errors.lastname
+                    ? "border-[#E74C3C] focus:ring-0"
+                    : "border-gray-300"
                 } rounded-md focus:outline-none focus:ring-1 focus:ring-slate-600`}
               />
               {errors.lastname && (
@@ -106,7 +145,7 @@ const Register = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4">
             <div>
               <label
                 htmlFor="email"
@@ -121,7 +160,9 @@ const Register = () => {
                 onChange={handleChange}
                 placeholder="email address"
                 className={`w-full px-4 py-2 border ${
-                  errors.email ? "border-[#E74C3C]" : "border-gray-300"
+                  errors.email
+                    ? "border-[#E74C3C] focus:ring-0"
+                    : "border-gray-300"
                 } rounded-md focus:outline-none focus:ring-1 focus:ring-slate-600`}
               />
               {errors.email && (
@@ -143,7 +184,9 @@ const Register = () => {
                 onChange={handleChange}
                 placeholder="phone number"
                 className={`w-full px-4 py-2 border ${
-                  errors.phone ? "border-[#E74C3C]" : "border-gray-300"
+                  errors.phone
+                    ? "border-[#E74C3C] focus:ring-0"
+                    : "border-gray-300"
                 } rounded-md focus:outline-none focus:ring-1 focus:ring-slate-600`}
               />
               {errors.phone && (
@@ -167,7 +210,9 @@ const Register = () => {
                 onChange={handleChange}
                 placeholder="country"
                 className={`w-full px-4 py-2 border ${
-                  errors.country ? "border-[#E74C3C]" : "border-gray-300"
+                  errors.country
+                    ? "border-[#E74C3C] focus:ring-0"
+                    : "border-gray-300"
                 } rounded-md focus:outline-none focus:ring-1 focus:ring-slate-600`}
               />
               {errors.country && (
@@ -189,7 +234,9 @@ const Register = () => {
                 onChange={handleChange}
                 placeholder="state"
                 className={`w-full px-4 py-2 border ${
-                  errors.state ? "border-[#E74C3C]" : "border-gray-300"
+                  errors.state
+                    ? "border-[#E74C3C] focus:ring-0"
+                    : "border-gray-300"
                 } rounded-md focus:outline-none focus:ring-1 focus:ring-slate-600`}
               />
               {errors.state && (
@@ -211,7 +258,9 @@ const Register = () => {
                 onChange={handleChange}
                 placeholder="city"
                 className={`w-full px-4 py-2 border ${
-                  errors.city ? "border-[#E74C3C]" : "border-gray-300"
+                  errors.city
+                    ? "border-[#E74C3C] focus:ring-0"
+                    : "border-gray-300"
                 } rounded-md focus:outline-none focus:ring-1 focus:ring-slate-600`}
               />
               {errors.city && (
@@ -227,23 +276,14 @@ const Register = () => {
             >
               Select Society<span className="text-red-500">*</span>
             </label>
-            <select
+            <Select
               name="society"
               value={formData.society}
-              onChange={handleChange}
-              className={`w-full px-4 py-2 border ${
-                errors.society ? "border-[#E74C3C]" : "border-gray-300"
-              } rounded-md focus:outline-none focus:ring-1 focus:ring-slate-600`}
-            >
-              <option value="">Select Society</option>
-              <option
-                onClick={() => setIsOpen(true)}
-                value=""
-                className={`w-full font-semibold py-2 px-4 rounded-md bg-gradient-to-r from-[#FE512E] to-[#F09619]`}
-              >
-                Create Society
-              </option>
-            </select>
+              onChange={handleSelectChange}
+              options={options}
+              components={{ Option: CustomOption }}
+              placeholder="Select Society"
+            />
             {errors.society && (
               <p className="text-red-500 text-sm">{errors.society}</p>
             )}
@@ -264,7 +304,9 @@ const Register = () => {
                 onChange={handleChange}
                 placeholder="Enter your password"
                 className={`w-full px-4 py-2 border ${
-                  errors.password ? "border-[#E74C3C]" : "border-gray-300"
+                  errors.password
+                    ? "border-[#E74C3C] focus:ring-0"
+                    : "border-gray-300"
                 } rounded-md focus:outline-none focus:ring-1 focus:ring-slate-600`}
               />
               <button
@@ -301,7 +343,7 @@ const Register = () => {
                 placeholder="Confirm your password"
                 className={`w-full px-4 py-2 border ${
                   errors.confirmPassword
-                    ? "border-[#E74C3C]"
+                    ? "border-[#E74C3C] focus:ring-0"
                     : "border-gray-300"
                 } rounded-md focus:outline-none focus:ring-1 focus:ring-slate-600`}
               />

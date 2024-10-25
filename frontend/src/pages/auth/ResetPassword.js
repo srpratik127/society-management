@@ -35,7 +35,7 @@ const ResetPassword = () => {
   const isFormValid = password && confirmPassword && validate;
 
   return (
-    <div className="w-full max-w-lg p-10 border bg-white shadow rounded-md">
+    <div className="w-full max-w-lg p-10 bg-white shadow rounded-md">
       <h2 className="text-3xl font-bold mb-6 text-gray-800">Reset Password</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
