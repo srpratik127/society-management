@@ -219,9 +219,9 @@ export const CreateSociety = ({ closePopup }) => {
             </button>
             <button
               type="submit"
-              className={`px-4 py-2 w-full text-white font-bold rounded-lg ${
+              className={`px-4 py-2 w-full  font-bold rounded-lg ${
                 allFieldsFilled
-                  ? "bg-gradient-to-r from-[#FE512E] to-[#F09619]"
+                  ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFF]"
                   : "bg-[#F6F8FB] text-[#202224]"
               }`}
               disabled={!allFieldsFilled}
