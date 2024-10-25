@@ -6,6 +6,7 @@ import Register from "./pages/auth/Register";
 import ForgetPassword from "./pages/auth/ForgetPassword";
 import OtpScreen from "./pages/auth/OtpScreen";
 import ResetPassword from "./pages/auth/ResetPassword";
+import Admin from "./components/admin/Admin";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="get-otp" element={<OtpScreen />} />
           <Route path="reset" element={<ResetPassword />} />
         </Route>
+        <Route path="/admin" element={<Admin/>} />
       </Routes>
     </>
   );
