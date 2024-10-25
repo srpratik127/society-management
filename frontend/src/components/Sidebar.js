@@ -20,7 +20,7 @@ const Sidebar = () => {
           {sidebardata.map((sidebar) => (
             <React.Fragment key={sidebar.id}>
               <li
-                className="relative flex items-center p-4 py-4 cursor-pointer rounded-xl hover:text-white hover:bg-gradient-to-r from-[#FE512E] to-[#F09619] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-1 hover:before:bg-[#FE512E]"
+                className="relative flex items-center p-4 py-4 cursor-pointer rounded-xl hover:text-white hover:bg-gradient-to-r from-[#FE512E] to-[#F09619] before:absolute before:left-0 before:top-0 before:w-1 before:bottom-0  hover:before:bg-[#FE512E]"
                 onClick={() => toggleDropdown(sidebar.id)}
               >
            
