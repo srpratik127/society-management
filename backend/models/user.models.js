@@ -14,38 +14,34 @@ const userSchema = new mongoose.Schema({
       required: true,
        unique: true 
     },
-  password: { 
+    phone: { 
+        type: String, 
+        required: true
+     },
+     country: { 
+        type: String,
+         required: true
+         },
+      state: { 
+        type: String,
+         required: true 
+        },
+      city: {
+         type: String,
+          required: true 
+        },
+        select_society: {   
+            type: String,
+            required: true,
+        },
+   password: { 
     type: String, 
     required: true 
 },
   confirmpassword: {
      type: String, 
      required: true
-     },
-  phone: { 
-    type: String, 
-    required: true
- },
-  country: { 
-    type: String,
-     required: true
-     },
-  state: { 
-    type: String,
-     required: true 
-    },
-  city: {
-     type: String,
-      required: true 
-    },
-    select_society: {   
-        type: String,
-        required: true,
-    },
-  society: {
-    type: String,
-    required: true
-  }
+     }
 });
 
 const User = mongoose.model('User', userSchema);
