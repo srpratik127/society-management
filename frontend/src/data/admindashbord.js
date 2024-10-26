@@ -30,37 +30,34 @@ export const DashbordCards = [
     },
 ]
 
-
 export const ImportantNumbers = [
     {
         Name: "Hanna Donin",
         PhNumber: "+91 99587 33657",
         Work: "Plumber",
-        
+
     },
     {
         Name: " Hanna Donin",
         PhNumber: "+91 99587 33657",
         Work: "Plumber",
-        
+
     },
     {
         Name: " Hanna Donin",
         PhNumber: "+91 99587 33657",
         Work: "Plumber",
-        
+
     },
     {
         Name: " Hanna Donin",
         PhNumber: "+91 99587 33657",
         Work: "Plumber",
-       
+
     },
 ]
 
-
-
-export const PendingMaintenances = [
+export const PendingMaintenance = [
     {
         img: "Ellipse 1091.png",
         name: "Roger Lubin",
