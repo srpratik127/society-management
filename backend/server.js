@@ -13,9 +13,10 @@ app.use(cookieParser());
 
 const userRouter = require('./routes/user.routes.js');
 const SocietyRouter = require('./routes/society.route.js');
+const forgetPassword = require('./routes/forgetPass.route.js');
 const complaintRoutes = require('./routes/complaint.routes.js');
 const importantNumRoutes = require('./routes/importantnum.routes.js'); 
-const forgetPassword = require('./routes/forgetPass.route.js');
+const ownerRoutes = require('./routes/resident.route.js');
 
 app.get("/", (req, res) => {
     res.send("Welcome...!!");
@@ -23,9 +24,10 @@ app.get("/", (req, res) => {
 
 app.use('/users', userRouter);  
 app.use('/society', SocietyRouter);  
-app.use('/api', complaintRoutes);
-app.use('/api', importantNumRoutes);
 app.use('/forgetpassword', forgetPassword);  
+app.use('/api/complaints', complaintRoutes);
+app.use('/api', importantNumRoutes);
+app.use('/api/owners', ownerRoutes);
 
 
 mongoose 

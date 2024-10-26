@@ -1,7 +1,7 @@
 const User = require('../models/user.models');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-
+ 
 const Register = async (req, res) => {
   try {
     
@@ -32,16 +32,12 @@ const Register = async (req, res) => {
     });
 
     await newUser.save();
-
-    const payload = { user: { id: newUser.id } };
-    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
-    res.status(201).json({ msg: 'User registered successfully', token });
+    res.status(201).json({ msg: 'User registered successfully'});
   } catch (error) {
     console.error('Error during registration:', error.message);
     res.status(500).json({ msg: 'Server error' });
   }
 };
-
 
 const Login = async (req, res) => {
     try {
@@ -54,8 +50,8 @@ const Login = async (req, res) => {
       if (!isMatch) {
         return res.status(400).json({ msg: 'password do not match' });
       }
-      const payload = { user: { id: user.id } };
-      const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
+      const payload = { user: { id: user.id, email: user.email } };
+      const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '30d' });
       res.status(200).json({ msg: 'Login successful', token });
     } catch (error) {
       console.error('Error during login:', error.message);
@@ -63,22 +59,33 @@ const Login = async (req, res) => {
     }
   };
 
-
-  const updateUser = async (req, res) => {
+  const getUserProfile = async (req, res) => {
     try {
-      const { id } = req.params;
-      const { firstname, lastname, email, phone, country, state, city, select_society } = req.body;
-  
-      const updatedUser = await User.findByIdAndUpdate(
-        id,
-        { firstname, lastname, email, phone, country, state, city, select_society },
-        { new: true, runValidators: true }
-      );
-  
-      if (!updatedUser) {
+      const userId = req.user.id;
+      const user = await User.findById(userId).select('-password'); 
+      if (!user) {
         return res.status(404).json({ msg: 'User not found' });
       }
   
+      res.status(200).json(user);
+    } catch (error) {
+      console.error('Error fetching user profile:', error.message);
+      res.status(500).json({ msg: 'Server error' });
+    }
+  };
+  
+  const updateUser = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { firstname, lastname, email, phone, country, state, city, select_society, profile_picture } = req.body;
+      const updatedUser = await User.findByIdAndUpdate(
+        id,
+        { firstname, lastname, email, phone, country, state, city, select_society, profile_picture },
+        { new: true, runValidators: true }
+      );
+      if (!updatedUser) {
+        return res.status(404).json({ msg: 'User not found' });
+      }
       res.status(200).json({ msg: 'User updated successfully', user: updatedUser });
     } catch (error) {
       console.error('Error updating user:', error.message);
@@ -86,9 +93,9 @@ const Login = async (req, res) => {
     }
   };
   
-
 module.exports = {  
     Register,
     Login,
+    getUserProfile,
     updateUser
 };
