@@ -6,7 +6,7 @@ import Register from "./pages/auth/Register";
 import ForgetPassword from "./pages/auth/ForgetPassword";
 import OtpScreen from "./pages/auth/OtpScreen";
 import ResetPassword from "./pages/auth/ResetPassword";
-import Admin from "./components/admin/Admin";
+import Admin from "./pages/admin/Admin";
 
 function App() {
   return (
