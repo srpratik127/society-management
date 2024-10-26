@@ -38,7 +38,7 @@ const userSchema = new mongoose.Schema({
   select_society: {
     type: String,
     required: true,
-  },
+  }
 });
 
 const User = mongoose.model('User', userSchema);

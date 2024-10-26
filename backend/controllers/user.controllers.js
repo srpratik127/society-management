@@ -8,7 +8,7 @@ const Register = async (req, res) => {
     const { firstname, lastname, email, password, phone, country, state, city, select_society,} = req.body;
 
      if (!password) {
-      return res.status(400).json({ msg: 'Passwords is mendatry' });
+      return res.status(400).json({ msg: 'Passwords is mendetory' });
     }
 
     let user = await User.findOne({ email });
