@@ -14,7 +14,6 @@ const Sidebar = () => {
       <div className="flex-1">
         <ul className="space-y-2">
           {sidebardata.map((sidebar) => (
-<<<<<<< HEAD
             <div key={sidebar.id}>
               <button
                 className={`group relative flex items-center p-4 py-3 w-full cursor-pointer rounded-xl focus:text-white focus:bg-gradient-to-r from-[#FE512E] to-[#F09619] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-2 before:rounded-r-lg before:-ml-4 focus:before:bg-[#FE512E]`}
@@ -23,12 +22,6 @@ const Sidebar = () => {
                     activeDropdown === sidebar.id ? null : sidebar.id
                   )
                 }
-=======
-            <React.Fragment key={sidebar.id}>
-              <li
-                className="relative flex items-center p-4 py-4 cursor-pointer rounded-xl hover:text-white hover:bg-gradient-to-r from-[#FE512E] to-[#F09619] before:absolute before:left-0 before:top-0 before:w-1 before:bottom-0  hover:before:bg-[#FE512E]"
-                onClick={() => toggleDropdown(sidebar.id)}
->>>>>>> 1e19f2ae80b00d29dcf272936e4f6a768bee90ef
               >
                 <span className="pr-3">
                   <svg
