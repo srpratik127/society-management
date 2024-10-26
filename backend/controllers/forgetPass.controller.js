@@ -1,138 +1,103 @@
-const express = require('express');
 const nodemailer = require('nodemailer');
-const twilio = require('twilio');
-require('dotenv').config();
+const bcrypt = require('bcrypt');
+const User = require('../models/user.models');
+const cookieParser = require('cookie-parser');
 
-const app = express();
-app.use(express.json());
-
-const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
-
-// In-memory store for OTPs
-const otpStore = new Map();  // Key: contactInfo (email/phone), Value: { otp, expiresAt }
-
-// Generate a 6-digit OTP
 const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
 
-// Send OTP via email
-const sendOTPToEmail = (email, otp) => {
-  const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-  });
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'maulikpatel4334@gmail.com',
+    pass: 'hxwhiahgwrleixqz', 
+  },
+});
 
-  const mailOptions = {
-    from: process.env.EMAIL_USER,
-    to: email,
-    subject: 'Your OTP Code',
-    text: `Your OTP code is ${otp}`,
-  };
-
-  return transporter.sendMail(mailOptions);
-};
-
-// Send OTP via phone (SMS)
-const sendOTPToPhone = (phone, otp) => {
-  return twilioClient.messages.create({
-    body: `Your OTP code is ${otp}`,
-    from: process.env.TWILIO_PHONE_NUMBER,
-    to: phone,
-  });
-};
-
-// Function to determine if input is an email
-const isEmail = (input) => /\S+@\S+\.\S+/.test(input);
-
-// Function to determine if input is a valid phone number
-const isPhoneNumber = (input) => {
-  const phoneRegex = /^\+?[1-9]\d{1,14}$/; // Matches international phone formats
-  return phoneRegex.test(input);
-};
-
-// Forget Password API (Send OTP)
-app.post('/forget-password', async (req, res) => {
-  const { contactInfo } = req.body;
-
+const otpmail = async (req, res) => {
   try {
-    // Determine whether contactInfo is an email or phone number
-    if (isEmail(contactInfo)) {
-      // Search by email
-      user = await User.findOne({ email: contactInfo });
-    } else if (isPhoneNumber(contactInfo)) {
-      // Search by phone number
-      user = await User.findOne({ phone: contactInfo });
-    } else {
-      return res.status(400).json({ message: 'Invalid email or phone number format' });
+    const { email } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "Email not found" });
     }
+
+    const otp = generateOTP();
+
+    const mailOptions = {
+      from: "maulikpatel4334@gmail.com",
+      to: email,
+      subject: "Your OTP Code",
+      html: `<h1>DashStack</h1><p>Your OTP is: ${otp}</p>`,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.cookie("otp", { otp, email, verified: false }, { httpOnly: true, maxAge: 10 * 60 * 1000 });
+    res.status(200).json({ message: "OTP sent successfully" });
+  } catch (error) {
+    console.error("Error sending email:", error.message);
+    res.status(500).json({ error: "An error occurred" });
+  }
+};
+
+
+const verifyOTP = (req, res) => {
+  try {
+    const userInputOtp = req.body.otp;
+    const cookieOtp = req.cookies.otp?.otp; 
+
+    if (!cookieOtp) {
+      return res.status(400).json({ message: "No OTP found in cookies" });
+    }
+
+    if (userInputOtp === cookieOtp) {
+      res.cookie("otp", { ...req.cookies.otp, verified: true }, { httpOnly: true, maxAge: 10 * 60 * 1000 });
+      res.status(200).json({ message: "OTP verified successfully!" });
+    } else {
+      res.status(401).json({ message: "Invalid OTP" });
+    }
+  } catch (error) {
+    console.error("Error verifying OTP:", error.message);
+    res.status(500).json({ error: "An error occurred" });
+  }
+};
+
+const resetPassword = async (req, res) => {
+  try {
+    const { password, confirmPassword } = req.body;
+    const otpCookie = req.cookies.otp;
+
+    if (!otpCookie || !otpCookie.verified) {
+      return res.status(401).json({ message: "OTP verification required" });
+    }
+
+    if (!password) {
+      return res.status(400).json({ message: "Passwords is mendatory" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = await User.findOneAndUpdate(
+      { email: otpCookie.email },
+      { password: hashedPassword },
+      { new: true }
+    );
 
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
 
-    // Generate OTP and expiration time (10 minutes from now)
-    const otp = generateOTP();
-    const expiresAt = Date.now() + 10 * 60 * 1000;  // 10 minutes in milliseconds
-
-    // Send OTP via email or phone
-    if (isEmail(contactInfo)) {
-      await sendOTPToEmail(user.email, otp);
-    } else {
-      await sendOTPToPhone(user.phone, otp);
-    }
-
-    // Store OTP in the in-memory store
-    otpStore.set(contactInfo, { otp, expiresAt });
-
-    // Set up OTP expiration after 10 minutes
-    setTimeout(() => {
-      otpStore.delete(contactInfo);
-    }, 10 * 60 * 1000);  // 10 minutes
-
-    res.status(200).json({ message: 'OTP sent successfully' });
+    res.clearCookie("otp");
+    res.status(200).json({ message: "Password reset successfully!" });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Error sending OTP', error });
+    console.error("Error resetting password:", error.message);
+    res.status(500).json({ error: "An error occurred" });
   }
-});
+};
 
-// Verify OTP API
-app.post('/verify-otp', async (req, res) => {
-  const { contactInfo, otp } = req.body;
-
-  try {
-    // Check if OTP exists for the given contactInfo
-    const storedOTP = otpStore.get(contactInfo);
-
-    if (!storedOTP) {
-      return res.status(400).json({ message: 'OTP expired or not found' });
-    }
-
-    // Check if the OTP is valid
-    if (storedOTP.otp !== otp) {
-      return res.status(400).json({ message: 'Invalid OTP' });
-    }
-
-    // Check if the OTP is expired
-    if (Date.now() > storedOTP.expiresAt) {
-      otpStore.delete(contactInfo);  // Clean up expired OTP
-      return res.status(400).json({ message: 'OTP expired' });
-    }
-
-    // OTP is valid and not expired
-    otpStore.delete(contactInfo);  // Clean up after successful verification
-    res.status(200).json({ message: 'OTP verified successfully' });
-
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-// Start the server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+module.exports = {
+  otpmail,
+  verifyOTP,
+  resetPassword,
+};

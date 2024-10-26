@@ -7,8 +7,8 @@ const Register = async (req, res) => {
     
     const { firstname, lastname, email, password, confirmpassword, phone, country, state, city, select_society, society } = req.body;
 
-     if (password !== confirmpassword) {
-      return res.status(400).json({ msg: 'Passwords do not match' });
+     if (!password) {
+      return res.status(400).json({ msg: 'Passwords is mendetory' });
     }
 
     let user = await User.findOne({ email });
@@ -29,8 +29,7 @@ const Register = async (req, res) => {
       city,
       select_society,  
       society,
-      password: hashpassword,
-      confirmpassword: hashpassword  
+      password: hashpassword 
     });
 
     await newUser.save();
