@@ -1,3 +1,7 @@
+*{
+  font-family: "Poppins", serif;
+
+}
 input[type="checkbox"] {
   appearance: none;
   width: 20px;
@@ -24,3 +28,4 @@ input[type="checkbox"]:checked::after {
   top: -4px;
 }
  
+
