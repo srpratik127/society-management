@@ -7,14 +7,14 @@ const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
 dotenv.config();
 
-//Body-parser
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-//Routes
 const userRouter = require('./routes/user.routes.js');
 const SocietyRouter = require('./routes/society.route.js');
+const complaintRoutes = require('./routes/complaint.routes.js');
+const importantNumRoutes = require('./routes/importantnum.routes.js'); 
 const forgetPassword = require('./routes/forgetPass.route.js');
 
 app.get("/", (req, res) => {
@@ -23,6 +23,8 @@ app.get("/", (req, res) => {
 
 app.use('/users', userRouter);  
 app.use('/society', SocietyRouter);  
+app.use('/api', complaintRoutes);
+app.use('/api', importantNumRoutes);
 app.use('/forgetpassword', forgetPassword);  
 
 
