@@ -1,6 +1,6 @@
 const nodemailer = require('nodemailer');
 const bcrypt = require('bcrypt');
-const User = require('../models/user.models');
+const User = require('../models/user.model');
 const cookieParser = require('cookie-parser');
 
 const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();

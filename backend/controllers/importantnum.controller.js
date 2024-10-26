@@ -1,4 +1,4 @@
-const ImportantNum = require('../models/importantnum.models');
+const ImportantNum = require('../models/importantnum.model');
 
 addNumber = async (req, res) => {
   try {
