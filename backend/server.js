@@ -29,8 +29,6 @@ app.use('/api', importantNumRoutes);
 app.use('/forgetpassword', forgetPassword);  
 app.use('/maintenance', maintenance);  
 
-
-mongoose 
 const port = process.env.PORT || 5000;  
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
