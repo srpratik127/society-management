@@ -37,7 +37,7 @@ const Sidebar = () => {
                     dangerouslySetInnerHTML={{ __html: sidebar.icon }}
                   />
                 </span>
-                <span className="font-semibold">{sidebar.title}</span>
+                <span className="font-normal">{sidebar.title}</span>
               </button>
               {sidebar.dropdown && activeDropdown === sidebar.id && (
                 <ul className="ml-8 space-y-2">
@@ -46,7 +46,7 @@ const Sidebar = () => {
                       key={dropdownItem.id}
                       className="flex items-center py-2 pl-4 hover:bg-gray-50 cursor-pointer rounded"
                     >
-                      <span className="font-semibold">
+                      <span className="font-normal">
                         {dropdownItem.title}
                       </span>
                     </li>
