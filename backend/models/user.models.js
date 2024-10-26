@@ -20,7 +20,8 @@ const userSchema = new mongoose.Schema({
   },
   phone: {
     type: String,
-    required: true
+    required: true,
+    unique:true
   },
   country: {
     type: String,
@@ -38,10 +39,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  society: {
-    type: String,
-    required: true
-  }
 });
 
 const User = mongoose.model('User', userSchema);
