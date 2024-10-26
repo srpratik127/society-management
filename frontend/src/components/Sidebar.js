@@ -1,13 +1,9 @@
 import React, { useState } from "react";
 import { sidebardata } from "../data/sidebardata";
+import { useLocation } from "react-router-dom";
 
 const Sidebar = () => {
   const [activeDropdown, setActiveDropdown] = useState(null);
-
-  const toggleDropdown = (id) => {
-    setActiveDropdown(activeDropdown === id ? null : id);
-  };
-
   return (
     <div className="h-screen p-4 pt-0 reletive w-82 bg-white shadow-lg flex flex-col">
       <div className="px-4 pb-2 text-center">
@@ -18,18 +14,31 @@ const Sidebar = () => {
       <div className="flex-1">
         <ul className="space-y-2">
           {sidebardata.map((sidebar) => (
-            <React.Fragment key={sidebar.id}>
-              <li
-                className="relative flex items-center p-4 py-4 cursor-pointer rounded-xl hover:text-white hover:bg-gradient-to-r from-[#FE512E] to-[#F09619] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-1 hover:before:bg-[#FE512E]"
-                onClick={() => toggleDropdown(sidebar.id)}
+            <div key={sidebar.id}>
+              <button
+                className={`group relative flex items-center p-4 py-3 w-full cursor-pointer rounded-xl focus:text-white focus:bg-gradient-to-r from-[#FE512E] to-[#F09619] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-2 before:rounded-r-lg before:-ml-4 focus:before:bg-[#FE512E]`}
+                onClick={() =>
+                  setActiveDropdown(
+                    activeDropdown === sidebar.id ? null : sidebar.id
+                  )
+                }
               >
-           
                 <span className="pr-3">
-                  <img src={sidebar.icon} alt={`${sidebar.title} icon`} className="w-6 h-6" />
+                  <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 22 22"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className={`group-focus:fill-white ${
+                      activeDropdown === sidebar.id
+                        ? "fill-white"
+                        : "fill-[#4F4F4F]"
+                    }`}
+                    dangerouslySetInnerHTML={{ __html: sidebar.icon }}
+                  />
                 </span>
-                <span className="font-bold">{sidebar.title}</span>
-              </li>
-
+                <span className="font-semibold">{sidebar.title}</span>
+              </button>
               {sidebar.dropdown && activeDropdown === sidebar.id && (
                 <ul className="ml-8 space-y-2">
                   {sidebar.dropdown.map((dropdownItem) => (
@@ -37,28 +46,21 @@ const Sidebar = () => {
                       key={dropdownItem.id}
                       className="flex items-center py-2 pl-4 hover:bg-gray-50 cursor-pointer rounded"
                     >
-                      <span className="font-medium">{dropdownItem.title}</span>
+                      <span className="font-semibold">
+                        {dropdownItem.title}
+                      </span>
                     </li>
                   ))}
                 </ul>
               )}
-            </React.Fragment>
+            </div>
           ))}
         </ul>
       </div>
-
       <div className="p-4 border-t left-0 border-gray-200">
         <button className="w-full flex items-center text-[#E74C3C] justify-start px-4 py-2 rounded hover:bg-gradient-to-r from-[#D3D3D3] to-[#D3D3D3] ">
           <span className="mr-3 text-black">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="24px"
-              viewBox="0 -960 960 960"
-              width="24px"
-              className="fill-[#E74C3C]"
-            >
-              <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z" />
-            </svg>
+            <img src="/assets/logout.svg" alt="logout" />
           </span>
           <span className="font-bold">Logout</span>
         </button>
