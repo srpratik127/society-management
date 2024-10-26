@@ -3,7 +3,6 @@ const Society = require('../models/society.model');
 const createSociety = async (req, res) => {
     try {
         const { name, address, country, state, city, zipCode } = req.body;
-
         const society = new Society({
             name,
             address,
