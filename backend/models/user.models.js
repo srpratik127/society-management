@@ -20,7 +20,8 @@ const userSchema = new mongoose.Schema({
   },
   phone: {
     type: String,
-    required: true
+    required: true,
+    unique:true
   },
   country: {
     type: String,
@@ -37,10 +38,6 @@ const userSchema = new mongoose.Schema({
   select_society: {
     type: String,
     required: true,
-  },
-  society: {
-    type: String,
-    required: true
   }
 });
 
