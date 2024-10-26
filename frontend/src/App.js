@@ -19,7 +19,10 @@ function App() {
           <Route path="get-otp" element={<OtpScreen />} />
           <Route path="reset" element={<ResetPassword />} />
         </Route>
-        <Route path="/admin" element={<Admin/>} />
+
+        <Route path="/admin" element={<Admin />} />
+     
+        
       </Routes>
     </>
   );
