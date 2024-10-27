@@ -95,3 +95,107 @@ export const PendingMaintenance = [
         pandingamount: "5,000"
     },
 ]
+
+export const ComplaintList = [
+    {
+        complainerAvatar: "/assets/Avatar.png",
+        complainerName: "Evelyn Harper",
+        complaintName: "Unethical Behavior",
+        date: "33/13/2050",
+        priority: "Medium",
+        status: "Open"
+    },
+    {
+        complainerAvatar: "/assets/Avatar.png",
+        complainerName: "Evelyn Harper",
+        complaintName: "Unethical Behavior",
+        date: "04/09/2005",
+        priority: "Low",
+        status: "Panding"
+    },
+    {
+        complainerAvatar: "/assets/Avatar.png",
+        complainerName: "Evelyn Harper",
+        complaintName: "Unethical Behavior",
+        date: "04/09/2005",
+        priority: "High",
+        status: "solve"
+    },
+    {
+        complainerAvatar: "/assets/Avatar.png",
+        complainerName: "Evelyn Harper",
+        complaintName: "Unethical Behavior",
+        date: "04/09/2005",
+        priority: "Medium",
+        status: "Open"
+    },
+    {
+        complainerAvatar: "/assets/Avatar.png",
+        complainerName: "Evelyn Harper",
+        complaintName: "Unethical Behavior",
+        date: "04/09/2005",
+        priority: "High",
+        status: "solve"
+    },
+    {
+        complainerAvatar: "/assets/Avatar.png",
+        complainerName: "Evelyn Harper",
+        complaintName: "Unethical Behavior",
+        date: "04/09/2005",
+        priority: "Medium",
+        status: "Open"
+    },
+]
+
+export const upcomingactivities = [
+
+    {
+        eventName: "Society Meeting",
+        time: "8:00 PM to 10:00 PM",
+        date: "24-09-2024",
+        color: "orange"
+    },
+    {
+        eventName: "Holi Festival",
+        time: "8:00 PM to 10:00 PM",
+        date: "24-09-2024",
+        color: "green"
+    },
+    {
+        eventName: "Ganesh Chaturthi",
+        time: "8:00 PM to 10:00 PM",
+        date: "24-09-2024",
+        color: "blue"
+    },
+    {
+        eventName: "Navratri Festival",
+        time: "8:00 PM to 10:00 PM",
+        date: "24-09-2024",
+        color: "red"
+    },
+    {
+        eventName: "Society Meeting",
+        time: "8:00 PM to 10:00 PM",
+        date: "24-09-2024",
+        color: "orange"
+    },
+    {
+        eventName: "Ganesh Chaturthi",
+        time: "8:00 PM to 10:00 PM",
+        date: "24-09-2024",
+        color: "blue"
+    },
+    {
+        eventName: "Navratri Festival",
+        time: "8:00 PM to 10:00 PM",
+        date: "24-09-2024",
+        color: "red"
+    },
+    {
+        eventName: "Society Meeting",
+        time: "8:00 PM to 10:00 PM",
+        date: "24-09-2024",
+        color: "orange"
+    }
+]
+

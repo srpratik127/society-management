@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { sidebardata } from "../data/sidebardata";
-import { useLocation } from "react-router-dom";
 
 const Sidebar = () => {
   const [activeDropdown, setActiveDropdown] = useState(null);
   return (
-    <div className="h-screen p-4 pt-0 reletive w-82 bg-white shadow-lg flex flex-col">
+    <div className="h-screen p-4 pt-0 reletive w-82 bg-white shadow-lg flex flex-col ">
       <div className="px-4 pb-2 text-center">
         <h1 className="text-4xl font-bold p-4 text-[#FE512E] to-[#F09619]">
           Dash<span className="text-black">Stack</span>

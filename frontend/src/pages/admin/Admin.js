@@ -1,7 +1,8 @@
 import React from "react";
 import Sidebar from "../../components/Sidebar";
 import Navbar from "../../components/Navbar";
-import Dashboard from "../../components/admin/Dashboard";
+import Dashboard from "../../pages/admin/Dashboard";
+import Profile from "./Profile";
 
 const Admin = () => {
     return (
@@ -9,8 +10,8 @@ const Admin = () => {
             <Sidebar />
             <div className="flex-1 flex flex-col">
                 <Navbar />
-                <Dashboard />
-              
+                {/* <Dashboard />*/}
+                <Profile/>
             </div>
 
         </div>

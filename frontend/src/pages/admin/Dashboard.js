@@ -1,18 +1,21 @@
 import React from 'react'
-import DashbordCard from '../DashbordCard'
+import DashbordCard from '../../components/DashbordCard'
 import { DashbordCards } from '../../data/admindashbord'
 import LineChart from "../../components/admin/LineChart";
-import ImportantNum from './ImportantNum';
-import PendingMaintenances from './PendingMaintenances';
+import ImportantNum from '../../components/admin/ImportantNum';
+import PendingMaintenances from '../../components/admin/PendingMaintenances';
+import ComplainTable from '../../components/admin/ComplainTable';
+import UpcomingActivitys from '../../components/admin/UpcomingActivitys';
 
 const Dashboard = () => {
     return (
-        <div className='p-4'>
+        <div className=' '>
             <div className='flex'>
                 {DashbordCards.map((cards) => (
                     <DashbordCard cards={cards} />
                 ))}
             </div>
+            
             <div className='flex'>
                 <div className="w-2/4 bg-white p-3 rounded-lg shadow">
                     <LineChart />
@@ -24,6 +27,12 @@ const Dashboard = () => {
                     <PendingMaintenances />
                 </div>
             </div>  
+
+           <div className='flex'>
+           <ComplainTable/>
+           <UpcomingActivitys/>
+           </div>
+
         </div>
     )
 }
