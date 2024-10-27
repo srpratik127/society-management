@@ -4,7 +4,7 @@ import { ImportantNumbers } from '../../data/admindashbord'
 const ImportantNum = () => {
     return (
         <>
-            <div className="flex justify-between items-center text-xl font-semibold bg-white p-3 rounded-lg">
+            <div className="flex justify-between items-center text-xl font-semibold bg-white p-2 rounded-lg">
                 <h1>Important Numbers</h1>
                 <button className="flex items-center space-x-2 p-2 px-3 rounded-md text-white bg-gradient-to-r from-[#FE512E] to-[#F09619]">
                     <img src="/assets/add-square.svg" alt="Add Icon" className="h-5 w-5" />
