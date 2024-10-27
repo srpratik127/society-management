@@ -1,4 +1,4 @@
-const ImportantNum = require('../models/importantnum.models');
+const ImportantNum = require('../models/importantnum.model');
 
 addNumber = async (req, res) => {
   try {
@@ -54,8 +54,8 @@ getNumberById = async (req, res) => {
 updateNumber = async (req, res) => {
   try {
     const updatedNumber = await ImportantNum.findByIdAndUpdate(req.params.id, req.body, {
-      new: true, 
-      runValidators: true 
+      new: true,
+      runValidators: true
     });
     if (!updatedNumber) {
       return res.status(404).json({
