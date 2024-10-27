@@ -1,9 +1,9 @@
 import React from 'react'
-import DashbordCard from '../DashbordCard'
+import DashbordCard from '../../components/DashbordCard'
 import { DashbordCards } from '../../data/admindashbord'
 import LineChart from "../../components/admin/LineChart";
-import ImportantNum from './ImportantNum';
-import PendingMaintenances from './PendingMaintenances';
+import ImportantNum from '../../components/admin/ImportantNum';
+import PendingMaintenances from '../../components/admin/PendingMaintenances';
 
 const Dashboard = () => {
     return (

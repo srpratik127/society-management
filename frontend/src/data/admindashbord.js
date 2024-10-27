@@ -33,27 +33,23 @@ export const DashbordCards = [
 export const ImportantNumbers = [
     {
         Name: "Hanna Donin",
-        PhNumber: "+91 99587 33657",
+        PhNumber: "99587 33657",
         Work: "Plumber",
-
     },
     {
-        Name: " Hanna Donin",
-        PhNumber: "+91 99587 33657",
+        Name: "Hanna Donin",
+        PhNumber: "99587 33657",
         Work: "Plumber",
-
     },
     {
-        Name: " Hanna Donin",
-        PhNumber: "+91 99587 33657",
+        Name: "Hanna Donin",
+        PhNumber: "99587 33657",
         Work: "Plumber",
-
     },
     {
-        Name: " Hanna Donin",
-        PhNumber: "+91 99587 33657",
+        Name: "Hanna Donin",
+        PhNumber: "99587 33657",
         Work: "Plumber",
-
     },
 ]
 

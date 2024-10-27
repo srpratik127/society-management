@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { sidebardata } from "../data/sidebardata";
-import { useLocation } from "react-router-dom";
 
 const Sidebar = () => {
   const [activeDropdown, setActiveDropdown] = useState(null);

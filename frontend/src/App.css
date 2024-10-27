@@ -27,3 +27,20 @@ input[type="checkbox"]:checked::after {
   left: 0.5px;
   top: -4px;
 }
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F4F4F4;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #202224;
+  border-radius: 10px;
+  }
+
+::-webkit-scrollbar-thumb:hover {
+  background: #202224;
+}
