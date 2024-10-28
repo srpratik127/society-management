@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   return (
@@ -17,11 +18,10 @@ const Navbar = () => {
       <div className="flex items-center space-x-6">
         <button className="relative focus:outline-none p-2 border border-gray-200 rounded-xl hover:shadow-md">
           <img src="/assets/notification-bing.svg" alt="" />
-
           <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
         </button>
 
-        <div className="flex items-center space-x-2">
+        <Link to="/admin/profile" className="flex items-center space-x-2">
           <img
             src="/assets/Avatar.png"
             alt="Profile"
@@ -31,7 +31,7 @@ const Navbar = () => {
             <span className="font-medium text-gray-700">Moni Roy</span>
             <span className="text-sm text-left text-gray-400">Admin</span>
           </div>
-        </div>
+        </Link>
       </div>
     </div>
   );

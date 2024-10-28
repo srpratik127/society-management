@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const ForgetPassword = () => {
   const [emailOrPhone, setEmailOrPhone] = useState("");
@@ -9,24 +10,37 @@ const ForgetPassword = () => {
   const validate = () => {
     const newErrors = {};
     if (!emailOrPhone) {
-      newErrors.emailOrPhone = "Email or Phone is required.";
+      newErrors.emailOrPhone = "Email is required.";
     } else if (
       !/^\S+@\S+\.\S+$/.test(emailOrPhone) &&
       !/^\d+$/.test(emailOrPhone)
     ) {
-      newErrors.emailOrPhone = "Enter a valid email or phone number.";
+      newErrors.emailOrPhone = "Enter a valid email.";
     }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
-      console.log("Forget Password Email", { emailOrPhone });
-      setEmailOrPhone("");
-      navigate("/get-otp");
+      try {
+        const response = await axios.post(
+          `${process.env.REACT_APP_BASE_URL}/forgetpassword/otpmail`,
+          {
+            email: emailOrPhone,
+          }
+        );
+
+        if (response.data) {
+          console.log("Forget Password Email", { emailOrPhone });
+          setEmailOrPhone("");
+          navigate("/get-otp");
+        }
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
@@ -44,7 +58,7 @@ const ForgetPassword = () => {
             className="block text-gray-700 font-semibold mb-1"
             htmlFor="emailOrPhone"
           >
-            Email or Phone<span className="text-[#E74C3C]">*</span>
+            Email <span className="text-[#E74C3C]">*</span>
           </label>
           <input
             type="text"
@@ -52,7 +66,7 @@ const ForgetPassword = () => {
             className={`w-full px-4 py-2 border ${
               errors.emailOrPhone ? "border-[#E74C3C]" : "border-gray-300"
             } rounded-md focus:outline-none focus:ring-1 focus:ring-slate-600`}
-            placeholder="Enter Your Phone Number Or Email"
+            placeholder="Enter Your Email"
             value={emailOrPhone}
             onChange={(e) => {
               setEmailOrPhone(e.target.value);

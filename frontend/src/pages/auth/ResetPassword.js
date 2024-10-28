@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -21,14 +22,25 @@ const ResetPassword = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
-      console.log("Reset successful", { password });
-      navigate("/login")
-      setPassword("");
-      setConfirmPassword("");
-      setShowPassword(false);
+      try {
+        const response = await axios.post(
+          `${process.env.REACT_APP_BASE_URL}/forgetpassword/resetPassword`,
+          { password, email: localStorage.getItem("email") }
+        );
+
+        if (response.data) {
+          console.log(response.data);
+          navigate("/login");
+          setPassword("");
+          setConfirmPassword("");
+          setShowPassword(false);
+        }
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
