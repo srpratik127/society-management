@@ -4,7 +4,7 @@ import { sidebardata } from "../data/sidebardata";
 const Sidebar = () => {
   const [activeDropdown, setActiveDropdown] = useState(null);
   return (
-    <div className="h-screen p-4 pt-0 reletive w-82 bg-white shadow-lg flex flex-col">
+    <div className="h-screen p-4 pt-0 reletive w-82 bg-white shadow-lg flex flex-col ">
       <div className="px-4 pb-2 text-center">
         <h1 className="text-4xl font-bold p-4 text-[#FE512E] to-[#F09619]">
           Dash<span className="text-black">Stack</span>
@@ -57,7 +57,7 @@ const Sidebar = () => {
         </ul>
       </div>
       <div className="p-4 border-t left-0 border-gray-200">
-        <button className="w-full flex items-center text-[#E74C3C] justify-start px-4 py-2 rounded hover:bg-gradient-to-r from-[#D3D3D3] to-[#D3D3D3] ">
+        <button className="w-full flex items-center text-[#E74C3C] justify-start px-4 py-2 rounded hover:bg-slate-100">
           <span className="mr-3 text-black">
             <img src="/assets/logout.svg" alt="logout" />
           </span>

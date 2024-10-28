@@ -1,6 +1,5 @@
 *{
   font-family: "Poppins", serif;
-
 }
 input[type="checkbox"] {
   appearance: none;
@@ -24,8 +23,8 @@ input[type="checkbox"]:checked::after {
   color: white !important;
   font-weight: bold;
   font-size: 1rem;
-  left: 0.5px;
-  top: -4px;
+  left: 4px;
+  top: -2px;
 }
 
 ::-webkit-scrollbar {

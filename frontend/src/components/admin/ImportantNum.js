@@ -20,7 +20,7 @@ export const ImportantNum = () => {
 
   return (
     <>
-      <div className="flex justify-between items-center text-xl font-semibold bg-white p-3 rounded-lg">
+      <div className="flex justify-between items-center text-xl font-semibold bg-whitep pb-1 rounded-lg">
         <h1>Important Numbers</h1>
         <button
           onClick={handleAdd}
@@ -35,11 +35,11 @@ export const ImportantNum = () => {
         </button>
       </div>
 
-      <div className="max-h-96 overflow-y-auto">
+      <div className="max-h-[350px] overflow-y-auto">
         {ImportantNumbers.map((importantNumber, index) => (
           <div
             key={index}
-            className="flex justify-between items-center p-4 border-b border-gray-200"
+            className="flex justify-between items-center p-2 border rounded-lg mb-2 border-gray-200"
           >
             <div className="space-y-1">
               <span className="block">

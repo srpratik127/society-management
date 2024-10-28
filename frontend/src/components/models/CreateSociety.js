@@ -1,6 +1,7 @@
+import axios from "axios";
 import React, { useState } from "react";
 
-export const CreateSociety = ({ closePopup }) => {
+export const CreateSociety = ({ closePopup, setOptions }) => {
   const [societyName, setSocietyName] = useState("");
   const [societyAddress, setSocietyAddress] = useState("");
   const [country, setCountry] = useState("");
@@ -9,56 +10,9 @@ export const CreateSociety = ({ closePopup }) => {
   const [zipCode, setZipCode] = useState("");
   const [errors, setErrors] = useState({});
 
-  const validateField = (value, rules) => {
-    for (const [rule, condition] of Object.entries(rules)) {
-      if (rule === "required" && !value) return `${condition} is required`;
-      if (rule === "minLength" && value.length < condition)
-        return `${condition} characters minimum`;
-      if (rule === "maxLength" && value.length > condition)
-        return `cannot exceed ${condition} characters`;
-      if (rule === "alpha" && !/^[A-Za-z\s]+$/.test(value))
-        return `should only contain alphabets`;
-      if (rule === "zip" && !/^\d{5}$/.test(value))
-        return `must be 5-digit number`;
-    }
-    return null;
-  };
-
-  const validateForm = () => {
-    const newErrors = {
-      societyName: validateField(societyName, {
-        required: "Society Name",
-        minLength: 3,
-        maxLength: 50,
-      }),
-      societyAddress: validateField(societyAddress, {
-        required: "Society Address",
-        minLength: 5,
-      }),
-      country: validateField(country, {
-        required: "Country",
-        alpha: true,
-        minLength: 3,
-      }),
-      state: validateField(state, {
-        required: "State",
-        alpha: true,
-        minLength: 2,
-      }),
-      city: validateField(city, { required: "City", alpha: true }),
-      zipCode: validateField(zipCode, { required: "Zip Code", zip: true }),
-    };
-
-    setErrors(
-      Object.fromEntries(Object.entries(newErrors).filter(([_, v]) => v))
-    );
-
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
+    try {
       console.log("Form submitted:", {
         societyName,
         societyAddress,
@@ -67,7 +21,22 @@ export const CreateSociety = ({ closePopup }) => {
         city,
         zipCode,
       });
+      const response = await axios.post(
+        `${process.env.REACT_APP_BASE_URL}/society`,
+        {
+          name: societyName,
+          address: societyAddress,
+          country,
+          state,
+          city,
+          zipCode,
+        }
+      );
+      const { name } = response.data;
+      setOptions((prev) => [...prev, { value: name, label: name }]);
       closePopup();
+    } catch (error) {
+      console.error("Error submitting form:", error); 
     }
   };
 

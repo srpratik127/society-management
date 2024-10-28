@@ -1,11 +1,13 @@
+import axios from "axios";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [emailOrPhone, setEmailOrPhone] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   const validate = () => {
     const newErrors = {};
@@ -17,24 +19,36 @@ const Login = () => {
     ) {
       newErrors.emailOrPhone = "Enter a valid email or phone number.";
     }
-
     if (!password) {
       newErrors.password = "Password is required.";
     } else if (password.length < 6) {
       newErrors.password = "Password must be at least 6 characters.";
     }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
-      console.log("Login successful", { emailOrPhone, password });
-      setPassword("");
-      setEmailOrPhone("");
-      setShowPassword(false);
+      try {
+        console.log("Login successful", { emailOrPhone, password });
+        const response = await axios.post(
+          `${process.env.REACT_APP_BASE_URL}/users/login`,
+          { email: emailOrPhone, password }
+        );
+
+        const parts = response.data.token.split(".");
+        const payload = JSON.parse(atob(parts[1]));
+        const user = payload.user.email;
+        localStorage.setItem("email", user);
+        setPassword("");
+        setEmailOrPhone("");
+        setShowPassword(false);
+        navigate("/admin");
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
