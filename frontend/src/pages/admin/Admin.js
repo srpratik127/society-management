@@ -3,6 +3,8 @@ import Sidebar from "../../components/Sidebar";
 import Navbar from "../../components/Navbar";
 import Dashboard from "../../pages/admin/Dashboard";
 import Profile from "./Profile";
+import Recident from "./Recident";
+import IncomeTable from "./IncomeTable";
 
 const Admin = () => {
     return (
@@ -11,7 +13,9 @@ const Admin = () => {
             <div className="flex-1 flex flex-col">
                 <Navbar />
                 {/* <Dashboard />*/}
-                <Profile/>
+                {/* <Profile/> */}
+                {/* <Recident/> */}
+                <IncomeTable/>
             </div>
 
         </div>
