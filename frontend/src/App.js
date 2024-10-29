@@ -7,6 +7,8 @@ import ForgetPassword from "./pages/auth/ForgetPassword";
 import OtpScreen from "./pages/auth/OtpScreen";
 import ResetPassword from "./pages/auth/ResetPassword";
 import Admin from "./pages/admin/Admin";
+import Dashboard from "./pages/admin/Dashboard";
+import Profile from "./pages/admin/Profile";
 
 function App() {
   return (
@@ -20,9 +22,10 @@ function App() {
           <Route path="reset" element={<ResetPassword />} />
         </Route>
 
-        <Route path="/admin" element={<Admin />} />
-     
-        
+        <Route path="/admin" element={<Admin />}>
+          <Route path="" element={<Dashboard />} />
+          <Route path="profile" element={<Profile />} />
+        </Route>
       </Routes>
     </>
   );

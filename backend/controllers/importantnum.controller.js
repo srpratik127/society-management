@@ -1,4 +1,4 @@
-const ImportantNum = require('../models/importantnum.models');
+const ImportantNum = require('../models/importantnum.model');
 
 addNumber = async (req, res) => {
   try {
@@ -15,12 +15,47 @@ addNumber = async (req, res) => {
   }
 };
 
+ getAllNumbers = async (req, res) => {
+  try {
+    const numbers = await ImportantNum.find(); 
+    res.status(200).json({
+      success: true,
+      data: numbers
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
+getNumberById = async (req, res) => {
+  try {
+    const number = await ImportantNum.findById(req.params.id); 
+    if (!number) {
+      return res.status(404).json({
+        success: false,
+        message: 'Number not found'
+      });
+    }
+    res.status(200).json({
+      success: true,
+      data: number
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
 
 updateNumber = async (req, res) => {
   try {
     const updatedNumber = await ImportantNum.findByIdAndUpdate(req.params.id, req.body, {
-      new: true, 
-      runValidators: true 
+      new: true,
+      runValidators: true
     });
     if (!updatedNumber) {
       return res.status(404).json({
@@ -39,7 +74,6 @@ updateNumber = async (req, res) => {
     });
   }
 };
-
 
 deleteNumber = async (req, res) => {
   try {
@@ -64,6 +98,8 @@ deleteNumber = async (req, res) => {
   
 module.exports={
     addNumber,
+    getAllNumbers,
+    getNumberById,
     updateNumber,
     deleteNumber
 }

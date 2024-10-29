@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { CreateSociety } from "../../components/models/CreateSociety";
 import Select from "react-select";
+import axios from "axios";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -12,14 +13,36 @@ const Register = () => {
     country: "",
     state: "",
     city: "",
-    society: "",
+    select_society: "",
     password: "",
     confirmPassword: "",
   });
+  const [options, setOptions] = useState([]);
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchSocieties = async () => {
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/society`);
+        const societies = response.data.map(society => ({
+          value: society.name,
+          label: society.name,
+        }));
+        setOptions(prev => [
+          ...societies,
+          { value: "create_society", label: "Create Society", isButton: true },
+        ]);
+      } catch (error) {
+        console.error("Error fetching societies:", error);
+      }
+    };
+
+    fetchSocieties();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -29,7 +52,7 @@ const Register = () => {
   const handleSelectChange = (selectedOption) => {
     selectedOption.value === "create_society"
       ? setIsOpen(true)
-      : setFormData((prev) => ({ ...prev, society: selectedOption }));
+      : setFormData((prev) => ({ ...prev, select_society: selectedOption }));
   };
 
   const validate = () => {
@@ -42,7 +65,7 @@ const Register = () => {
       "country",
       "state",
       "city",
-      "society",
+      "select_society",
       "password",
     ].forEach((field) => {
       if (!formData[field])
@@ -55,22 +78,29 @@ const Register = () => {
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validate();
-    if (Object.keys(validationErrors).length > 0) setErrors(validationErrors);
-    else {
-      console.log("Form submitted:", formData);
-      setErrors({});
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+    } else {
+      try {
+        const { select_society, ...dataToSubmit } = formData;
+        const payload = {
+          ...dataToSubmit,
+          select_society: select_society.value,
+        };
+        
+        const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/users/register`, payload);
+        console.log("Form submitted:", response.data);
+        setErrors({});
+
+        navigate("/login");
+      } catch (error) {
+        console.error("Error submitting the form:", error);
+      }
     }
   };
-
-  const options = [
-    { value: "shantigram_residency", label: "Shantigram Residency" },
-    { value: "russett_house_park", label: "Russett House Park" },
-    { value: "saurya_residency", label: "Saurya Residency" },
-    { value: "create_society", label: "Create Society", isButton: true },
-  ];
 
   const CustomOption = ({ data, innerRef, innerProps }) =>
     data.isButton ? (
@@ -278,14 +308,14 @@ const Register = () => {
             </label>
             <Select
               name="society"
-              value={formData.society}
+              value={formData.select_society}
               onChange={handleSelectChange}
               options={options}
               components={{ Option: CustomOption }}
               placeholder="Select Society"
             />
-            {errors.society && (
-              <p className="text-red-500 text-sm">{errors.society}</p>
+            {errors.select_society && (
+              <p className="text-red-500 text-sm">{errors.select_society}</p>
             )}
           </div>
 
@@ -397,7 +427,7 @@ const Register = () => {
         </form>
       </div>
 
-      {isOpen && <CreateSociety closePopup={() => setIsOpen(false)} />}
+      {isOpen && <CreateSociety closePopup={() => setIsOpen(false)} setOptions={setOptions} />}
     </div>
   );
 };

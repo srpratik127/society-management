@@ -1,4 +1,4 @@
-const Complaint =require('../models/complaint.models.js'),
+const Complaint =require('../models/complaint.model.js'),
 
  createComplaint = async (req, res) => {
   try {
