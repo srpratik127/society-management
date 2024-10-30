@@ -80,3 +80,33 @@ export const maintenanceData = [
    
   ];
   
+
+
+  export const otherIncomeData = [
+    {
+      name: "Ganesh Chaturthi",
+      amount: 1500,
+      totalMembers: 12,
+      date: "01/07/2024",
+      dueDate: "10/07/2024",
+      description: "The celebration of Ganesh Chaturthi involves the installation of clay idols of Ganesa in."
+    },
+    {
+      name: "Navratri",
+      amount: 1500,
+      totalMembers: 12,
+      date: "01/07/2024",
+      dueDate: "10/07/2024",
+      description: "The celebration of Navratri involves the installation of clay idols of Durga in Resident."
+    },
+    {
+      name: "Diwali",
+      amount: 1500,
+      totalMembers: 12,
+      date: "01/07/2024",
+      dueDate: "10/07/2024",
+      description: "The celebration of Diwali involves the installation of clay idols of Ganesa in."
+    },
+    
+  ];
+  
