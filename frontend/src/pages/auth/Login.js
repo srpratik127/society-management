@@ -1,6 +1,8 @@
 import axios from "axios";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { addToken } from "../../store/authSlice";
 
 const Login = () => {
   const [emailOrPhone, setEmailOrPhone] = useState("");
@@ -8,6 +10,7 @@ const Login = () => {
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const validate = () => {
     const newErrors = {};
@@ -32,16 +35,12 @@ const Login = () => {
     e.preventDefault();
     if (validate()) {
       try {
-        console.log("Login successful", { emailOrPhone, password });
         const response = await axios.post(
           `${process.env.REACT_APP_BASE_URL}/users/login`,
           { email: emailOrPhone, password }
         );
-
-        const parts = response.data.token.split(".");
-        const payload = JSON.parse(atob(parts[1]));
-        const user = payload.user.email;
-        localStorage.setItem("email", user);
+        dispatch(addToken(response.data.token));
+      
         setPassword("");
         setEmailOrPhone("");
         setShowPassword(false);

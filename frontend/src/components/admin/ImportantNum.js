@@ -62,12 +62,12 @@ export const ImportantNum = () => {
                 onClick={() => setOpenDelete(true)}
                 src="/assets/delete.svg"
                 alt="Delete Icon"
-                className="h-10 w-10 cursor-pointer"
+                className="cursor-pointer"
               />
               <img
                 src="/assets/edit.svg"
                 alt="Edit Icon"
-                className="h-10 w-10 cursor-pointer"
+                className="cursor-pointer"
                 onClick={() => handleEdit(importantNumber)}
               />
             </div>

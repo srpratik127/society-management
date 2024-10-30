@@ -1,11 +1,14 @@
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+
 
 const OtpScreen = () => {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [timer, setTimer] = useState(30);
   const [isResendDisabled, setIsResendDisabled] = useState(false);
+  const user = useSelector((store) => store.auth.user);
   const [errorMessage, setErrorMessage] = useState("");
   const inputRefs = useRef([]);
   const navigate = useNavigate();
@@ -47,7 +50,7 @@ const OtpScreen = () => {
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_BASE_URL}/forgetpassword/verify`,
-        { otp: otpValue, email: localStorage.getItem("email") }
+        { otp: otpValue, email: user.email }
       );
 
       if (response.status === 200) {
