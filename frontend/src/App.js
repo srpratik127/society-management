@@ -13,6 +13,7 @@ import IncomeTable from "./pages/admin/IncomeTable";
 import { ProtectedRoute, PublicRoute } from "./components/ProtectedRoute";
 import ErrorPage from "./pages/ErrorPage";
 import Resident from "./pages/admin/Recident";
+import ExpensesTable from "./pages/admin/Expance";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
           <Route path="profile" element={<Profile />} />
           <Route path="income" element={<IncomeTable />} />
           <Route path="resident" element={<Resident />} />
+          <Route path="expence" element={<ExpensesTable />} />
         </Route>
 
         <Route path="*" element={<ErrorPage />} />
