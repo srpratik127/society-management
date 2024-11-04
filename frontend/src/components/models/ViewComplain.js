@@ -34,7 +34,7 @@ const ViewComplain = ({ closePopup, selectedComplain }) => {
           <p className="mb-2 text-[#202224]">
             <span className=" text-[#A7A7A7]">Request Name </span>
             <br />
-            {selectedComplain.selectedComplainName}
+            {selectedComplain.complaintName}
           </p>
           <p className="text-[#202224] mb-2">
             <span className="text-[#A7A7A7]">Description </span>

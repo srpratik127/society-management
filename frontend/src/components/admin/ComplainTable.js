@@ -1,12 +1,29 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ComplaintList } from "../../data/admindashbord";
 import ViewComplain from "../models/ViewComplain";
 import EditComplaint from "../models/EditComplaint";
+import axios from "axios";
 
 const ComplainTable = () => {
   const [openViewComplain, setOpenViewComplain] = useState(false);
   const [openEditComplain, setOpenEditComplain] = useState(false);
   const [selectedComplain, setSelectedComplain] = useState({});
+  const [complainList, setComplainList] = useState([]);
+
+  useEffect(() => {
+    const fetchComplainList = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_BASE_URL}/api/complaints`
+        );
+        setComplainList(response?.data?.data);
+      } catch (err) {
+        console.log(err.message);
+      }
+    };
+
+    fetchComplainList();
+  }, []);
 
   const ViewComplains = (complaint) => {
     setOpenViewComplain(true);
@@ -18,7 +35,7 @@ const ComplainTable = () => {
     setSelectedComplain(complaint);
   };
   return (
-    <div className="bg-white rounded-lg px-4 pt-2 w-full">
+    <div className="bg-white rounded-lg px-4 pt-2 w-full shadow">
       <div className="flex justify-between items-center mb-2">
         <h1 className="text-xl font-semibold">Complaint List</h1>
         <div className="relative">
@@ -44,75 +61,85 @@ const ComplainTable = () => {
             </tr>
           </thead>
           <tbody className="text-gray-700 text-sm">
-            {ComplaintList.map((complaint, index) => (
-              <tr key={index} className="border-b">
-                <td className="py-1 px-4 flex items-center space-x-3">
-                  <img
-                    src={complaint.complainerAvatar}
-                    alt={complaint.complainerName}
-                    className="w-10 h-10 rounded-full"
-                  />
-                  <span>{complaint.complainerName}</span>
-                </td>
-                <td className="py-3 px-4">{complaint.complaintName}</td>
-                <td className="py-3 px-4">{complaint.date}</td>
-                <td className="py-3 px-6">
-                  <span
-                    className={`py-1 px-3 block w-24 mx-auto text-center rounded-full text-white ${
-                      complaint.priority === "High"
-                        ? "bg-red-500"
-                        : complaint.priority === "Medium"
-                        ? "bg-blue-500"
-                        : "bg-green-500"
-                    }`}
-                  >
-                    {complaint.priority}
-                  </span>
-                </td>
-                <td className="py-2 px-12">
-                  <span
-                    className={`py-1 px-3 rounded-full block w-24 mx-auto text-center ${
-                      complaint.status === "Open"
-                        ? "bg-blue-100 text-blue-600"
-                        : complaint.status === "Pending"
-                        ? "bg-yellow-100 text-yellow-600"
-                        : "bg-green-100 text-green-600"
-                    }`}
-                  >
-                    {complaint.status}
-                  </span>
-                </td>
-                <td className="py-2 text-center">
-                  <button
-                    className="p-1 rounded-xl text-green-600"
-                    onClick={() => editComplains(complaint)}
-                  >
+            {complainList.length > 0 ? (
+              complainList.map((complaint, index) => (
+                <tr key={index} className="border-b">
+                  <td className="py-1 px-4 flex items-center space-x-3">
                     <img
-                      src="/assets/edit.svg"
-                      alt="Edit Icon"
-                      className="h-7 w-7 cursor-pointer"
+                      src={complaint.complainerAvatar}
+                      alt={complaint.complainerName}
+                      className="w-10 h-10 rounded-full"
                     />
-                  </button>
-                  <button
-                    className="p-1 rounded-xl text-blue-600"
-                    onClick={() => ViewComplains(complaint)}
-                  >
-                    <img
-                      src="/assets/showicon.svg"
-                      alt="Show Icon"
-                      className="h-7 w-7 cursor-pointer"
-                    />
-                  </button>
-                  <button className="p-1 rounded-xl text-red-600">
-                    <img
-                      src="/assets/delete.svg"
-                      alt="Delete Icon"
-                      className="h-7 w-7 cursor-pointer"
-                    />
-                  </button>
+                    <span>{complaint.complainerName}</span>
+                  </td>
+                  <td className="py-3 px-4">{complaint.complaintName}</td>
+                  <td className="py-3 px-4">
+                    {complaint.updatedAt.slice(0, 10)}
+                  </td>
+                  <td className="py-3 px-6">
+                    <span
+                      className={`py-1 px-3 block w-24 mx-auto text-center rounded-full text-white ${
+                        complaint.priority === "High"
+                          ? "bg-red-500"
+                          : complaint.priority === "Medium"
+                          ? "bg-blue-500"
+                          : "bg-green-500"
+                      }`}
+                    >
+                      {complaint.priority}
+                    </span>
+                  </td>
+                  <td className="py-2 px-12">
+                    <span
+                      className={`py-1 px-3 rounded-full block w-24 mx-auto text-center ${
+                        complaint.status === "Open"
+                          ? "bg-blue-100 text-blue-600"
+                          : complaint.status === "Pending"
+                          ? "bg-yellow-100 text-yellow-600"
+                          : "bg-green-100 text-green-600"
+                      }`}
+                    >
+                      {complaint.status}
+                    </span>
+                  </td>
+                  <td className="py-2 text-center">
+                    <button
+                      className="p-1 rounded-xl text-green-600"
+                      onClick={() => editComplains(complaint)}
+                    >
+                      <img
+                        src="/assets/edit.svg"
+                        alt="Edit Icon"
+                        className="h-7 w-7 cursor-pointer"
+                      />
+                    </button>
+                    <button
+                      className="p-1 rounded-xl text-blue-600"
+                      onClick={() => ViewComplains(complaint)}
+                    >
+                      <img
+                        src="/assets/showicon.svg"
+                        alt="Show Icon"
+                        className="h-7 w-7 cursor-pointer"
+                      />
+                    </button>
+                    <button className="p-1 rounded-xl text-red-600">
+                      <img
+                        src="/assets/delete.svg"
+                        alt="Delete Icon"
+                        className="h-7 w-7 cursor-pointer"
+                      />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr className="text-gray-500 select-none">
+                <td className="text-center py-4 leading-[149px]" colSpan="100%">
+                  No Data found.
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
