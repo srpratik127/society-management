@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { maintenanceData } from "../../data/maintenanceData";
-import { otherIncomeData } from "../../data/maintenanceData"; // Import your other income data
+import { otherIncomeData } from "../../data/maintenanceData";
 
 const IncomeTable = () => {
 

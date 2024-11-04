@@ -109,4 +109,83 @@ export const maintenanceData = [
     },
     
   ];
-  
+
+  export const ExpanceData = [
+    {
+      title:"Rent or Mortgage",
+      Description:"A visual representation of your spending categories...",
+      date:"10/02/2024",
+      amount:"1000",
+      bill_format:"JPG",
+    },
+    {
+      title:"Rent or Mortgage",
+      Description:"A visual representation of your spending categories...",
+      date:"10/02/2024",
+      amount:"1000",
+      bill_format:"PDF",
+    },
+    {
+      title:"Rent or Mortgage",
+      Description:"A visual representation of your spending categories...",
+      date:"10/02/2024",
+      amount:"1000",
+      bill_format:"JPG",
+    },
+    {
+      title:"Rent or Mortgage",
+      Description:"A visual representation of your spending categories...",
+      date:"10/02/2024",
+      amount:"1000",
+      bill_format:"PDF",
+    },
+    {
+      title:"Rent or Mortgage",
+      Description:"A visual representation of your spending categories...",
+      date:"10/02/2024",
+      amount:"1000",
+      bill_format:"JPG",
+    },
+    {
+      title:"Rent or Mortgage",
+      Description:"A visual representation of your spending categories...",
+      date:"10/02/2024",
+      amount:"1000",
+      bill_format:"PDF",
+    },
+    {
+      title:"Rent or Mortgage",
+      Description:"A visual representation of your spending categories...",
+      date:"10/02/2024",
+      amount:"1000",
+      bill_format:"JPG",
+    },
+    {
+      title:"Rent or Mortgage",
+      Description:"A visual representation of your spending categories...",
+      date:"10/02/2024",
+      amount:"1000",
+      bill_format:"PDF",
+    },
+    {
+      title:"Rent or Mortgage",
+      Description:"A visual representation of your spending categories...",
+      date:"10/02/2024",
+      amount:"1000",
+      bill_format:"JPG",
+    },
+    {
+      title:"Rent or Mortgage",
+      Description:"A visual representation of your spending categories...",
+      date:"10/02/2024",
+      amount:"1000",
+      bill_format:"PDF",
+    },
+    {
+      title:"Rent or Mortgage",
+      Description:"A visual representation of your spending categories...",
+      date:"10/02/2024",
+      amount:"1000",
+      bill_format:"PDF",
+    },
+  ]
