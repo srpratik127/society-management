@@ -119,4 +119,37 @@ export const residents = [
         member: "-",
         vehicle: "-"
     },
+    {
+        id: 12,
+        name: "Evelyn Harper",
+        unit:"C",
+        unitNumber: "1003",
+        unitStatus: "Occupied",
+        residentStatus: "Owner",
+        phone: "97587 85828",
+        member: 1,
+        vehicle: 4
+    },
+    {
+        id: 13,
+        name: "Evelyn Harper",
+        unit:"D",
+        unitNumber: "1004",
+        unitStatus: "Occupied",
+        residentStatus: "Tenant",
+        phone: "97587 85828",
+        member: 4,
+        vehicle: 2
+    },
+    {
+        id: 14,
+        name: "",
+        unit:"E",
+        unitNumber: "2001",
+        unitStatus: "Vacate",
+        residentStatus: "--",
+        phone: "--",
+        member: "-",
+        vehicle: "-"
+    },
 ];
