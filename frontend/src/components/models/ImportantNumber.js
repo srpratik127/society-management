@@ -1,24 +1,13 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 
-const ImportantNumber = ({ closePopup, initialData }) => {
+const ImportantNumber = ({ closePopup, initialData, setImportantNumbers }) => {
   const [formData, setFormData] = useState({
-    fullName: "",
-    phoneNumber: "",
-    work: "",
+    fullName: initialData ? initialData.fullName : "",
+    phoneNumber: initialData ? initialData.phoneNumber : "",
+    work: initialData ? initialData.work : "",
   });
   const [errors, setErrors] = useState({});
-
-  useEffect(() => {
-    if (initialData) {
-      setFormData({
-        fullName: initialData.Name,
-        phoneNumber: initialData.PhNumber,
-        work: initialData.Work,
-      });
-    } else {
-      setFormData({ fullName: "", phoneNumber: "", work: "" });
-    }
-  }, [initialData]);
 
   const validate = () => {
     const { fullName, phoneNumber, work } = formData;
@@ -43,15 +32,40 @@ const ImportantNumber = ({ closePopup, initialData }) => {
     return !Object.values(newErrors).some(Boolean);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
-      if (initialData) {
-        console.log("update data:", formData);
-      } else {
-        console.log("Submited data:", formData);
+      try {
+        if (initialData) {
+          const response = await axios.put(
+            `${process.env.REACT_APP_BASE_URL}/api/important-number/numbers/${initialData._id}`,
+            {
+              fullName: formData.fullName,
+              phoneNumber: formData.phoneNumber,
+              work: formData.work,
+            }
+          );
+          setImportantNumbers((prev) => {
+            return prev.map((number) =>
+              number._id === initialData._id ? response.data.data : number
+            );
+          });
+        } else {
+          const response = await axios.post(
+            `${process.env.REACT_APP_BASE_URL}/api/important-number/numbers`,
+            {
+              fullName: formData.fullName,
+              phoneNumber: formData.phoneNumber,
+              work: formData.work,
+            }
+          );
+          setImportantNumbers((pre) => [response?.data?.data, ...pre]);
+          console.log("Submitted data:", formData);
+        }
+        closePopup();
+      } catch (error) {
+        console.error("Error submitting data:", error);
       }
-      closePopup();
     }
   };
   const handleChange = (e) => {

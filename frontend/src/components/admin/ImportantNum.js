@@ -1,21 +1,47 @@
-import React, { useState } from "react";
-import { ImportantNumbers } from "../../data/admindashbord";
+import React, { useEffect, useState } from "react";
 import ImportantNumber from "../models/ImportantNumber";
 import DeleteModel from "../models/DeleteModel";
+import axios from "axios";
 
 export const ImportantNum = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedNumber, setSelectedNumber] = useState(null);
   const [openDelete, setOpenDelete] = useState(false);
+  const [importantNumbers, setImportantNumbers] = useState([]);
+  const [numberToDelete, setNumberToDelete] = useState(null);
+
+  useEffect(() => {
+    const fetchImportantNumbers = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_BASE_URL}/api/important-number`
+        );
+        setImportantNumbers(response?.data?.data);
+      } catch (err) {
+        console.log(err.message);
+      }
+    };
+
+    fetchImportantNumbers();
+  }, []);
 
   const handleEdit = (number) => {
     setSelectedNumber(number);
     setIsOpen(true);
   };
-
   const handleAdd = () => {
     setSelectedNumber(null);
     setIsOpen(true);
+  };
+
+  const handleDelete = async () => {
+    await axios.delete(
+      `${process.env.REACT_APP_BASE_URL}/api/important-number/numbers/${numberToDelete}`
+    );
+    setImportantNumbers((prev) =>
+      prev.filter((number) => number._id !== numberToDelete)
+    );
+    setOpenDelete(false);
   };
 
   return (
@@ -36,55 +62,72 @@ export const ImportantNum = () => {
       </div>
 
       <div className="max-h-[350px] overflow-y-auto">
-        {ImportantNumbers.map((importantNumber, index) => (
-          <div
-            key={index}
-            className="flex justify-between items-center p-2 border rounded-lg mb-2 border-gray-200"
-          >
-            <div className="space-y-1">
-              <span className="block">
-                <span>Name:</span>{" "}
-                <span className="text-[#A7A7A7]">{importantNumber.Name}</span>
-              </span>
-              <span className="block">
-                <span>Ph Number:</span>{" "}
-                <span className="text-[#A7A7A7]">
-                  +91 {importantNumber.PhNumber}
+        {importantNumbers.length > 0 ? (
+          importantNumbers.map((importantNumber, index) => (
+            <div
+              key={index}
+              className="flex justify-between items-center p-2 border rounded-lg mb-2 border-gray-200"
+            >
+              <div className="space-y-1">
+                <span className="block">
+                  <span>Name:</span>{" "}
+                  <span className="text-[#A7A7A7] capitalize">
+                    {importantNumber.fullName}
+                  </span>
                 </span>
-              </span>
-              <span className="block">
-                <span>Work:</span>{" "}
-                <span className="text-[#A7A7A7]">{importantNumber.Work}</span>
-              </span>
+                <span className="block">
+                  <span>Ph Number:</span>{" "}
+                  <span className="text-[#A7A7A7]">
+                    +91 {importantNumber.phoneNumber}
+                  </span>
+                </span>
+                <span className="block">
+                  <span>Work:</span>{" "}
+                  <span className="text-[#A7A7A7]">{importantNumber.work}</span>
+                </span>
+              </div>
+              <div className="flex space-x-2 items-center">
+                <img
+                  src="/assets/delete.svg"
+                  alt="Delete"
+                  className="cursor-pointer"
+                  onClick={() => {
+                    setNumberToDelete(importantNumber._id);
+                    setOpenDelete(true);
+                  }}
+                />
+                <img
+                  src="/assets/edit.svg"
+                  alt="Edit Icon"
+                  className="cursor-pointer"
+                  onClick={() => handleEdit(importantNumber)}
+                />
+              </div>
             </div>
-            <div className="flex space-x-2 items-center">
-              <img
-                onClick={() => setOpenDelete(true)}
-                src="/assets/delete.svg"
-                alt="Delete Icon"
-                className="h-10 w-10 cursor-pointer"
-              />
-              <img
-                src="/assets/edit.svg"
-                alt="Edit Icon"
-                className="h-10 w-10 cursor-pointer"
-                onClick={() => handleEdit(importantNumber)}
-              />
-            </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <p className="text-gray-500 text-center leading-[350px] select-none">
+            No Data found.
+          </p>
+        )}
       </div>
 
       {isOpen && (
         <ImportantNumber
           closePopup={() => setIsOpen(false)}
           initialData={selectedNumber}
+          setImportantNumbers={setImportantNumbers}
         />
       )}
 
       {openDelete && (
         <DeleteModel
           closePopup={() => setOpenDelete(false)}
+          onDelete={handleDelete}
+          message={{
+            title: "Delete Number?",
+            sms: "Are you sure you want to delete this number?",
+          }}
         />
       )}
     </>

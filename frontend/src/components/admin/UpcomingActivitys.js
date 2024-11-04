@@ -14,7 +14,7 @@ const UpcomingActivitys = () => {
           </select>
         </div>
       </div>
-      <div className="max-h-[226px] overflow-y-auto rounded-b-lg">
+      <div className="max-h-[225px] overflow-y-auto rounded-b-lg">
         {upcomingactivities.map((activity, index) => (
           <div
             key={index}
