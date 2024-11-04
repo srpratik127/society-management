@@ -29,15 +29,16 @@ const maintenance = require("./routes/maintenance.route.js");
 app.get("/", (req, res) => {
   res.send("Welcome...!!");
 });
-app.use("/users", userRouter);
-app.use("/forgetpassword", forgetPassword);
-app.use("/society", SocietyRouter);
-app.use("/api/important-number", importantNumRoutes);
-app.use("/api/complaints", complaintRoutes);
-app.use("/api/owners", ownerRoutes);
-app.use("/maintenance", maintenance);
 
-const port = process.env.PORT || 5000;
+app.use('/users', userRouter);  
+app.use('/society', SocietyRouter);  
+app.use('/forgetpassword', forgetPassword);  
+app.use('/api/complaints', complaintRoutes);
+app.use('/api/numbers', importantNumRoutes);
+app.use('/api/owners', ownerRoutes);
+app.use('/maintenance', maintenance);  
+
+const port = process.env.PORT || 5000;  
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });

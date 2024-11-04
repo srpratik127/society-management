@@ -1,5 +1,5 @@
 const express = require('express');
-const { createOwner, getOwners, getOwnerById } = require('../controllers/Resident.controller');
+const { createOwner, getOwners, getOwnerById } = require('../controllers/resident.controller');
 const router = express.Router();
 
 router.post('/', createOwner);

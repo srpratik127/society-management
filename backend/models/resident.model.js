@@ -1,11 +1,6 @@
 const mongoose = require('mongoose');
 
 const ownerSchema = new mongoose.Schema({
-  profile_picture:{
-     type:String,
-     default:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKc08Wq1A-TIERnJUrHsmF9Asnmz5f_EnD5Mr8kQsJNZCdHjg_medKyoo&s",
-     required: true
-    },
   fullName: { 
     type: String, 
     required: true
@@ -19,11 +14,11 @@ const ownerSchema = new mongoose.Schema({
      required: true,
      unique: true
      },
-     role:{
-        type:String,
-        enum:["owner","tenant"],
-        require:true
-     },
+role:{
+  type:String,
+  enum:["owner","tenant"],
+  require:true
+ },
   age: { 
     type: Number,
     required: true 
@@ -44,7 +39,11 @@ const ownerSchema = new mongoose.Schema({
      type: String,
      required: true 
     },
-
+    profile_picture:{
+      type:String,
+      default:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKc08Wq1A-TIERnJUrHsmF9Asnmz5f_EnD5Mr8kQsJNZCdHjg_medKyoo&s",
+      required: true
+     },
   aadharCardFront: {
      type: String,
      required: true 
