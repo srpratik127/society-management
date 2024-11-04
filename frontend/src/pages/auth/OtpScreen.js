@@ -1,10 +1,14 @@
+import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+
 
 const OtpScreen = () => {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [timer, setTimer] = useState(30);
   const [isResendDisabled, setIsResendDisabled] = useState(false);
+  const user = useSelector((store) => store.auth.user);
   const [errorMessage, setErrorMessage] = useState("");
   const inputRefs = useRef([]);
   const navigate = useNavigate();
@@ -27,7 +31,7 @@ const OtpScreen = () => {
       }
     }
   };
-  
+
   const handleResendOtp = async () => {
     setIsResendDisabled(true);
     await new Promise((resolve) => setTimeout(resolve, 12000));
@@ -36,21 +40,33 @@ const OtpScreen = () => {
     setOtp(["", "", "", "", "", ""]);
     setErrorMessage("");
   };
-  
-  const handleVerifyOtp = () => {
+
+  const handleVerifyOtp = async () => {
     const otpValue = otp.join("");
     if (otpValue.length < 6) {
       setErrorMessage("Please enter the complete OTP.");
       return;
     }
-    if (otpValue === "123456") {
-      console.log("OTP value " + otpValue);
-      
-      navigate("/reset");
-      setErrorMessage("");
-      setOtp(["", "", "", "", "", ""]);
-    } else {
-      setErrorMessage("Wrong OTP Entered.");
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_BASE_URL}/forgetpassword/verify`,
+        { otp: otpValue, email: user.email }
+      );
+
+      if (response.status === 200) {
+        navigate("/reset");
+        setErrorMessage("");
+        setOtp(["", "", "", "", "", ""]);
+      }
+    } catch (error) {
+      if (error.response) {
+        setErrorMessage(
+          error.response.data.message ||
+            "An error occurred during verification."
+        );
+      } else {
+        setErrorMessage("Network error. Please try again.");
+      }
     }
   };
 

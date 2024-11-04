@@ -1,5 +1,7 @@
+import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const ResetPassword = () => {
   const [password, setPassword] = useState("");
@@ -7,6 +9,8 @@ const ResetPassword = () => {
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const user = useSelector((store) => store.auth.user);
+
   const validate = () => {
     const newErrors = {};
     if (!password) {
@@ -21,14 +25,25 @@ const ResetPassword = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
-      console.log("Reset successful", { password });
-      navigate("/login")
-      setPassword("");
-      setConfirmPassword("");
-      setShowPassword(false);
+      try {
+        const response = await axios.post(
+          `${process.env.REACT_APP_BASE_URL}/forgetpassword/resetPassword`,
+          { password, email: user.email }
+        );
+
+        if (response.data) {
+          console.log(response.data);
+          navigate("/login");
+          setPassword("");
+          setConfirmPassword("");
+          setShowPassword(false);
+        }
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
