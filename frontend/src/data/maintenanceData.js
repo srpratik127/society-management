@@ -80,3 +80,112 @@ export const maintenanceData = [
    
   ];
   
+
+
+  export const otherIncomeData = [
+    {
+      name: "Ganesh Chaturthi",
+      amount: 1500,
+      totalMembers: 12,
+      date: "01/07/2024",
+      dueDate: "10/07/2024",
+      description: "The celebration of Ganesh Chaturthi involves the installation of clay idols of Ganesa in."
+    },
+    {
+      name: "Navratri",
+      amount: 1500,
+      totalMembers: 12,
+      date: "01/07/2024",
+      dueDate: "10/07/2024",
+      description: "The celebration of Navratri involves the installation of clay idols of Durga in Resident."
+    },
+    {
+      name: "Diwali",
+      amount: 1500,
+      totalMembers: 12,
+      date: "01/07/2024",
+      dueDate: "10/07/2024",
+      description: "The celebration of Diwali involves the installation of clay idols of Ganesa in."
+    },
+    
+  ];
+
+  export const ExpanceData = [
+    {
+      title:"Rent or Mortgage",
+      Description:"A visual representation of your spending categories...",
+      date:"10/02/2024",
+      amount:"1000",
+      bill_format:"JPG",
+    },
+    {
+      title:"Rent or Mortgage",
+      Description:"A visual representation of your spending categories...",
+      date:"10/02/2024",
+      amount:"1000",
+      bill_format:"PDF",
+    },
+    {
+      title:"Rent or Mortgage",
+      Description:"A visual representation of your spending categories...",
+      date:"10/02/2024",
+      amount:"1000",
+      bill_format:"JPG",
+    },
+    {
+      title:"Rent or Mortgage",
+      Description:"A visual representation of your spending categories...",
+      date:"10/02/2024",
+      amount:"1000",
+      bill_format:"PDF",
+    },
+    {
+      title:"Rent or Mortgage",
+      Description:"A visual representation of your spending categories...",
+      date:"10/02/2024",
+      amount:"1000",
+      bill_format:"JPG",
+    },
+    {
+      title:"Rent or Mortgage",
+      Description:"A visual representation of your spending categories...",
+      date:"10/02/2024",
+      amount:"1000",
+      bill_format:"PDF",
+    },
+    {
+      title:"Rent or Mortgage",
+      Description:"A visual representation of your spending categories...",
+      date:"10/02/2024",
+      amount:"1000",
+      bill_format:"JPG",
+    },
+    {
+      title:"Rent or Mortgage",
+      Description:"A visual representation of your spending categories...",
+      date:"10/02/2024",
+      amount:"1000",
+      bill_format:"PDF",
+    },
+    {
+      title:"Rent or Mortgage",
+      Description:"A visual representation of your spending categories...",
+      date:"10/02/2024",
+      amount:"1000",
+      bill_format:"JPG",
+    },
+    {
+      title:"Rent or Mortgage",
+      Description:"A visual representation of your spending categories...",
+      date:"10/02/2024",
+      amount:"1000",
+      bill_format:"PDF",
+    },
+    {
+      title:"Rent or Mortgage",
+      Description:"A visual representation of your spending categories...",
+      date:"10/02/2024",
+      amount:"1000",
+      bill_format:"PDF",
+    },
+  ]
