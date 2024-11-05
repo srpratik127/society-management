@@ -35,7 +35,7 @@ app.use('/society', SocietyRouter);
 app.use('/forgetpassword', forgetPassword);  
 app.use('/api/complaints', complaintRoutes);
 app.use('/api/numbers', importantNumRoutes);
-app.use('/api/owners', ownerRoutes);
+app.use('/api/resident', ownerRoutes);
 app.use('/maintenance', maintenance);  
 
 const port = process.env.PORT || 5000;  
