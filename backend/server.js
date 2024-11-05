@@ -32,11 +32,11 @@ app.get("/", (req, res) => {
 
 app.use('/users', userRouter);  
 app.use('/society', SocietyRouter);  
-app.use('/forgetpassword', forgetPassword);  
+app.use('/forgetpassword', forgetPassword);
 app.use('/api/complaints', complaintRoutes);
 app.use('/api/numbers', importantNumRoutes);
 app.use('/api/owners', ownerRoutes);
-app.use('/maintenance', maintenance);  
+app.use('/api/maintenance', maintenance);
 
 const port = process.env.PORT || 5000;  
 app.listen(port, () => {
