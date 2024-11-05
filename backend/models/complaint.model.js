@@ -32,6 +32,11 @@ const complaintSchema = new mongoose.Schema(
       enum: ["Open", "Pending", "Solve"],
       default: "Open",
     },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
   },
   { timestamps: true }
 );

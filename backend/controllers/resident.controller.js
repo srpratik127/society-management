@@ -1,4 +1,4 @@
-const Owner = require('../models/resident.model');
+const Resident = require('../models/resident.model');
 
 const createOwner = async (req, res) => {
   try {
@@ -51,8 +51,40 @@ const getOwnerById = async (req, res) => {
   }
 };
 
+const vacateflat = async (req, res) => {
+  try {
+    const owner = await Owner.findById(req.params.id);
+
+    if (!owner) {
+      return res.status(404).json({
+        success: false,
+        message: 'Owner not found',
+      });
+    }
+    owner.residenceStatus = 'Vacate';
+    await owner.save();
+    const responseData = {
+      wing: owner.wing,
+      unit: owner.unit,
+      residenceStatus: owner.residenceStatus,
+    };
+    res.status(200).json({
+      success: true,
+      message: 'Unit marked as vacant',
+      data: responseData, 
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+
 module.exports = {
   createOwner,
   getOwners,
   getOwnerById,
+  vacateflat
 };
