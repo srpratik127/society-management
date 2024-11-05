@@ -3,12 +3,15 @@ import { ComplaintList } from "../../data/admindashbord";
 import ViewComplain from "../models/ViewComplain";
 import EditComplaint from "../models/EditComplaint";
 import axios from "axios";
+import DeleteModel from "../models/DeleteModel";
 
 const ComplainTable = () => {
   const [openViewComplain, setOpenViewComplain] = useState(false);
   const [openEditComplain, setOpenEditComplain] = useState(false);
+  const [openDeleteComplain, setOpenDeleteComplain] = useState(false);
   const [selectedComplain, setSelectedComplain] = useState({});
   const [complainList, setComplainList] = useState([]);
+  const [complainToDelete, setComplainToDelete] = useState(null);
 
   useEffect(() => {
     const fetchComplainList = async () => {
@@ -33,6 +36,16 @@ const ComplainTable = () => {
   const editComplains = (complaint) => {
     setOpenEditComplain(true);
     setSelectedComplain(complaint);
+  };
+
+  const handleDelete = async () => {
+    await axios.delete(
+      `${process.env.REACT_APP_BASE_URL}/api/complaints/${complainToDelete}`
+    );
+    setComplainList((prev) =>
+      prev.filter((complain) => complain._id !== complainToDelete)
+    );
+    setOpenDeleteComplain(false);
   };
   return (
     <div className="bg-white rounded-lg px-4 pt-2 w-full shadow">
@@ -123,7 +136,13 @@ const ComplainTable = () => {
                         className="h-7 w-7 cursor-pointer"
                       />
                     </button>
-                    <button className="p-1 rounded-xl text-red-600">
+                    <button
+                      className="p-1 rounded-xl text-red-600"
+                      onClick={() => {
+                        setComplainToDelete(complaint._id);
+                        setOpenDeleteComplain(true);
+                      }}
+                    >
                       <img
                         src="/assets/delete.svg"
                         alt="Delete Icon"
@@ -154,6 +173,17 @@ const ComplainTable = () => {
         <EditComplaint
           closePopup={() => setOpenEditComplain(false)}
           selectedComplain={selectedComplain}
+          setComplainList={setComplainList}
+        />
+      )}
+      {openDeleteComplain && (
+        <DeleteModel
+          closePopup={() => setOpenDeleteComplain(false)}
+          onDelete={handleDelete}
+          message={{
+            title: "Delete Complain?",
+            sms: "Are you sure you want to delate this complain?",
+          }}
         />
       )}
     </div>
