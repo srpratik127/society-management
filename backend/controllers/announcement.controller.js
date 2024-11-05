@@ -19,10 +19,8 @@ const createAnnouncement = async (req, res) => {
 const getAnnouncement = async (req, res) => {
     try {
         const data = await Announcement.find();
-        console.log(data);
         res.status(200).json(data)        
     } catch (error) {
-        console.log("Get Announcement controller error");
         res.status(500).json({ message: 'Get Announcement controller error' })
     }
 };
