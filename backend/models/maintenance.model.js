@@ -1,7 +1,12 @@
 const mongoose = require('mongoose');
 
 const maintenance = new mongoose.Schema({
-  anount: {
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
+  amount: {
     type: Number
   },
   penaltyAmount: {

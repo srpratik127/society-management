@@ -25,6 +25,8 @@ const complaintRoutes = require("./routes/complaint.route.js");
 const importantNumRoutes = require("./routes/importantnum.route.js");
 const forgetPassword = require("./routes/forgetPass.route.js");
 const maintenance = require("./routes/maintenance.route.js");
+const announcement = require("./routes/announcement.route.js");
+const activity = require("./routes/activity.route.js");
 
 app.get("/", (req, res) => {
   res.send("Welcome...!!");
@@ -32,11 +34,14 @@ app.get("/", (req, res) => {
 
 app.use('/users', userRouter);  
 app.use('/society', SocietyRouter);  
-app.use('/forgetpassword', forgetPassword);  
+app.use('/forgetpassword', forgetPassword);
 app.use('/api/complaints', complaintRoutes);
 app.use('/api/numbers', importantNumRoutes);
+app.use('/api/owners', ownerRoutes);
+app.use('/api/maintenance', maintenance);
 app.use('/api/resident', ownerRoutes);
-app.use('/maintenance', maintenance);  
+app.use('/api/announcement', announcement);  
+app.use('/api/activity', activity);  
 
 const port = process.env.PORT || 5000;  
 app.listen(port, () => {

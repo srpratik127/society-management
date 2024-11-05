@@ -1,47 +1,58 @@
-const Maintenance = require('../models/maintenance.model')
+const Maintenance = require('../models/maintenance.model');
+const User = require('../models/user.model');
 
 const addMaintenance = async (req, res) => {
     try {
-        const { anount, penaltyAmount, dueDate, penaltyDay, status } = req.body; 
-        const maintenence = new Maintenance({
-            anount,
-            penaltyAmount,
-            dueDate,
-            penaltyDay,
-            status
-        });
-        await maintenence.save();
-        res.status(200).json({ message: 'Maintenence created successfully' });
+      const { amount, penaltyAmount, dueDate, penaltyDay } = req.body;
+  
+      const users = await User.find();
+  
+      const maintenanceRecords = users.map((user) => ({
+        user: user._id,
+        amount,
+        penaltyAmount,
+        dueDate,
+        penaltyDay,
+        status: 'pending',
+      }));
+  
+      await Maintenance.insertMany(maintenanceRecords);
+  
+      res.status(200).json({ message: 'Maintenance records created for all users' });
     } catch (error) {
-        res.status(500).json({ message: 'Error creating Maintenence', error: error.message });
+      res.status(500).json({ message: 'Error creating maintenance records', error: error.message });
     }
-}
+  };
 
-const getStatus = async (req, res) => {
+  const getStatus = async (req, res) => {
     try {
         const status = req.params.status;
-        if (status == 'pending' || status == 'done') {
-            const response = await Maintenance.find({ status : status });
-            res.status(200).json(response)
+        if (status === 'pending' || status === 'done') {
+            const response = await Maintenance.find({ status })
+                .populate('user', 'firstname lastname profile_picture')
+                .exec();
+            res.status(200).json(response);
         } else {
-            res.status(404).json({ message: 'Get status error' })
-            console.log("Get status error");
+            res.status(404).json({ message: 'Invalid status value' });
+            console.log("Invalid status value");
         }
     } catch (error) {
-        console.log("Get status controller error");
-        res.status(404).json({ message: 'Get status controller error' })
+        console.log("Get status controller error:", error);
+        res.status(500).json({ message: 'Error fetching status data', error: error.message });
     }
-}
+};
 
 const getAllStatus = async (req, res) => {
     try {
-        const allMaintenance = await Maintenance.find();
-        res.status(200).json(allMaintenance)
+        const allMaintenance = await Maintenance.find()
+            .populate('user', 'firstname lastname profile_picture')
+            .exec();
+        res.status(200).json(allMaintenance);
     } catch (error) {
-        console.log("Get allMaintenance Errer", error);
-        res.status(404).json({ message: 'Get allMaintenance controller error' })
+        console.log("Get all maintenance error:", error);
+        res.status(500).json({ message: 'Error fetching all maintenance data', error: error.message });
     }
-}
+};
 
 module.exports = {
     addMaintenance,

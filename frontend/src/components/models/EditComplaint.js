@@ -1,6 +1,7 @@
+import axios from "axios";
 import React, { useState } from "react";
 
-const EditComplaint = ({ closePopup, selectedComplain }) => {
+const EditComplaint = ({ closePopup, selectedComplain, setComplainList }) => {
   const [complainerName, setComplainerName] = useState(
     selectedComplain.complainerName
   );
@@ -13,17 +14,29 @@ const EditComplaint = ({ closePopup, selectedComplain }) => {
   const [priority, setPriority] = useState(selectedComplain.priority);
   const [status, setStatus] = useState(selectedComplain.status);
 
-  const handleSave = () => {
-    console.log("Saving edited complaint:", {
-      complainerName,
-      complaintName,
-      description,
-      wing,
-      unit,
-      priority,
-      status,
-    });
-    closePopup();
+  const handleSave = async () => {
+    try {
+      const response = await axios.put(
+        `${process.env.REACT_APP_BASE_URL}/api/complaints/${selectedComplain._id}`,
+        {
+          complainerName,
+          complaintName,
+          description,
+          wing,
+          unit,
+          priority,
+          status,
+        }
+      );
+      setComplainList((prev) =>
+        prev.map((complaint) =>
+          complaint._id === selectedComplain._id ? response.data.data : complaint
+        )
+      );
+      closePopup();
+    } catch (error) {
+      console.error("Error saving edited complaint:", error);
+    }
   };
 
   return (
