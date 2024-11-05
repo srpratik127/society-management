@@ -4,10 +4,10 @@ function AddOwner() {
     const [view, setView] = useState("Owner");
     const [files, setFiles] = useState({});
     const [selectedImage, setSelectedImage] = useState(null);
-    const [members, setMembers] = useState(1);  // State to keep track of the selected number of members
-    const [memberDetails, setMemberDetails] = useState([{}]); // State to hold details of each member
-    const [vehicleCount, setVehicleCount] = useState(1); // Initial vehicle count
-    const [vehicles, setVehicles] = useState([{ type: '', name: '', number: '' }]); // Initial vehicle details
+    const [members, setMembers] = useState(1); 
+    const [memberDetails, setMemberDetails] = useState([{}]);
+    const [vehicleCount, setVehicleCount] = useState(1); 
+    const [vehicles, setVehicles] = useState([{ type: '', name: '', number: '' }]); 
 
     const handleFileChange = (event, key) => {
         const selectedFile = event.target.files[0];

@@ -38,7 +38,7 @@ const ImportantNumber = ({ closePopup, initialData, setImportantNumbers }) => {
       try {
         if (initialData) {
           const response = await axios.put(
-            `${process.env.REACT_APP_BASE_URL}/api/important-number/numbers/${initialData._id}`,
+            `${process.env.REACT_APP_BASE_URL}/api/numbers/${initialData._id}`,
             {
               fullName: formData.fullName,
               phoneNumber: formData.phoneNumber,
@@ -52,7 +52,7 @@ const ImportantNumber = ({ closePopup, initialData, setImportantNumbers }) => {
           });
         } else {
           const response = await axios.post(
-            `${process.env.REACT_APP_BASE_URL}/api/important-number/numbers`,
+            `${process.env.REACT_APP_BASE_URL}/api/numbers`,
             {
               fullName: formData.fullName,
               phoneNumber: formData.phoneNumber,
