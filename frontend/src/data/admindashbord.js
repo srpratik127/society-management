@@ -22,123 +22,12 @@ export const DashbordCards = [
   },
   {
     id: "4",
-    title: "Total Expense",
+    title: "Total Unit",
     amount: "20,550",
     icon: "/assets/building-4.svg",
     color: "#F59BE1",
   },
 ];
-
-// export const PendingMaintenance = [
-//   {
-//     img: "Ellipse 1091.png",
-//     name: "Roger Lubin",
-//     panding: "2 Month Pending ",
-//     pandingamount: "5,000",
-//   },
-//   {
-//     img: "Ellipse 1091-1.png",
-//     name: "Roger Lubin",
-//     panding: "2 Month Pending ",
-//     pandingamount: "5,000",
-//   },
-//   {
-//     img: "Ellipse 1091-2.png",
-//     name: "Roger Lubin",
-//     panding: "2 Month Pending ",
-//     pandingamount: "5,000",
-//   },
-//   {
-//     img: "Ellipse 1091-3.png",
-//     name: "Roger Lubin",
-//     panding: "2 Month Pending ",
-//     pandingamount: "5,000",
-//   },
-//   {
-//     img: "Ellipse 1091-4.png",
-//     name: "Roger Lubin",
-//     panding: "2 Month Pending ",
-//     pandingamount: "5,000",
-//   },
-//   {
-//     img: "Ellipse 1091-5.png",
-//     name: "Roger Lubin",
-//     panding: "2 Month Pending ",
-//     pandingamount: "5,000",
-//   },
-//   {
-//     img: "Ellipse 1091.png",
-//     name: "Roger Lubin",
-//     panding: "2 Month Pending ",
-//     pandingamount: "5,000",
-//   },
-//   {
-//     img: "Ellipse 1091-1.png",
-//     name: "Roger Lubin",
-//     panding: "2 Month Pending ",
-//     pandingamount: "5,000",
-//   },
-//   {
-//     img: "Ellipse 1091-2.png",
-//     name: "Roger Lubin",
-//     panding: "2 Month Pending ",
-//     pandingamount: "5,000",
-//   },
-//   {
-//     img: "Ellipse 1091-3.png",
-//     name: "Roger Lubin",
-//     panding: "2 Month Pending ",
-//     pandingamount: "5,000",
-//   },
-//   {
-//     img: "Ellipse 1091-4.png",
-//     name: "Roger Lubin",
-//     panding: "2 Month Pending ",
-//     pandingamount: "5,000",
-//   },
-//   {
-//     img: "Ellipse 1091-5.png",
-//     name: "Roger Lubin",
-//     panding: "2 Month Pending ",
-//     pandingamount: "5,000",
-//   },
-//   {
-//     img: "Ellipse 1091.png",
-//     name: "Roger Lubin",
-//     panding: "2 Month Pending ",
-//     pandingamount: "5,000",
-//   },
-//   {
-//     img: "Ellipse 1091-1.png",
-//     name: "Roger Lubin",
-//     panding: "2 Month Pending ",
-//     pandingamount: "5,000",
-//   },
-//   {
-//     img: "Ellipse 1091-2.png",
-//     name: "Roger Lubin",
-//     panding: "2 Month Pending ",
-//     pandingamount: "5,000",
-//   },
-//   {
-//     img: "Ellipse 1091-3.png",
-//     name: "Roger Lubin",
-//     panding: "2 Month Pending ",
-//     pandingamount: "5,000",
-//   },
-//   {
-//     img: "Ellipse 1091-4.png",
-//     name: "Roger Lubin",
-//     panding: "2 Month Pending ",
-//     pandingamount: "5,000",
-//   },
-//   {
-//     img: "Ellipse 1091-5.png",
-//     name: "Roger Lubin",
-//     panding: "2 Month Pending ",
-//     pandingamount: "5,000",
-//   },
-// ];
 
 export const ComplaintList = [
   {
@@ -152,56 +41,5 @@ export const ComplaintList = [
     unit: "1222",
     description:
       "Offering, giving, receiving, or soliciting of value to influence the actions of an.",
-  },
-];
-
-export const upcomingactivities = [
-  {
-    eventName: "Society Meeting",
-    time: "8:00 PM to 10:00 PM",
-    date: "24-09-2024",
-    color: "orange",
-  },
-  {
-    eventName: "Holi Festival",
-    time: "8:00 PM to 10:00 PM",
-    date: "24-09-2024",
-    color: "green",
-  },
-  {
-    eventName: "Ganesh Chaturthi",
-    time: "8:00 PM to 10:00 PM",
-    date: "24-09-2024",
-    color: "blue",
-  },
-  {
-    eventName: "Navratri Festival",
-    time: "8:00 PM to 10:00 PM",
-    date: "24-09-2024",
-    color: "red",
-  },
-  {
-    eventName: "Society Meeting",
-    time: "8:00 PM to 10:00 PM",
-    date: "24-09-2024",
-    color: "orange",
-  },
-  {
-    eventName: "Ganesh Chaturthi",
-    time: "8:00 PM to 10:00 PM",
-    date: "24-09-2024",
-    color: "blue",
-  },
-  {
-    eventName: "Navratri Festival",
-    time: "8:00 PM to 10:00 PM",
-    date: "24-09-2024",
-    color: "red",
-  },
-  {
-    eventName: "Society Meeting",
-    time: "8:00 PM to 10:00 PM",
-    date: "24-09-2024",
-    color: "orange",
   },
 ];
