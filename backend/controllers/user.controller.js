@@ -1,6 +1,9 @@
 const User = require("../models/user.model");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const Resident = require("../models/resident.model");
+const cloudinary = require('../utils/cloudinary');
+const fs = require('fs');
 
 const Register = async (req, res) => {
   try {
@@ -51,7 +54,11 @@ const Register = async (req, res) => {
 const Login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      user = await Resident.findOne({ email });
+    }
     if (!user) {
       return res.status(400).json({ msg: "email not exists" });
     }
@@ -84,9 +91,23 @@ const updateUser = async (req, res) => {
       state,
       city,
       select_society,
-      profile_picture,
+      profile_picture, 
     } = req.body;
-
+    let profilePictureUrl = profile_picture;
+    if (req.file) {
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: "profile_pictures", 
+      });
+      profilePictureUrl = result.secure_url;
+    }
+    fs.unlink(req.file.path, (err) => {
+      if (err) {
+        console.error("Error deleting the file:", err);
+      } else {
+        console.log("File deleted successfully");
+      }
+    });
+    
     const updatedUser = await User.findByIdAndUpdate(
       id,
       {
@@ -98,7 +119,7 @@ const updateUser = async (req, res) => {
         state,
         city,
         select_society,
-        profile_picture,
+        profile_picture: profilePictureUrl, 
       },
       { new: true, runValidators: true }
     );
@@ -109,11 +130,9 @@ const updateUser = async (req, res) => {
     const token = jwt.sign(
       { user: userWithoutPassword },
       process.env.JWT_SECRET,
-      { expiresIn: "30d" }
+      { expiresIn: "30d" } 
     );
-    res
-      .status(200)
-      .json({ msg: "User updated successfully", user: updatedUser, token });
+    res.status(200).json({ msg: "User updated successfully", user: updatedUser, token });
   } catch (error) {
     console.error("Error updating user:", error.message);
     res.status(500).json({ msg: "Server error" });
