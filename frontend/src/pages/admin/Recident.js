@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import { residents } from "../../data/residentdata";
 import ResidenceStatus from "../../components/models/ResidenceStatus";
+import { useNavigate } from "react-router-dom"; 
+
 
 const Resident = () => {
+  const navigate = useNavigate(); 
   const [showPopup, setShowPopup] = useState(false);
   const [selectedResident, setSelectedResident] = useState(null);
 
@@ -23,9 +26,12 @@ const Resident = () => {
           <h2 className="text-xl font-bold mb-4">
             Resident Tenant and Owner Details
           </h2>
-          <button className="bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white font-bold py-2 px-4 rounded mb-4 flex">
+          <button
+            className="bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white font-bold py-2 px-4 rounded mb-4 flex"
+            onClick={() => navigate('/admin/add-resident')} 
+          >
             <span className="pr-2">
-              <img src="/assets/add-square.svg" />
+              <img src="/assets/add-square.svg" alt="Add" />
             </span>
             Add New Resident Details
           </button>
@@ -60,14 +66,16 @@ const Resident = () => {
                       {resident.name}
                     </>
                   ) : (
-                  <>
-                    <span className="mr-2">
-                          <img src="/assets/empty.png"
-                            alt="Empty Avatar"
-                            className="h-8 w-8"/>
-                        </span>
-                    <span>-</span>
-                  </>
+                    <>
+                      <span className="mr-2">
+                        <img
+                          src="/assets/empty.png"
+                          alt="Empty Avatar"
+                          className="h-8 w-8"
+                        />
+                      </span>
+                      <span>-</span>
+                    </>
                   )}
                 </td>
                 <td className="text-center">
@@ -79,10 +87,11 @@ const Resident = () => {
                 <td className="py-2 flex justify-center text-center">
                   {resident.unitStatus !== "-" ? (
                     <span
-                      className={`flex items-center ${resident.unitStatus === "Occupied"
+                      className={`flex items-center ${
+                        resident.unitStatus === "Occupied"
                           ? "text-[#14B8A6] font-semibold py-2 px-3 rounded-full bg-[#ECFFFF]"
                           : "text-[#9333EA] font-semibold py-2 px-3 rounded-full bg-[#FFF6FF]"
-                        }`}
+                      }`}
                     >
                       <img
                         src={
@@ -106,10 +115,11 @@ const Resident = () => {
                 <td className="text-center">
                   {resident.residentStatus !== "--" ? (
                     <span
-                      className={`flex items-center justify-center ${resident.residentStatus === "Tenant"
+                      className={`flex items-center justify-center ${
+                        resident.residentStatus === "Tenant"
                           ? "text-[#EC4899] font-semibold py-2 px-4 rounded-full bg-[#ECFFFF]"
                           : "text-[#4F46E5] font-semibold py-2 px-4 rounded-full bg-[#FFF6FF]"
-                        }`}
+                      }`}
                     >
                       <img
                         src={
@@ -176,7 +186,7 @@ const Resident = () => {
         </table>
       </div>
 
-      {showPopup && <ResidenceStatus resident={selectedResident} onClose={closePopup}/>}
+      {showPopup && <ResidenceStatus resident={selectedResident} onClose={closePopup} />}
     </div>
   );
 };
