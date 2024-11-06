@@ -1,4 +1,4 @@
-export const AddOwnerValidateFields = (mainUser, memberDetails, vehicles, setErrors) => {
+export const AddOwnerValidateFields = (mainUser, files, setErrors) => {
     const newErrors = {};
 
     if (!mainUser.fullName) newErrors.fullName = 'Full Name is required';
@@ -14,17 +14,10 @@ export const AddOwnerValidateFields = (mainUser, memberDetails, vehicles, setErr
     if (!mainUser.unit) newErrors.unit = 'Unit is required';
     if (!mainUser.relation) newErrors.relation = 'Relation is required';
 
-    memberDetails.forEach((member, index) => {
-        if (!member.name) newErrors[`memberName${index}`] = `Member ${index + 1} Full Name is required`;
-        if (!member.phone) newErrors[`memberPhone${index}`] = `Member ${index + 1} Phone is required`;
-        if (member.phone && !/^\d{10}$/.test(member.phone)) newErrors[`memberPhone${index}`] = `Member ${index + 1} Phone must be a valid number`;
-        if (!member.email || !/\S+@\S+\.\S+/.test(member.email)) newErrors[`memberEmail${index}`] = `Member ${index + 1} Email is invalid`;
-    });
-
-    vehicles.forEach((vehicle, index) => {
-        if (!vehicle.type) newErrors[`vehicleType${index}`] = `Vehicle ${index + 1} Type is required`;
-        if (!vehicle.name) newErrors[`vehicleName${index}`] = `Vehicle ${index + 1} Name is required`;
-        if (!vehicle.number) newErrors[`vehicleNumber${index}`] = `Vehicle ${index + 1} Number is required`;
+    const requiredFiles = ['Upload Aadhar Card (Front Side)', 'Upload Aadhar Card (Back Side)', 'Address Proof (Vera Bill OR Light Bill)', 'Rent Agreement'];
+    
+    requiredFiles.forEach((file) => {
+        if (!files[file]) newErrors[file] = `${file} is required`;
     });
 
     setErrors(newErrors);

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { ComplaintList } from "../../data/admindashbord";
 import ViewComplain from "../models/ViewComplain";
 import EditComplaint from "../models/EditComplaint";
 import axios from "axios";

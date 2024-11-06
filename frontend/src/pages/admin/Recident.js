@@ -73,7 +73,7 @@ const Resident = () => {
           <tbody>
             {residents?.map((resident) => (
               <tr key={resident.id} className="border-t mx-auto">
-                <td className="py-4 px-4 flex items-center">
+                <td className="py-4 px-4 flex items-center capitalize">
                   <span className="mr-2">
                     <img
                       src={resident.profile_picture}
