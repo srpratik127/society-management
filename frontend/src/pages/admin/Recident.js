@@ -2,8 +2,11 @@ import React, { useEffect, useState } from "react";
 import ResidenceStatus from "../../components/models/ResidenceStatus";
 import axios from "axios";
 import ViewResident from "../../components/models/ViewResident";
+import { useNavigate } from "react-router-dom"; 
+
 
 const Resident = () => {
+  const navigate = useNavigate(); 
   const [showPopup, setShowPopup] = useState(false);
   const [viewResident, setViewResident] = useState(false);
   const [selectedResident, setSelectedResident] = useState(null);
@@ -42,9 +45,12 @@ const Resident = () => {
           <h2 className="text-xl font-semibold mb-4">
             Resident Tenant and Owner Details
           </h2>
-          <button className="bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white py-2 px-4 rounded mb-4 flex">
+          <button
+            className="bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white font-bold py-2 px-4 rounded mb-4 flex"
+            onClick={() => navigate('/admin/add-resident')} 
+          >
             <span className="pr-2">
-              <img src="/assets/add-square.svg" />
+              <img src="/assets/add-square.svg" alt="Add" />
             </span>
             Add New Resident Details
           </button>
@@ -87,7 +93,7 @@ const Resident = () => {
                   {resident.residenceStatus ? (
                     <span
                       className={`flex items-center ${
-                        resident.residenceStatus === "Occupied"
+                        resident.unitStatus === "Occupied"
                           ? "text-[#14B8A6] font-semibold py-2 px-3 rounded-full bg-[#ECFFFF]"
                           : "text-[#9333EA] font-semibold py-2 px-3 rounded-full bg-[#FFF6FF]"
                       }`}
