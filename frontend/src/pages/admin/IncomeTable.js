@@ -1,11 +1,30 @@
 import React, { useState } from "react";
 import { maintenanceData } from "../../data/maintenanceData";
 import { otherIncomeData } from "../../data/maintenanceData";
+import { Popover } from "@headlessui/react";
+import CreateOtherIncome from "../../components/models/CreateOtherIncome";
+import EditOtherIncome from "../../components/models/EditOtherIncome";
 
 const IncomeTable = () => {
-
   const [view, setView] = useState("maintenance");
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [isCreatePopupOpen, setCreatePopupOpen] = useState(false);
+  const [isEditPopupVisible, setIsEditPopupVisible] = useState(false);  
+  const [selectedItem, setSelectedItem] = useState(null); //123
 
+  const handleEditClick = (item) => {
+    setSelectedItem(item); //123
+    setIsEditPopupVisible(true); 
+  };
+  
+  const handleCreateOtherIncome = () => {
+    setCreatePopupOpen(true);
+  };
+  const handleClosePopup = () => {
+    setCreatePopupOpen(false);
+    setIsEditPopupVisible(false); 
+    setSelectedItem(null); //123
+  };
   return (
     <div className="bg-blue-50 min-h-[100px] p-6 overflow-y-hidden">
       {view === "maintenance" && (
@@ -145,19 +164,56 @@ const IncomeTable = () => {
 
           <div className="mt-6 flex justify-between align-center p-5">
             <h2 className="text-2xl font-bold">Other Income</h2>
-            <button className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 focus:outline-none">
+            <button
+              className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 focus:outline-none"
+              onClick={handleCreateOtherIncome}
+            >
               Create Other Income
             </button>
           </div>
+
+          {isCreatePopupOpen && (
+            <div className="fixed inset-0 flex justify-center items-center z-50 bg-black bg-opacity-50">
+              <CreateOtherIncome onClose={handleClosePopup} />
+            </div>
+          )}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4 rounded-lg">
             {otherIncomeData.map((item, index) => (
               <div key={index} className="border-2 border-[#5678E9] rounded-xl">
 
                 <div className="flex mb-2 py-3 w-full rounded-t-lg px-2 bg-[#5678E9] justify-between">
-                  <h3 className="text-lg font-semibold ">{item.name}</h3>
-                  <button><img src="/assets/3dots.svg" alt="options" /></button>
+                  <h3 className="text-lg font-semibold">{item.name}</h3>
+                  <Popover className="relative">
+                    <Popover.Button>
+                      <img src="/assets/3dots.svg" alt="options" />
+                    </Popover.Button>
+                    <Popover.Panel className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 z-50">
+                      <div className="py-2">
+                        <button
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                          onClick={handleEditClick(item)} //123
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                          onClick={() => setSelectedOption("View")}
+                        >
+                          View
+                        </button>
+                        <button
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                          onClick={() => setSelectedOption("Delete")}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </Popover.Panel>
+                  </Popover>
                 </div>
+
+                {isEditPopupVisible && <EditOtherIncome onClose={handleClosePopup} />}
 
                 <div className="flex justify-between px-3 py-1">
                   <span className="text-sm text-gray-600">Amount Per Member:</span>
@@ -188,3 +244,4 @@ const IncomeTable = () => {
 };
 
 export default IncomeTable;
+
