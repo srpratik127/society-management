@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import { AddOwnerValidateFields } from '../../utils/validation';
 
-const AddOwner = () => {
+const AddTenant = () => {
+
     const [files, setFiles] = useState({});
     const [selectedImage, setSelectedImage] = useState(null);
     const [members, setMembers] = useState(1);
@@ -10,6 +10,9 @@ const AddOwner = () => {
     const [vehicles, setVehicles] = useState([{ type: '', name: '', number: '' }]);
     const [mainUser, setMainUser] = useState({ fullName: '', phoneNumber: '', email: '', age: '', gender: '', wing: '', unit: '', relation: '' });
     const [errors, setErrors] = useState({});
+    const [OwnerfullName, setOwnerFullName] = useState('');
+    const [OwnerPhone, setOwnerPhone] = useState('');
+    const [OwnerAddress, setOwnerAddress] = useState('');
 
     const handleFileChange = (event, key) => {
         const selectedFile = event.target.files[0];
@@ -37,12 +40,12 @@ const AddOwner = () => {
         if (setter === setVehicleCount) {
             const updatedVehicles = [...vehicles];
             if (count < updatedVehicles.length) {
-                setVehicles(updatedVehicles.slice(0, count)); 
+                setVehicles(updatedVehicles.slice(0, count));
             } else {
                 while (updatedVehicles.length < count) {
                     updatedVehicles.push({ type: '', name: '', number: '' });
                 }
-                setVehicles(updatedVehicles); 
+                setVehicles(updatedVehicles);
             }
         }
     };
@@ -56,12 +59,49 @@ const AddOwner = () => {
     };
 
     const handleSubmit = () => {
-        if (!AddOwnerValidateFields(mainUser,memberDetails,vehicles,setErrors)) return;
         const ownerData = { selectedImage, files, memberDetails, vehicles, mainUser };
         console.log("Owner Data:", ownerData);
     };
     return (
         <div className="justify-center bg-gray-100 px-8 text-sm">
+            <div className="flex flex-wrap justify-between items-center bg-white p-4 rounded-xl mb-2 shadow space-y-4 md:space-y-0">
+                <div className="w-full md:w-1/3 px-2">
+                    <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-1">
+                        Owner Full Name*
+                    </label>
+                    <input
+                        type="text"
+                        id="fullName"
+                        placeholder="Enter Full Name"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        onChange={(e) => setOwnerFullName(e.target.value)}
+                    />
+                </div>
+                <div className="w-full md:w-1/3 px-2">
+                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                        Owner Phone*
+                    </label>
+                    <input
+                        type="text"
+                        id="phone"
+                        placeholder="+91"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        onChange={(e) => setOwnerPhone(e.target.value)}
+                    />
+                </div>
+                <div className="w-full md:w-1/3 px-2">
+                    <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
+                        Owner Address*
+                    </label>
+                    <input
+                        type="text"
+                        id="address"
+                        placeholder="Enter Address"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        onChange={(e) => setOwnerAddress(e.target.value)}
+                    />
+                </div>
+            </div>
             <div className="bg-white rounded-lg shadow w-full p-4">
                 <div className='flex justify-between gap-4'>
                     <div className="flex flex-col mt-3 items-center">
@@ -73,8 +113,7 @@ const AddOwner = () => {
                             Upload Photo
                         </label>
                     </div>
-
-                    <div className="grid grid-cols-4 gap-3 w-full"> 
+                    <div className="grid grid-cols-4 gap-3 w-full">
                         {['Full Name', 'Phone Number', 'Email Address', 'Age', 'Gender', 'Wing', 'Unit', 'Relation'].map((label, index) => {
                             const keys = ['fullName', 'phoneNumber', 'email', 'age', 'gender', 'wing', 'unit', 'relation'];
                             const isSelect = label === 'Gender';
@@ -140,7 +179,7 @@ const AddOwner = () => {
                                 <div className="flex flex-col" key={idx}>
                                     <label className="text-gray-700 font-semibold mb-1">{label}</label>
                                     {label === 'Gender' ? (
-                                        <select className={`border ${errors[`memberGender${index}`] ? 'border-red-500' : 'border-gray-300'} rounded-lg p-2`} onChange={(e) => handleDetailChange(setMemberDetails, index, 'gender', e.target.value)}>
+                                        <select className="border border-gray-300 rounded-lg p-2" onChange={(e) => handleDetailChange(setMemberDetails, index, 'gender', e.target.value)}>
                                             <option>Select Gender</option>
                                             <option>Male</option>
                                             <option>Female</option>
@@ -149,51 +188,49 @@ const AddOwner = () => {
                                     ) : (
                                         <input
                                             type={label === 'Age' ? 'number' : label === 'Email' ? 'email' : 'text'}
-                                            className={`border ${errors[`member${label.replace(' ', '')}${index}`] ? 'border-red-500' : 'border-gray-300'} rounded-lg p-2`}
-                                            placeholder={`Enter ${label}`}
-                                            value={memberDetails[index][label === 'Full Name' ? 'name' : label.toLowerCase()]}
-                                            onChange={(e) => handleDetailChange(setMemberDetails, index, label === 'Full Name' ? 'name' : label.toLowerCase(), e.target.value)}
+                                            className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:border-blue-500"
+                                            placeholder={label}
+                                            onChange={(e) => handleDetailChange(setMemberDetails, index, label === 'Full Name' ? 'name' : label === 'Phone No' ? 'phone' : label === 'Email' ? 'email' : label === 'Age' ? 'age' : 'relation', e.target.value)}
                                         />
                                     )}
-                                    {errors[`member${label.replace(' ', '')}${index}`] && <p className="text-red-500 text-sm">{errors[`member${label.replace(' ', '')}${index}`]}</p>}
-                                </div>
-                            ))}
-                        </div>
-                    ))}
-                </div>
-                <div className='flex flex-col md:items-center gap-4'>
-                    <div className="flex flex-col md:flex-row justify-between w-full items-center border-b-2 py-2 gap-4">
-                        <p className="text-gray-700 font-semibold py-2">Vehicles Count</p>
-                        <div className='flex justify-center align-center'>
-                            <p className='flex items-center px-2'>Select Vehicles</p>
-                            <select className="border border-gray-300 rounded-lg p-2" value={vehicleCount} onChange={(e) => handleCountChange(setVehicleCount, parseInt(e.target.value, 10))}>
-                                {[1, 2, 3, 4, 5].map(num => <option key={num} value={num}>{num}</option>)}
-                            </select>
-                        </div>
-                    </div>
-                    {Array.from({ length: vehicleCount }).map((_, index) => (
-                        <div key={index} className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-2">
-                            {['Vehicle Type', 'Vehicle Name', 'Vehicle Number'].map((label, idx) => (
-                                <div className="flex flex-col" key={idx}>
-                                    <label className="text-gray-700 font-semibold mb-1">{label}</label>
-                                    <input
-                                        type="text"
-                                        className={`border ${errors[`vehicle${label.replace(' ', '')}${index}`] ? 'border-red-500' : 'border-gray-300'} rounded-lg p-2`}
-                                        placeholder={`Enter ${label}`}
-                                        value={vehicles[index][label === 'Vehicle Type' ? 'type' : label === 'Vehicle Name' ? 'name' : 'number']}
-                                        onChange={(e) => handleDetailChange(setVehicles, index, label === 'Vehicle Type' ? 'type' : label === 'Vehicle Name' ? 'name' : 'number', e.target.value)}
-                                    />
-                                    {errors[`vehicle${label.replace(' ', '')}${index}`] && <p className="text-red-500 text-sm">{errors[`vehicle${label.replace(' ', '')}${index}`]}</p>}
                                 </div>
                             ))}
                         </div>
                     ))}
                 </div>
             </div>
-            <div className="flex justify-end mt-4">
-                <button onClick={handleSubmit} className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Submit</button>
+            <div className="bg-white p-4 mt-2 rounded-lg shadow">
+                <div className='flex justify-between items-center'>
+                    <label className="text-gray-700 font-semibold flex items-center">Vehicle Counting:</label>
+                    <div className="flex justify-between items-center mt-2 mb-4">
+                        <p className="text-gray-500 items-center px-3">Select Vehicle</p>
+                        <select className="border border-gray-300 rounded-lg p-2" value={vehicleCount} onChange={(e) => handleCountChange(setVehicleCount, parseInt(e.target.value, 10))}>
+                            {[1, 2, 3, 4, 5].map(num => <option key={num} value={num}>{num}</option>)}
+                        </select>
+                    </div>
+                </div>
+                {vehicles.map((vehicle, index) => (
+                    <div key={index} className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
+                        {['Vehicle Type', 'Vehicle Name', 'Vehicle Number'].map((label, idx) => (
+                            <div key={idx} className="flex flex-col">
+                                <label className="text-gray-700 font-semibold mb-1">{label}</label>
+                                <input
+                                    type="text"
+                                    placeholder={label}
+                                    className="border border-gray-300 rounded-lg p-2"
+                                    value={vehicle[label === 'Vehicle Type' ? 'type' : label === 'Vehicle Name' ? 'name' : 'number']}
+                                    onChange={(e) => handleDetailChange(setVehicles, index, label === 'Vehicle Type' ? 'type' : label === 'Vehicle Name' ? 'name' : 'number', e.target.value)}
+                                />
+                            </div>
+                        ))}
+                    </div>
+                ))}
+            </div>
+            <div className="mt-6 flex justify-end space-x-4">
+                <button className="bg-white border hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-lg">Back</button>
+                <button onClick={handleSubmit} className="bg-gray-300  text-black font-bold py-2 px-4 rounded-lg">create</button>
             </div>
         </div>
     );
 }
-export default AddOwner
+export default AddTenant
