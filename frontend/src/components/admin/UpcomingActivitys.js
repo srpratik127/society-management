@@ -1,7 +1,33 @@
-import React from "react";
-import { upcomingactivities } from "../../data/admindashbord";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 
 const UpcomingActivitys = () => {
+  const [upcomingactivities, setUpcomingactivities] = useState([]);
+
+  useEffect(() => {
+    const fetchPendingMaintenance = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_BASE_URL}/api/activity`
+        );
+        setUpcomingactivities(response?.data?.data);
+      } catch (err) {
+        console.log(err.message);
+      }
+    };
+
+    fetchPendingMaintenance();
+  }, []);
+
+  const getRandomColor = () => {
+    const letters = "0123456789ABCDEF";
+    let color = "#";
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  };
+
   return (
     <div className="w-full rounded-lg bg-white shadow px-3">
       <div className="flex justify-between items-center p-2 pb-1 mb-1">
@@ -15,28 +41,36 @@ const UpcomingActivitys = () => {
         </div>
       </div>
       <div className="max-h-[225px] overflow-y-auto rounded-b-lg">
-        {upcomingactivities.map((activity, index) => (
-          <div
-            key={index}
-            className="flex justify-between items-center p-1 border-b border-gray-200"
-          >
-            <div className="flex items-center space-x-4">
-              <div
-                className="w-12 h-12 rounded-full"
-                style={{ backgroundColor: activity.color }}
-              />
-              <div className="space-y-1">
-                <span className="block font-medium">{activity.eventName}</span>
-                <span className="block text-gray-500 text-sm">
-                  {activity.time}
-                </span>
+        {upcomingactivities?.length > 0 ? (
+          upcomingactivities.map((activity, index) => (
+            <div
+              key={index}
+              className="flex justify-between items-center p-1 border-b border-gray-200"
+            >
+              <div className="flex items-center space-x-4">
+                <div
+                  className="w-12 h-12 rounded-full text-center text-xl leading-[3rem]"
+                  style={{ backgroundColor: getRandomColor() }}
+                >
+                  {activity.title?.charAt(0).toUpperCase()}
+                </div>
+                <div className="space-y-1">
+                  <span className="block font-medium">{activity.title}</span>
+                  <span className="block text-gray-500 text-sm">
+                    {activity.startTime} To {activity.endTime}
+                  </span>
+                </div>
+              </div>
+              <div className="text-gray-500 font-semibold text-sm">
+                {activity.date.slice(0, 10)}
               </div>
             </div>
-            <div className="text-gray-500 font-semibold text-sm">
-              {activity.date}
-            </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <p className="text-gray-500 select-none text-center py-4 leading-[149px]">
+            No Data found.
+          </p>
+        )}
       </div>
     </div>
   );
