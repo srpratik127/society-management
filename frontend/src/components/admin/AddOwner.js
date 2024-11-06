@@ -37,12 +37,12 @@ const AddOwner = () => {
         if (setter === setVehicleCount) {
             const updatedVehicles = [...vehicles];
             if (count < updatedVehicles.length) {
-                setVehicles(updatedVehicles.slice(0, count)); 
+                setVehicles(updatedVehicles.slice(0, count));
             } else {
                 while (updatedVehicles.length < count) {
                     updatedVehicles.push({ type: '', name: '', number: '' });
                 }
-                setVehicles(updatedVehicles); 
+                setVehicles(updatedVehicles);
             }
         }
     };
@@ -56,7 +56,7 @@ const AddOwner = () => {
     };
 
     const handleSubmit = () => {
-        if (!AddOwnerValidateFields(mainUser,memberDetails,vehicles,setErrors)) return;
+        if (!AddOwnerValidateFields(mainUser,memberDetails,vehicles, setErrors)) return;
         const ownerData = { selectedImage, files, memberDetails, vehicles, mainUser };
         console.log("Owner Data:", ownerData);
     };
@@ -74,7 +74,7 @@ const AddOwner = () => {
                         </label>
                     </div>
 
-                    <div className="grid grid-cols-4 gap-3 w-full"> 
+                    <div className="grid grid-cols-4 gap-3 w-full">
                         {['Full Name', 'Phone Number', 'Email Address', 'Age', 'Gender', 'Wing', 'Unit', 'Relation'].map((label, index) => {
                             const keys = ['fullName', 'phoneNumber', 'email', 'age', 'gender', 'wing', 'unit', 'relation'];
                             const isSelect = label === 'Gender';
@@ -93,7 +93,7 @@ const AddOwner = () => {
                                     ) : (
                                         <input
                                             type={label === 'Age' ? 'number' : 'text'}
-                                            className={`border ${errors[keys[index]] ? 'border-red-500' : 'border-gray-300'} rounded-lg p-2`}
+                                            className={`border ${errors[keys[index]] ? 'border-red-500' : 'border-gray-300'} rounded-lg p-2 focus:outline-none`}
                                             placeholder={`Enter ${label}`}
                                             value={mainUser[keys[index]]}
                                             onChange={(e) => setMainUser({ ...mainUser, [keys[index]]: e.target.value })}
@@ -135,7 +135,7 @@ const AddOwner = () => {
                         </div>
                     </div>
                     {Array.from({ length: members }).map((_, index) => (
-                        <div key={index} className="grid grid-cols-1 md:grid-cols-6 gap-6 mt-2">
+                        <div key={index} className="grid grid-cols-1 md:grid-cols-6 gap-6 w-full mt-2">
                             {['Full Name', 'Phone No', 'Email', 'Age', 'Gender', 'Relation'].map((label, idx) => (
                                 <div className="flex flex-col" key={idx}>
                                     <label className="text-gray-700 font-semibold mb-1">{label}</label>
@@ -149,7 +149,7 @@ const AddOwner = () => {
                                     ) : (
                                         <input
                                             type={label === 'Age' ? 'number' : label === 'Email' ? 'email' : 'text'}
-                                            className={`border ${errors[`member${label.replace(' ', '')}${index}`] ? 'border-red-500' : 'border-gray-300'} rounded-lg p-2`}
+                                            className={`border ${errors[`member${label.replace(' ', '')}${index}`] ? 'border-red-500' : 'border-gray-300'} rounded-lg p-2 focus:outline-none`}
                                             placeholder={`Enter ${label}`}
                                             value={memberDetails[index][label === 'Full Name' ? 'name' : label.toLowerCase()]}
                                             onChange={(e) => handleDetailChange(setMemberDetails, index, label === 'Full Name' ? 'name' : label.toLowerCase(), e.target.value)}
@@ -161,31 +161,45 @@ const AddOwner = () => {
                         </div>
                     ))}
                 </div>
-                <div className='flex flex-col md:items-center gap-4'>
-                    <div className="flex flex-col md:flex-row justify-between w-full items-center border-b-2 py-2 gap-4">
-                        <p className="text-gray-700 font-semibold py-2">Vehicles Count</p>
-                        <div className='flex justify-center align-center'>
-                            <p className='flex items-center px-2'>Select Vehicles</p>
-                            <select className="border border-gray-300 rounded-lg p-2" value={vehicleCount} onChange={(e) => handleCountChange(setVehicleCount, parseInt(e.target.value, 10))}>
-                                {[1, 2, 3, 4, 5].map(num => <option key={num} value={num}>{num}</option>)}
-                            </select>
-                        </div>
-                    </div>
-                    {Array.from({ length: vehicleCount }).map((_, index) => (
-                        <div key={index} className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-2">
-                            {['Vehicle Type', 'Vehicle Name', 'Vehicle Number'].map((label, idx) => (
-                                <div className="flex flex-col" key={idx}>
-                                    <label className="text-gray-700 font-semibold mb-1">{label}</label>
-                                    <input
-                                        type="text"
-                                        className={`border ${errors[`vehicle${label.replace(' ', '')}${index}`] ? 'border-red-500' : 'border-gray-300'} rounded-lg p-2`}
-                                        placeholder={`Enter ${label}`}
-                                        value={vehicles[index][label === 'Vehicle Type' ? 'type' : label === 'Vehicle Name' ? 'name' : 'number']}
-                                        onChange={(e) => handleDetailChange(setVehicles, index, label === 'Vehicle Type' ? 'type' : label === 'Vehicle Name' ? 'name' : 'number', e.target.value)}
-                                    />
-                                    {errors[`vehicle${label.replace(' ', '')}${index}`] && <p className="text-red-500 text-sm">{errors[`vehicle${label.replace(' ', '')}${index}`]}</p>}
-                                </div>
+            </div>
+            <div className="flex flex-col md:items-center gap-4 bg-white p-4 rounded-lg">
+                <div className="flex flex-col md:flex-row justify-between w-full items-center border-b-2 py-2 gap-4">
+                    <p className="text-gray-700 font-semibold py-2">Vehicles Count</p>
+                    <div className="flex justify-center items-center">
+                        <p className="flex items-center px-2">Select Vehicles</p>
+                        <select
+                            className="border border-gray-300 rounded-lg p-2"
+                            value={vehicleCount}
+                            onChange={(e) => handleCountChange(setVehicleCount, parseInt(e.target.value, 10))}
+                        >
+                            {[1, 2, 3, 4, 5].map((num) => (
+                                <option key={num} value={num}>{num}</option>
                             ))}
+                        </select>
+                    </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 w-full gap-4 mt-2">
+                    {Array.from({ length: vehicleCount }).map((_, index) => (
+                        <div key={index} className="border p-4 rounded-lg">
+                            <div className="flex gap-4">
+                                {['Type', 'Name', 'Number'].map((field, idx) => {
+                                    const fieldKey = `vehicle${field}${index}`;
+                                    const valueKey = field.toLowerCase();
+                                    return (
+                                        <div className="flex flex-col w-full" key={idx}>
+                                            <label className="text-gray-700 font-semibold mb-1">Vehicle {field}</label>
+                                            <input
+                                                type="text"
+                                                className={`border ${errors[fieldKey] ? 'border-red-500' : 'border-gray-300'} rounded-lg p-2 w-full`}
+                                                placeholder={`Enter Vehicle ${field}`}
+                                                value={vehicles[index][valueKey]}
+                                                onChange={(e) => handleDetailChange(setVehicles, index, valueKey, e.target.value)}
+                                            />
+                                            {errors[fieldKey] && <p className="text-red-500 text-sm">{errors[fieldKey]}</p>}
+                                        </div>
+                                    );
+                                })}
+                            </div>
                         </div>
                     ))}
                 </div>
