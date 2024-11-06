@@ -1,23 +1,45 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Popover } from "@headlessui/react";
 
 const Navbar = () => {
   const user = useSelector((store) => store.auth.user);
+  const location = useLocation();
+  const pathSegments = location.pathname.split('/').filter(segment => segment);
+
+  const breadcrumb = pathSegments.map((segment, index) => {
+    const formattedSegment = segment.charAt(0).toUpperCase() + segment.slice(1);
+    return (
+      <span key={index}>
+        {index > 0 && " > "}
+        {index === pathSegments.length - 1 ? (
+          <span className="text-gray-500">{formattedSegment}</span>
+        ) : (
+          <Link to={`/${pathSegments.slice(0, index + 1).join('/')}`} className="text-blue-600">
+            {formattedSegment}
+          </Link>
+        )}
+      </span>
+    );
+  });
 
   return (
     <div className="w-full bg-white shadow py-4 px-6 flex items-center justify-between">
-      <div className="flex items-center relative w-1/4">
-        <span className="absolute left-3 text-gray-400">
-          <img src="/assets/search-Bordere.svg" alt="" />
-        </span>
-        <input
-          type="text"
-          placeholder="Search Here"
-          className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-        />
-      </div>
+      {location.pathname === "/admin" ? (
+        <div className="flex items-center relative w-1/4">
+          <span className="absolute left-3 text-gray-400">
+            <img src="/assets/search-Bordere.svg" alt="" />
+          </span>
+          <input
+            type="text"
+            placeholder="Search Here"
+            className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+          />
+        </div>
+      ):(
+        <p>{breadcrumb}</p>
+      )}
 
       <div className="flex items-center space-x-6">
         <Popover className="relative">

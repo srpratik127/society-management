@@ -18,12 +18,12 @@ const ViewComplain = ({ closePopup, selectedComplain }) => {
 
         <div className="flex items-center mb-4">
           <img
-            src={selectedComplain.complainerAvatar}
+            src={selectedComplain.user.profile_picture}
             alt="User Avatar"
             className="w-16 h-16 rounded-full mr-4"
           />
           <div>
-            <h3 className="text-lg font-semibold">
+            <h3 className="text-lg font-semibold capitalize">
               {selectedComplain.complainerName}
             </h3>
             <p className="text-gray-500">{selectedComplain.date}</p>
