@@ -27,6 +27,10 @@ const forgetPassword = require("./routes/forgetPass.route.js");
 const maintenance = require("./routes/maintenance.route.js");
 const announcement = require("./routes/announcement.route.js");
 const activity = require("./routes/activity.route.js");
+const expenseDetailsRoutes = require('./routes/expansesdetails.route.js');
+const notesRoutes = require('./routes/note.route.js');
+const facilitiesRoutes = require('./routes/facility.route.js');
+const requestsRoutes = require('./routes/request.route.js');
 
 app.get("/", (req, res) => {
   res.send("Welcome...!!");
@@ -37,11 +41,16 @@ app.use('/society', SocietyRouter);
 app.use('/forgetpassword', forgetPassword);
 app.use('/api/complaints', complaintRoutes);
 app.use('/api/numbers', importantNumRoutes);
-app.use('/api/owners', ownerRoutes);
+app.use('/api/resident', ownerRoutes);
 app.use('/api/maintenance', maintenance);
 app.use('/api/resident', ownerRoutes);
 app.use('/api/announcement', announcement);  
 app.use('/api/activity', activity);  
+app.use('/api/expenses', expenseDetailsRoutes);
+app.use('/api/notes', notesRoutes);
+app.use('/api/facilities', facilitiesRoutes);
+app.use('/api/requests', requestsRoutes);
+
 
 const port = process.env.PORT || 5000;  
 app.listen(port, () => {

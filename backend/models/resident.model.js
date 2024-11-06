@@ -2,6 +2,20 @@ const mongoose = require("mongoose");
 
 const residentSchema = new mongoose.Schema(
   {
+    societyId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "societies", 
+      required: true, 
+    },
+    ownerfullname: {
+      type: String,
+    },
+    ownerphone: {
+      type: String,
+    },
+    owneraddress: {
+      type: String,
+    },
     fullName: {
       type: String,
       required: true,
@@ -14,6 +28,10 @@ const residentSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
     },
     role: {
       type: String,
