@@ -20,7 +20,22 @@ const incomeSchema = new mongoose.Schema({
     amount: {
         type: Number,
         required: true
-    }
+    },
+    members: [
+        {
+          user: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Resident", 
+            required: true,
+          },
+          paymentDate: {
+            type: String, 
+          },
+          paymentMethod: {
+            type: String, 
+          }
+        }
+      ]
 });
 
 const income = mongoose.model("income", incomeSchema);

@@ -78,7 +78,7 @@ const ComplainTable = () => {
                 <tr key={index} className="border-b">
                   <td className="py-1 px-4 flex items-center space-x-3">
                     <img
-                      src={complaint.user.profile_picture}
+                      src={complaint.user?.profile_picture}
                       alt={complaint.complainerName}
                       className="w-10 h-10 rounded-full"
                     />
