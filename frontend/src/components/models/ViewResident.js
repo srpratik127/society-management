@@ -65,15 +65,15 @@ const ViewResident = ({ onClose, selectResidents }) => {
               <div className="space-y-4 bg-[white] p-4 rounded-xl">
                 <div className="flex justify-between border-b pb-2">
                   <span className="font-medium">Name</span>
-                  <span className="text-[#4F4F4F]">Roger Lubin</span>
+                  <span className="text-[#4F4F4F]">{selectResidents.ownerfullname}</span>
                 </div>
                 <div className="flex justify-between border-b pb-2">
                   <span className="font-medium">Phone</span>
-                  <span className="text-[#4F4F4F]">9123455555</span>
+                  <span className="text-[#4F4F4F]">{selectResidents.ownerphone}</span>
                 </div>
                 <div className="flex justify-between border-b pb-2">
                   <span className="font-medium">Address</span>
-                  <span className="text-[#4F4F4F]">2972 Westheimer Rd. Santa Ana...</span>
+                  <span className="text-[#4F4F4F]">{selectResidents.owneraddress}</span>
                 </div>
               </div>
             </div>

@@ -28,18 +28,3 @@ export const DashbordCards = [
     color: "#F59BE1",
   },
 ];
-
-export const ComplaintList = [
-  {
-    complainerAvatar: "/assets/Avatar.png",
-    complainerName: "Evelyn Harper",
-    complaintName: "Unethical Behavior",
-    date: "33/13/2050",
-    priority: "Medium",
-    status: "Open",
-    wing: "A",
-    unit: "1222",
-    description:
-      "Offering, giving, receiving, or soliciting of value to influence the actions of an.",
-  },
-];

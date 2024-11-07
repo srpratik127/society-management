@@ -37,6 +37,8 @@ function App() {
           <Route path="expense" element={<ExpensesTable />} />
           <Route path="add-resident" element={<AddResident />} />
           <Route path="addexpensesdetails" element={<AddExpensesDetails/>}/>
+          <Route path="edit-resident" element={<AddResident />} />
+          <Route path="viewmaintenancedetails"element={<ViewMaintenanceDetails/>}/>
         </Route>
         <Route path="*" element={<ErrorPage />} />
       </Routes>

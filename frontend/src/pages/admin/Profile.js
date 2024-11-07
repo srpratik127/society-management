@@ -36,7 +36,7 @@ const Profile = () => {
     e.preventDefault();
     try {
       const response = await axios.put(
-        `http://localhost:5000/users/update/${user._id}`,
+        `${process.env.REACT_APP_BASE_URL}/users/update/${user._id}`,
         formData
       );
 
