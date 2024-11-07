@@ -38,6 +38,7 @@ function App() {
           <Route path="resident" element={<Resident />} />
           <Route path="expense" element={<ExpensesTable />} />
           <Route path="add-resident" element={<AddResident />} />
+          <Route path="edit-resident" element={<AddResident />} />
           <Route path="viewmaintenancedetails"element={<ViewMaintenanceDetails/>}/>
         </Route>
         <Route path="*" element={<ErrorPage />} />

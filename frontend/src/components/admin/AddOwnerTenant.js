@@ -2,53 +2,40 @@ import React, { useState } from 'react'
 import { AddOwnerValidateFields } from '../../utils/validation';
 import axios from 'axios';
 
-const AddOwnerTenant = ({role}) => {
-    const [OwnerfullName, setOwnerFullName] = useState('');
-    const [OwnerPhone, setOwnerPhone] = useState('');
-    const [OwnerAddress, setOwnerAddress] = useState('');
+const AddOwnerTenant = ({role, editResident}) => {
+    const [OwnerfullName, setOwnerFullName] = useState(editResident?.ownerfullname || '');
+    const [OwnerPhone, setOwnerPhone] = useState(editResident?.ownerphone || '');
+    const [OwnerAddress, setOwnerAddress] = useState(editResident?.owneraddress || '');
     const [files, setFiles] = useState({});
     const [selectedImage, setSelectedImage] = useState(null);
-    const [members, setMembers] = useState(1);
-    const [memberDetails, setMemberDetails] = useState([{ name: '', phone: '', email: '', age: '', gender: '', relation: '' }]);
-    const [vehicleCount, setVehicleCount] = useState(1);
-    const [vehicles, setVehicles] = useState([{ type: '', name: '', number: '' }]);
-    const [mainUser, setMainUser] = useState({ fullName: '', phoneNumber: '', email: '', age: '', gender: '', wing: '', unit: '', relation: '' });
+    const [members, setMembers] = useState(editResident?.members?.length || 1);
+    const [memberDetails, setMemberDetails] = useState(editResident?.members || [{ name: '', phone: '', email: '', age: '', gender: '', relation: '' }]);
+    const [vehicleCount, setVehicleCount] = useState(editResident?.vehicles?.length || 1);
+    const [vehicles, setVehicles] = useState(editResident?.vehicles || [{ type: '', name: '', number: '' }]);
+    const [mainUser, setMainUser] = useState({
+        fullName: editResident?.fullName || '',
+        phoneNumber: editResident?.phone || '',
+        email: editResident?.email || '',
+        age: editResident?.age || '',
+        gender: editResident?.gender || '',
+        wing: editResident?.wing || '',
+        unit: editResident?.unit || '',
+        relation: editResident?.relation || ''
+    });
     const [errors, setErrors] = useState({});
-
+    
     const handleFileChange = (event, key) => {
         const selectedFile = event.target.files[0];
-        if (selectedFile) setFiles(prev => ({ ...prev, [key]: selectedFile.name }));
-    };
-
-    const handleDrop = (event, key) => {
-        event.preventDefault();
-        const droppedFile = event.dataTransfer.files[0];
-        if (droppedFile) setFiles(prev => ({ ...prev, [key]: droppedFile.name }));
+        if (selectedFile) setFiles(prev => ({ ...prev, [key]: selectedFile }));
     };
 
     const handleCountChange = (setter, count) => {
         setter(count);
         if (setter === setMembers) {
-          const updatedMemberDetails = Array(count).fill({
-            name: '',
-            phone: '',
-            email: '',
-            age: '',
-            gender: '',
-            relation: '',
-          });
-          setMemberDetails(updatedMemberDetails);
+          setMemberDetails(Array(count).fill({ name: '', phone: '', email: '', age: '', gender: '', relation: '' }));
         }
         if (setter === setVehicleCount) {
-          const updatedVehicles = [...vehicles];
-          if (count < updatedVehicles.length) {
-            setVehicles(updatedVehicles.slice(0, count)); 
-          } else {
-            while (updatedVehicles.length < count) {
-              updatedVehicles.push({ type: '', name: '', number: '' });
-            }
-            setVehicles(updatedVehicles); 
-          }
+            setVehicles(Array(count).fill({ type: '', name: '', number: '' }));
         }
     };
       
@@ -65,51 +52,62 @@ const AddOwnerTenant = ({role}) => {
             if (!AddOwnerValidateFields(mainUser, files, setErrors)) return;
             const ownerData = { selectedImage, files, memberDetails, vehicles, mainUser };
             console.log("Owner Data:", ownerData);
-            const payload = {
-            "ownerfullname": OwnerfullName,
-            "ownerphone": OwnerPhone,
-            "owneraddress": OwnerAddress,
-            "fullName": mainUser.fullName,
-            "phone": mainUser.phoneNumber,
-            "email": mainUser.email,
-            "role": role === "Owner"?"owner":"tenant",
-            "age": mainUser.age,
-            "gender": mainUser.gender,
-            "wing": mainUser.wing,
-            "unit": mainUser.unit,
-            "relation": mainUser.relation,
-            "profile_picture": selectedImage?.name,
-            "aadharCardFront": files["Upload Aadhar Card (Front Side)"],
-            "aadharCardBack": files["Upload Aadhar Card (Back Side)"],
-            "addressProof": files["Address Proof (Vera Bill OR Light Bill)"],
-            "rentAgreement": files["Rent Agreement"],
-            "residenceStatus": "Occupied",
-            "members": memberDetails.map((member) => ({
-                fullName: member.name,
-                phone: member.phone,
-                email: member.email,
-                age: member.age,
-                gender: member.gender,
-                relation: member.relation
-            })),
-            "vehicles": vehicles.map((vehicle) => ({
-                vehicleType: vehicle.type,
-                vehicleName: vehicle.name,
-                vehicleNumber: vehicle.number
-            }))
-        }
-        const response = await axios.post(
-          `${process.env.REACT_APP_BASE_URL}/api/resident`,
-          payload
-        );
+            const formData = new FormData();
+            formData.append("ownerfullname", OwnerfullName);
+            formData.append("ownerphone", OwnerPhone);
+            formData.append("owneraddress", OwnerAddress);
+            formData.append("fullName", mainUser.fullName);
+            formData.append("phone", mainUser.phoneNumber);
+            formData.append("email", mainUser.email);
+            formData.append("role", role === "owner" ? "owner" : "tenant");
+            formData.append("age", mainUser.age);
+            formData.append("gender", mainUser.gender);
+            formData.append("wing", mainUser.wing);
+            formData.append("unit", mainUser.unit);
+            formData.append("relation", mainUser.relation);
+            if (selectedImage) formData.append("profile_picture", selectedImage);
+            formData.append("aadharCardFront", files["Upload Aadhar Card (Front Side)"]);
+            formData.append("aadharCardBack", files["Upload Aadhar Card (Back Side)"]);
+            formData.append("addressProof", files["Address Proof (Vera Bill OR Light Bill)"]);
+            formData.append("rentAgreement", files["Rent Agreement"]);
+            formData.append("residenceStatus", "Occupied");
+            memberDetails.forEach((member, index) => {
+                formData.append(`members[${index}][fullName]`, member.name);
+                formData.append(`members[${index}][phone]`, member.phone);
+                formData.append(`members[${index}][email]`, member.email);
+                formData.append(`members[${index}][age]`, member.age);
+                formData.append(`members[${index}][gender]`, member.gender);
+                formData.append(`members[${index}][relation]`, member.relation);
+            });
+            vehicles.forEach((vehicle, index) => {
+                formData.append(`vehicles[${index}][vehicleType]`, vehicle.type);
+                formData.append(`vehicles[${index}][vehicleName]`, vehicle.name);
+                formData.append(`vehicles[${index}][vehicleNumber]`, vehicle.number);
+            });
+            if(editResident){
+                const response = await axios.put(
+                    `${process.env.REACT_APP_BASE_URL}/api/resident/${editResident._id}`,
+                    formData,
+                    { headers: { 'Content-Type': 'multipart/form-data' } }
+                );
+                console.log(response.data);
+            }else{
+                const response = await axios.post(
+                    `${process.env.REACT_APP_BASE_URL}/api/resident`,
+                    formData,
+                    { headers: { 'Content-Type': 'multipart/form-data' } }
+                );
+                console.log(response.data);
+            }
+    
         } catch (error) {
-            console.log(error);
+            console.error("Error in handleSubmit:", error);
         }
     };
 
     return (
         <div className="justify-center bg-gray-100 px-8 text-sm">
-            {role === "Tenant" && (<div className="flex flex-wrap justify-between items-center bg-white p-4 rounded-xl mb-2 shadow space-y-4 md:space-y-0">
+            {role === "tenant" && (<div className="flex flex-wrap justify-between items-center bg-white p-4 rounded-xl mb-2 shadow space-y-4 md:space-y-0">
                 <div className="w-full md:w-1/3 px-2">
                     <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-1">
                         Owner Full Name*
@@ -151,7 +149,7 @@ const AddOwnerTenant = ({role}) => {
                 <div className='flex justify-between gap-4'>
                     <div className="flex flex-col mt-3 items-center">
                         <div className="w-28 mb-3 h-28 rounded-full overflow-hidden border-2 border-gray-300 flex items-center justify-center bg-gray-100">
-                            <img src={selectedImage ? URL.createObjectURL(selectedImage) : '/assets/empty.png'} alt="Profile" className="w-full h-full object-cover" />
+                            <img src={selectedImage ? URL.createObjectURL(selectedImage) : editResident ? editResident.profile_picture : '/assets/empty.png'} alt="Profile" className="w-full h-full object-cover" />
                         </div>
                         <label className="cursor-pointer text-blue-500 px-2">
                             <input type="file" className="hidden" accept=".png,.jpeg,.jpg," onChange={(e) => setSelectedImage(e.target.files[0])} />
@@ -197,18 +195,17 @@ const AddOwnerTenant = ({role}) => {
                                 className={`border-dashed border-2 rounded-lg p-4 flex items-center justify-center cursor-pointer ${
                                     errors[label] ? 'border-red-500' : 'border-gray-300'
                                 }`}
-                                onDrop={(e) => handleDrop(e, label)}
                             >
                                 <label className="flex flex-col items-center w-full h-full">
                                     <input
-                                        type="file"
-                                        className="hidden"
-                                        onChange={(e) => handleFileChange(e, label)}
-                                        accept=".png,.jpeg,.jpg,"
+                                    type="file"
+                                    className="hidden"
+                                    onChange={(e) => handleFileChange(e, label)}
+                                    accept=".png,.jpeg,.jpg,"
                                     />
                                     <div className="flex flex-col items-center space-x-2">
                                         <img src="/assets/addPhoto.svg" alt="Upload Icon" className="w-6 h-6" />
-                                        <p className="text-blue-500 py-2">{files[label] || 'Upload a file or drag and drop'}</p>
+                                        <p className="text-blue-500 py-2">{files.name || 'Upload a file or drag and drop'}</p>
                                         <p className="font-poppins text-[12px] leading-[18px] text-center">
                                             PNG, JPG, GIF up to 10MB
                                         </p>
