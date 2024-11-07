@@ -4,26 +4,32 @@ import { otherIncomeData } from "../../data/maintenanceData";
 import { Popover } from "@headlessui/react";
 import CreateOtherIncome from "../../components/models/CreateOtherIncome";
 import EditOtherIncome from "../../components/models/EditOtherIncome";
+import ViewMaintenanceDetails from "../../components/models/ViewMaintenanceDetails";
 
 const IncomeTable = () => {
   const [view, setView] = useState("maintenance");
   const [selectedOption, setSelectedOption] = useState(null);
   const [isCreatePopupOpen, setCreatePopupOpen] = useState(false);
-  const [isEditPopupVisible, setIsEditPopupVisible] = useState(false);  
-  const [selectedItem, setSelectedItem] = useState(null); //123
+  const [isEditPopupVisible, setIsEditPopupVisible] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [isViewMaintenanceVisible, setViewMaintenanceVisible] = useState(false);
 
-  const handleEditClick = (item) => {
-    setSelectedItem(item); //123
-    setIsEditPopupVisible(true); 
+  const handleEditClick = () => {
+    setSelectedItem();
+    setIsEditPopupVisible(true);
   };
-  
+
   const handleCreateOtherIncome = () => {
     setCreatePopupOpen(true);
   };
   const handleClosePopup = () => {
     setCreatePopupOpen(false);
-    setIsEditPopupVisible(false); 
-    setSelectedItem(null); //123
+    setIsEditPopupVisible(false);
+    setSelectedItem(null);
+    setViewMaintenanceVisible(false);
+  };
+  const handleViewMaintenanceClick = () => {
+    setViewMaintenanceVisible(true); 
   };
   return (
     <div className="bg-blue-50 min-h-[100px] p-6 overflow-y-hidden">
@@ -67,7 +73,6 @@ const IncomeTable = () => {
           Other Income
         </button>
       </div>
-
       {/* Maintenance Table */}
       {view === "maintenance" && (
         <div className="bg-white shadow rounded-lg overflow-y-auto" style={{ maxHeight: "60vh" }}>
@@ -145,11 +150,12 @@ const IncomeTable = () => {
                     </span>
                   </td>
                   <td className="px-4 py-2">
-                    <button className="bg-gray-200 hover:bg-gray-300 rounded-full">
+                    <button className="bg-gray-200 hover:bg-gray-300 rounded-full" onClick={handleViewMaintenanceClick} >
                       <span className="material-icons">
                         <img src="/assets/blueeye.svg" alt="Action Icon" />
                       </span>
-                    </button>
+                    </button>     
+                      {isViewMaintenanceVisible && <ViewMaintenanceDetails onClose={handleClosePopup} />}
                   </td>
                 </tr>
               ))}
@@ -157,7 +163,6 @@ const IncomeTable = () => {
           </table>
         </div>
       )}
-
       {/* Other Income Section */}
       {view === "other" && (
         <div className="bg-[#ffffff] border rounded-xl p-3">
@@ -192,7 +197,7 @@ const IncomeTable = () => {
                       <div className="py-2">
                         <button
                           className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
-                          onClick={handleEditClick(item)} //123
+                          onClick={handleEditClick}
                         >
                           Edit
                         </button>
