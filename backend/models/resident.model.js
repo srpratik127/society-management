@@ -2,11 +2,6 @@ const mongoose = require("mongoose");
 
 const residentSchema = new mongoose.Schema(
   {
-    societyId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "societies", 
-      required: true, 
-    },
     ownerfullname: {
       type: String,
     },
@@ -88,27 +83,21 @@ const residentSchema = new mongoose.Schema(
       {
         fullName: {
           type: String,
-          required: true,
         },
         phone: {
           type: String,
-          required: true,
         },
         email: {
           type: String,
-          required: true,
         },
         age: {
           type: Number,
-          required: true,
         },
         gender: {
           type: String,
-          required: true,
         },
         relation: {
           type: String,
-          required: true,
         },
       },
     ],
@@ -118,15 +107,12 @@ const residentSchema = new mongoose.Schema(
         vehicleType: {
           type: String,
           enum: ["Two Wheeler", "Four Wheeler"],
-          required: true,
         },
         vehicleName: {
           type: String,
-          required: true,
         },
         vehicleNumber: {
           type: String,
-          required: true,
         },
       },
     ],
