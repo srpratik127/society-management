@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import AddOwner from './AddOwner';
-import AddTenant from './AddTenant';
+import AddOwnerTenant from './AddOwnerTenant';
 
 function AddResident() {
     const [view, setView] = useState("Owner");
@@ -29,8 +28,7 @@ function AddResident() {
             </div>
 
             <div>
-                {view === "Owner" && <AddOwner />}
-                {view === "Tenant" && <AddTenant />}
+                 <AddOwnerTenant role={view}/>
             </div>
         </>
     );

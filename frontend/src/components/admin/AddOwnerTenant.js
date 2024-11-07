@@ -2,7 +2,10 @@ import React, { useState } from 'react'
 import { AddOwnerValidateFields } from '../../utils/validation';
 import axios from 'axios';
 
-const AddOwner = () => {
+const AddOwnerTenant = ({role}) => {
+    const [OwnerfullName, setOwnerFullName] = useState('');
+    const [OwnerPhone, setOwnerPhone] = useState('');
+    const [OwnerAddress, setOwnerAddress] = useState('');
     const [files, setFiles] = useState({});
     const [selectedImage, setSelectedImage] = useState(null);
     const [members, setMembers] = useState(1);
@@ -47,15 +50,15 @@ const AddOwner = () => {
             setVehicles(updatedVehicles); 
           }
         }
-      };
+    };
       
-      const handleDetailChange = (setter, index, field, value) => {
-        setter(prev => {
-          const updated = [...prev];
-          updated[index] = { ...updated[index], [field]: value };
-          return updated;
-        });
-      };
+    const handleDetailChange = (setter, index, field, value) => {
+      setter(prev => {
+        const updated = [...prev];
+        updated[index] = { ...updated[index], [field]: value };
+        return updated;
+      });
+    };
     
     const handleSubmit = async () => {
         try {
@@ -63,10 +66,13 @@ const AddOwner = () => {
             const ownerData = { selectedImage, files, memberDetails, vehicles, mainUser };
             console.log("Owner Data:", ownerData);
             const payload = {
+            "ownerfullname": OwnerfullName,
+            "ownerphone": OwnerPhone,
+            "owneraddress": OwnerAddress,
             "fullName": mainUser.fullName,
             "phone": mainUser.phoneNumber,
             "email": mainUser.email,
-            "role": "owner",
+            "role": role === "Owner"?"owner":"tenant",
             "age": mainUser.age,
             "gender": mainUser.gender,
             "wing": mainUser.wing,
@@ -100,8 +106,47 @@ const AddOwner = () => {
             console.log(error);
         }
     };
+
     return (
         <div className="justify-center bg-gray-100 px-8 text-sm">
+            {role === "Tenant" && (<div className="flex flex-wrap justify-between items-center bg-white p-4 rounded-xl mb-2 shadow space-y-4 md:space-y-0">
+                <div className="w-full md:w-1/3 px-2">
+                    <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-1">
+                        Owner Full Name*
+                    </label>
+                    <input
+                        type="text"
+                        id="fullName"
+                        placeholder="Enter Full Name"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        onChange={(e) => setOwnerFullName(e.target.value)}
+                    />
+                </div>
+                <div className="w-full md:w-1/3 px-2">
+                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                        Owner Phone*
+                    </label>
+                    <input
+                        type="text"
+                        id="phone"
+                        placeholder="+91"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        onChange={(e) => setOwnerPhone(e.target.value)}
+                    />
+                </div>
+                <div className="w-full md:w-1/3 px-2">
+                    <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
+                        Owner Address*
+                    </label>
+                    <input
+                        type="text"
+                        id="address"
+                        placeholder="Enter Address"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        onChange={(e) => setOwnerAddress(e.target.value)}
+                    />
+                </div>
+            </div>)}
             <div className="bg-white rounded-lg shadow w-full p-4">
                 <div className='flex justify-between gap-4'>
                     <div className="flex flex-col mt-3 items-center">
@@ -113,7 +158,7 @@ const AddOwner = () => {
                             Upload Photo
                         </label>
                     </div>
-                    <div className="grid grid-cols-4 gap-3 w-full"> 
+                    <div className="grid grid-cols-4 gap-3 w-full">
                         {['Full Name', 'Phone Number', 'Email Address', 'Age', 'Gender', 'Wing', 'Unit', 'Relation'].map((label, index) => {
                             const keys = ['fullName', 'phoneNumber', 'email', 'age', 'gender', 'wing', 'unit', 'relation'];
                             const isSelect = label === 'Gender';
@@ -132,7 +177,7 @@ const AddOwner = () => {
                                     ) : (
                                         <input
                                             type={label === 'Age' ? 'number' : 'text'}
-                                            className={`border ${errors[keys[index]] ? 'border-red-500' : 'border-gray-300'} rounded-lg p-2`}
+                                            className={`border ${errors[keys[index]] ? 'border-red-500' : 'border-gray-300'} rounded-lg p-2 focus:outline-none`}
                                             placeholder={`Enter ${label}`}
                                             value={mainUser[keys[index]]}
                                             onChange={(e) => setMainUser({ ...mainUser, [keys[index]]: e.target.value })}
@@ -175,8 +220,8 @@ const AddOwner = () => {
                     ))}
                 </div>
             </div>
-            <div className='bg-[#ffff] rounded-lg my-2 px-8 pb-4 text-sm'>
-                <div className="flex flex-col md:items-center gap-4">
+            <div className=''>
+                <div className="flex flex-col md:items-center gap-4 bg-[#ffff] my-2 px-8 pb-4 rounded-lg shadow">
                     <div className="flex flex-col md:flex-row justify-between w-full items-center border-b-2 py-2 gap-4">
                     <p className="text-gray-700 font-semibold py-2">Member Counting (Other Members)</p>
                     <div className='flex justify-center align-center'>
@@ -187,26 +232,34 @@ const AddOwner = () => {
                     </div>
                     </div>
                     {Array.from({ length: members }).map((_, index) => (
-                    <div key={index} className="grid grid-cols-1 md:grid-cols-6 gap-6 mt-2">
-                        {['Full Name', 'Phone', 'Email', 'Age', 'Gender', 'Relation'].map((label, idx) => {
-                        const field = label.toLowerCase().replace(' ', '');
-                        return (
-                            <div className="flex flex-col" key={idx}>
-                            <label className="text-gray-700 font-semibold mb-1">{label}</label>
-                            <input
-                                type={label === 'Age' ? 'number' : 'text'}
-                                className={`border border-gray-300 rounded-lg p-2`}
-                                placeholder={`Enter ${label}`}
-                                value={memberDetails[index] && memberDetails[index][field] ? memberDetails[index][field] : ''}
-                                onChange={(e) => handleDetailChange(setMemberDetails, index, field, e.target.value)}
-                            />
-                            </div>
-                        );
-                        })}
-                    </div>
+                        <div key={index} className="grid grid-cols-1 md:grid-cols-6 gap-6 w-full mt-2">
+                            {['Name', 'Phone', 'Email', 'Age', 'Gender', 'Relation'].map((label, idx) => {
+                            const field = label.toLowerCase();
+                            return (
+                                <div className="flex flex-col" key={idx}>
+                                    <label className="text-gray-700 font-semibold mb-1">{label}</label>
+                                    {label === 'Gender' ? (
+                                        <select className={`border border-gray-300 rounded-lg p-2`} onChange={(e) => handleDetailChange(setMemberDetails, index, 'gender', e.target.value)}>
+                                            <option>Select Gender</option>
+                                            <option value="Male">Male</option>
+                                            <option value="Female">Female</option>
+                                        </select>
+                                    ) : (
+                                        <input
+                                            type={label === 'Age' ? 'number' : 'text'}
+                                            className={`border border-gray-300 rounded-lg p-2 outline-none`}
+                                            placeholder={`Enter ${label}`}
+                                            value={memberDetails[index] && memberDetails[index][field] ? memberDetails[index][field] : ''}
+                                            onChange={(e) => handleDetailChange(setMemberDetails, index, field, e.target.value)}
+                                        />
+                                    )}
+                                </div>
+                            );
+                            })}
+                        </div>
                     ))}
                 </div>
-                <div className='flex flex-col md:items-center gap-4'>
+                <div className='flex flex-col md:items-center gap-4 bg-white p-4 rounded-lg shadow'>
                     <div className="flex flex-col md:flex-row justify-between w-full items-center border-b-2 py-2 gap-4">
                     <p className="text-gray-700 font-semibold py-2">Vehicles Count</p>
                     <div className='flex justify-center align-center'>
@@ -216,25 +269,37 @@ const AddOwner = () => {
                         </select>
                     </div>
                     </div>
-                    {Array.from({ length: vehicleCount }).map((_, index) => (
-                    <div key={index} className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-2">
-                        {['Type', 'Name', 'Number'].map((label, idx) => {
-                        const field = label.toLowerCase();
-                        return (
-                            <div className="flex flex-col" key={idx}>
-                            <label className="text-gray-700 font-semibold mb-1">Vehicle {label}</label>
-                            <input
-                                type="text"
-                                className={`border border-gray-300 rounded-lg p-2`}
-                                placeholder={`Enter Vehicle ${label}`}
-                                value={vehicles[index] && vehicles[index][field] ? vehicles[index][field] : ''}
-                                onChange={(e) => handleDetailChange(setVehicles, index, field, e.target.value)}
-                            />
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 w-full gap-4 mt-2">
+                        {Array.from({ length: vehicleCount }).map((_, index) => (
+                        <div key={index} className="border p-4 rounded-lg">
+                            <div className="flex gap-4">
+                                {['Type', 'Name', 'Number'].map((label, idx) => {
+                                const field = label.toLowerCase();
+                                return (
+                                    <div className="flex flex-col w-full" key={idx}>
+                                        <label className="text-gray-700 font-semibold mb-1">Vehicle {field}</label>
+                                        {label === 'Type' ? (
+                                                <select className={`border border-gray-300 rounded-lg p-2`} onChange={(e) => handleDetailChange(setVehicles, index, 'type', e.target.value)}>
+                                                    <option>Select Type</option>
+                                                    <option value="Two Wheeler">Two Wheeler</option>
+                                                    <option value="Four Wheeler">Four Wheeler</option>
+                                                </select>
+                                            ) : (
+                                                <input
+                                                type="text"
+                                                className={`border border-gray-300 rounded-lg p-2 w-full outline-none`}
+                                                placeholder={`Enter Vehicle ${label}`}
+                                                value={vehicles[index] && vehicles[index][field] ? vehicles[index][field] : ''}
+                                                onChange={(e) => handleDetailChange(setVehicles, index, field, e.target.value)}
+                                            />
+                                    )}
+                                    </div>
+                                );
+                                })}
                             </div>
-                        );
-                        })}
+                        </div>
+                        ))}
                     </div>
-                    ))}
                 </div>
             </div>
             <div className="flex justify-end mt-4">
@@ -243,4 +308,4 @@ const AddOwner = () => {
         </div>
     );
 }
-export default AddOwner
+export default AddOwnerTenant;

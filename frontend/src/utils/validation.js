@@ -1,14 +1,17 @@
 export const AddOwnerValidateFields = (mainUser, files, setErrors) => {
     const newErrors = {};
 
+    // Main User validations
     if (!mainUser.fullName) newErrors.fullName = 'Full Name is required';
     if (!mainUser.phoneNumber || !/^\d{10}$/.test(mainUser.phoneNumber)) {
-        newErrors.phoneNumber = 'Valid Phone Number is required';
+        newErrors.phoneNumber = 'Phone number must be a valid 10-digit number';
     }
     if (!mainUser.email || !/\S+@\S+\.\S+/.test(mainUser.email)) {
-        newErrors.email = 'Valid Email Address is required';
+        newErrors.email = 'Email must be a valid email address';
     }
-    if (!mainUser.age || mainUser.age < 18) newErrors.age = 'Age must be 18 or older';
+    if (!mainUser.age || mainUser.age < 18) {
+        newErrors.age = 'Age must be 18 or older';
+    }
     if (!mainUser.gender) newErrors.gender = 'Gender is required';
     if (!mainUser.wing) newErrors.wing = 'Wing is required';
     if (!mainUser.unit) newErrors.unit = 'Unit is required';

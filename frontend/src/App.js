@@ -15,6 +15,9 @@ import ErrorPage from "./pages/ErrorPage";
 import Resident from "./pages/admin/Recident";
 import ExpensesTable from "./pages/admin/Expance";
 import AddResident from "./components/admin/AddResident";
+import CreateOtherIncome from "./components/models/CreateOtherIncome";
+import EditOtherIncome from "./components/models/EditOtherIncome";
+import ViewMaintenanceDetails from "./components/models/ViewMaintenanceDetails";
 
 function App() {
   return (
@@ -35,6 +38,7 @@ function App() {
           <Route path="resident" element={<Resident />} />
           <Route path="expense" element={<ExpensesTable />} />
           <Route path="add-resident" element={<AddResident />} />
+          <Route path="viewmaintenancedetails"element={<ViewMaintenanceDetails/>}/>
         </Route>
         <Route path="*" element={<ErrorPage />} />
       </Routes>
