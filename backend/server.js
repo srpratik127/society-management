@@ -42,7 +42,6 @@ app.use('/society', SocietyRouter);
 app.use('/forgetpassword', forgetPassword);
 app.use('/api/complaints', complaintRoutes);
 app.use('/api/numbers', importantNumRoutes);
-app.use('/api/resident', ownerRoutes);
 app.use('/api/maintenance', maintenance);
 app.use('/api/resident', ownerRoutes);
 app.use('/api/announcement', announcement);  
