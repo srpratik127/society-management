@@ -1,26 +1,50 @@
 const ExpenseDetails = require('../models/expensesdetails.model');
+const fs =require('fs');
+const cloudinary = require('../utils/cloudinary');
 
 const createExpense = async (req, res) => {
     try {
-        const { title, dueDate, description, amount, bill, societyId, userId } = req.body;
-
-        const newExpense = new ExpenseDetails({
-            title,
-            dueDate,
-            description,
-            amount,
-            bill,
-            societyId,
-            userId,
+      const { title, dueDate, description, amount, societyId, userId } = req.body;
+      if (!title || !dueDate || !amount) {
+        return res.status(400).json({
+          success: false,
+          message: 'Title, due date, and amount are required.',
         });
-
-        const savedExpense = await newExpense.save();
-        res.status(201).json(savedExpense);
+      }
+      if (!req.file) {
+        return res.status(400).json({
+          success: false,
+          message: 'Bill file is required.',
+        });
+      }
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: 'expenses_bills',
+      });
+      const billUrl = result.secure_url;
+      fs.unlink(req.file.path, (err) => {
+        if (err) {
+          console.error("Error deleting the file:", err);
+        }
+      });
+      const newExpense = new ExpenseDetails({
+        title,
+        dueDate,
+        description,
+        amount,
+        bill: billUrl,  
+        societyId,
+        userId,
+      });
+      const savedExpense = await newExpense.save();
+      res.status(201).json({
+        success: true,
+        data: savedExpense,
+      });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+      res.status(500).json({ message: error.message });
     }
-};
-
+  };
+  
  const getAllExpenses = async (req, res) => {
     try {
         const expenses = await ExpenseDetails.find().populate('societyId userId');

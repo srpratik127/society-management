@@ -19,12 +19,12 @@ const createIncome = async (req, res) => {
 
 const getIncome = async (req, res) => {
     try {
-        const data = await Income.find();
-        res.status(200).json(data)        
+      const data = await Income.find().populate("members.user", "fullName wing unit residenceStatus phone");
+      res.status(200).json(data);
     } catch (error) {
-        res.status(500).json({ message: 'Get Income controller error' })
+      res.status(500).json({ message: 'Get Income controller error', error: error.message });
     }
-};
+  };
 
 const updateIncome = async (req, res) => {
     try {
@@ -57,9 +57,46 @@ const deleteIncome = async (req, res) => {
     }
 };
 
+const addMemberToIncome = async (req, res) => {
+    try {
+      const { user, paymentDate, paymentMethod } = req.body;
+      const income = await Income.findByIdAndUpdate(
+        req.params.id,
+        {
+          $push: {
+            members: {
+              user: user,  
+              paymentDate: paymentDate,
+              paymentMethod: paymentMethod,
+            },
+          },
+        },
+        { new: true } 
+      ).populate("members.user", "fullName wing unit residenceStatus phone");
+      if (!income) {
+        return res.status(404).json({
+          success: false,
+          message: "Income event not found",
+        });
+      }
+      res.status(200).json({
+        success: true,
+        message: "Member added successfully to the income event",
+        data: income,
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Server error while adding member",
+        error: error.message,
+      });
+    }
+  };
+
 module.exports = {
     createIncome,
     getIncome,
     updateIncome,
-    deleteIncome
+    deleteIncome,
+    addMemberToIncome
 };

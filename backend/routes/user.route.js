@@ -1,7 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const router = express.Router();
-const { Register, Login,updateUser } = require('../controllers/user.controller'); 
+const { Register, Login,updateUser, checkPassword, verifyPassword } = require('../controllers/user.controller'); 
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -16,5 +16,5 @@ const upload = multer({ dest: 'uploads/' });
 router.post('/register', Register);
 router.post('/login', Login);
 router.put('/update/:id',upload.single('profile_picture'),updateUser);
-
+router.post('/verify-password', verifyPassword);
 module.exports = router;
