@@ -30,9 +30,6 @@ const OtherIncome = () => {
     setIsEditPopupVisible(true);
   };
 
-  const handleCreateOtherIncome = () => {
-    setCreatePopupOpen(true);
-  };
   const handleClosePopup = () => {
     setCreatePopupOpen(false);
     setIsEditPopupVisible(false);
@@ -45,7 +42,7 @@ const OtherIncome = () => {
         <h2 className="text-2xl font-bold">Other Income</h2>
         <button
           className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 focus:outline-none"
-          onClick={handleCreateOtherIncome}
+          onClick={()=> setCreatePopupOpen(true)}
         >
           Create Other Income
         </button>
@@ -90,7 +87,7 @@ const OtherIncome = () => {
             </div>
             <div className="flex justify-between px-3 py-1">
               <span className="text-sm text-gray-600">Total Members:</span>
-              <span className="font-medium">{item.totalMembers}</span>
+              <span className="font-medium">{item.members?.lenght || "0"}</span>
             </div>
             <div className="flex justify-between px-3 py-1">
               <span className="text-sm text-gray-600">Date:</span>
@@ -111,7 +108,7 @@ const OtherIncome = () => {
                 })}</span>
             </div>
             <div className="flex justify-between px-3 py-1">
-              <span className="text-sm text-gray-600 mt-2">
+              <span className="text-sm mt-2">
                 {item.description}
               </span>
             </div>

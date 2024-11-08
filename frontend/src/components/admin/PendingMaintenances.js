@@ -36,13 +36,13 @@ const PendingMaintenances = () => {
             >
               <div className="flex items-center space-x-4">
                 <img
-                  src={PendingMainten.user.profile_picture}
-                  alt={PendingMainten.user.fullName}
+                  src={PendingMainten.user?.profile_picture}
+                  alt={PendingMainten.user?.fullName}
                   className="w-12 h-12 rounded-full"
                 />
                 <div className="space-y-1">
                   <span className="block font-medium">
-                    {PendingMainten.user.fullName}
+                    {PendingMainten.user?.fullName}
                   </span>
                   <span className="block text-gray-500 text-sm">
                     {PendingMainten.penaltyDay}

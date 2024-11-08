@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { AddOwnerValidateFields } from '../../utils/validation';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const AddOwnerTenant = ({role, editResident}) => {
     const [OwnerfullName, setOwnerFullName] = useState(editResident?.ownerfullname || '');
@@ -23,6 +24,7 @@ const AddOwnerTenant = ({role, editResident}) => {
         relation: editResident?.relation || ''
     });
     const [errors, setErrors] = useState({});
+    const navigate = useNavigate();
     
     const handleFileChange = (event, key) => {
         const selectedFile = event.target.files[0];
@@ -91,6 +93,7 @@ const AddOwnerTenant = ({role, editResident}) => {
                     { headers: { 'Content-Type': 'multipart/form-data' } }
                 );
                 console.log(response.data);
+                navigate("/admin/resident")
             }else{
                 const response = await axios.post(
                     `${process.env.REACT_APP_BASE_URL}/api/resident`,
@@ -98,6 +101,7 @@ const AddOwnerTenant = ({role, editResident}) => {
                     { headers: { 'Content-Type': 'multipart/form-data' } }
                 );
                 console.log(response.data);
+                navigate("/admin/resident")
             }
     
         } catch (error) {
