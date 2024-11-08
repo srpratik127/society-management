@@ -15,8 +15,7 @@ import ErrorPage from "./pages/ErrorPage";
 import Resident from "./pages/admin/Recident";
 import ExpensesTable from "./pages/admin/Expance";
 import AddResident from "./components/admin/AddResident";
-import CreateOtherIncome from "./components/models/CreateOtherIncome";
-import ViewMaintenanceDetails from "./components/models/ViewMaintenanceDetails";
+import AddExpensesDetails from "./components/models/AddExpensesDetails";
 import Note from "./pages/admin/Note";
 
 function App() {
@@ -39,8 +38,8 @@ function App() {
           <Route path="expense" element={<ExpensesTable />} />
           <Route path="note" element={<Note/>} />
           <Route path="add-resident" element={<AddResident />} />
+          <Route path="addexpensesdetails" element={<AddExpensesDetails/>}/>
           <Route path="edit-resident" element={<AddResident />} />
-          <Route path="viewmaintenancedetails"element={<ViewMaintenanceDetails/>}/>
         </Route>
         <Route path="*" element={<ErrorPage />} />
       </Routes>

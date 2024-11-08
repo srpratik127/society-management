@@ -36,7 +36,7 @@ const ForgetPassword = () => {
         if (response.data) {
           console.log("Forget Password Email", { emailOrPhone });
           setEmailOrPhone("");
-          navigate("/get-otp");
+          navigate("/get-otp", { state: { emailOrPhone } });
         }
       } catch (error) {
         console.log(error);
