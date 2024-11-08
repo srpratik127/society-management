@@ -1,80 +1,125 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import DeleteModel from "./DeleteModel";
 
-const ResidenceStatus = ({ resident, onClose }) => {
-    const [selectedStatus, setSelectedStatus] = useState(resident.residenceStatus);
-    const [isChecked, setIsChecked] = useState(true);
-    const [unitPopup, setUnitPopup] = useState(false);
+const ResidenceStatus = ({ resident, onClose, setOpenConform}) => {
+  const [selectedStatus, setSelectedStatus] = useState(
+    resident.residenceStatus
+  );
+  const [isChecked, setIsChecked] = useState(true);
+  const [unitPopup, setUnitPopup] = useState(false);
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-
-    const handleSave = () => {
+  const handleSave = () => {
+    if (selectedStatus === "Occupied") {
       onClose();
-      if(selectedStatus==="Occupied"){
-          navigate("/admin/edit-resident", { state: { resident } });
-        }
-        if(selectedStatus==="Vacate"){
-          
-        }
-    };
+      navigate("/admin/edit-resident", { state: { resident } });
+    }
+    if (selectedStatus === "Vacate") {
+      setUnitPopup(true);
+    }
+  };
 
   const StatusOption = ({ status }) => (
     <label
-        className={`flex px-4 items-center space-x-2 cursor-pointer ${
-            selectedStatus === status ? "text-orange-600 border-orange-500" : "text-gray-500 border-gray"
-        } border rounded-md`}
-        onClick={() => setSelectedStatus(status)}
+      className={`flex items-center gap-3 justify-center cursor-pointer w-full ${
+        selectedStatus === status
+          ? "text-orange-600 border-orange-500"
+          : "text-gray-500 border-gray"
+      } border rounded-md`}
+      onClick={() => setSelectedStatus(status)}
     >
-        <img
-            src={`/assets/${selectedStatus === status ? "fill-redio" : "unfill-redio"}.svg`}
-            alt={`${status} status icon`}
-        />
-        <span className="py-2 rounded-md">{status}</span>
+      <img
+        src={`/assets/${
+          selectedStatus === status ? "fill-redio" : "unfill-redio"
+        }.svg`}
+        alt={`${status} status icon`}
+      />
+      <span className="py-2 rounded-md">{status}</span>
     </label>
-);
+  );
 
   return (
-    <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white p-6 rounded-xl w-[390px] shadow-lg">
-        <h1 className="text-xl font-semibold mb-4">Residence Status</h1>
-        <div className="flex justify-around mb-4">
-          <StatusOption status="Occupied" />
-          <StatusOption status="Vacate" />
-        </div>
-        <div className="flex items-center mb-4">
-          <input
-            type="checkbox"
-            id="agreement"
-            checked={isChecked}
-            onChange={(e) => setIsChecked(e.target.checked)}
-            className="mr-2"
-          />
-          <label htmlFor="agreement" className="text-gray-500 text-sm">
-            By submitting, you agree to select {selectedStatus}
-          </label>
-        </div>
-        <div className="flex justify-evenly">
-          <button
-            className="px-12 py-2 border rounded-md text-gray-500"
-            onClick={onClose}
-          >
-            Cancel
-          </button>
-          <button
-            className={`px-12 py-2 rounded-md text-white ${
-              isChecked
-                ? "bg-gradient-to-r from-[#FE512E] to-[#F09619]"
-                : "bg-gray-300 cursor-not-allowed"
-            }`}
-            disabled={!isChecked}
-            onClick={handleSave}
-          >
-            Save
-          </button>
+    <>
+      <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
+        <div className="bg-white p-6 rounded-xl w-[390px] shadow-lg">
+          <h1 className="text-xl font-semibold mb-4">Residence Status</h1>
+          <div className="mb-4">
+            {unitPopup ? (
+              <div className="flex gap-3">
+                <div className="w-full">
+                  <label>Wing*</label>
+                  <select className="w-full px-4 py-2 border rounded-md outline-none">
+                    <option>{resident.unit}</option>
+                  </select>
+                </div>
+                <div className="w-full">
+                  <label>Unit*</label>
+                  <select className="w-full px-4 py-2 border rounded-md outline-none">
+                    <option>{resident.wing}</option>
+                  </select>
+                </div>
+              </div>
+            ) : (
+              <div className="flex gap-3">
+                <StatusOption status="Occupied" />
+                <StatusOption status="Vacate" />
+              </div>
+            )}
+          </div>
+          {!unitPopup && (
+            <div className="flex items-center mb-4">
+              <input
+                type="checkbox"
+                id="agreement"
+                checked={isChecked}
+                onChange={(e) => setIsChecked(e.target.checked)}
+                className="mr-2"
+              />
+              <label htmlFor="agreement" className="text-gray-500 text-sm">
+                By submitting, you agree to select {selectedStatus}
+              </label>
+            </div>
+          )}
+          <div className="flex gap-3">
+            <button
+              className="px-12 py-2 border rounded-md w-full text-gray-500"
+              onClick={onClose}
+            >
+              Cancel
+            </button>
+            {!unitPopup ? (
+              <button
+                className={`px-12 py-2 rounded-md w-full text-white ${
+                  isChecked
+                    ? "bg-gradient-to-r from-[#FE512E] to-[#F09619]"
+                    : "bg-gray-300 cursor-not-allowed"
+                }`}
+                disabled={!isChecked}
+                onClick={handleSave}
+              >
+                Save
+              </button>
+            ) : (
+              <button
+                className={`px-12 py-2 rounded-md w-full text-white ${
+                  isChecked
+                    ? "bg-gradient-to-r from-[#FE512E] to-[#F09619]"
+                    : "bg-gray-300 cursor-not-allowed"
+                }`}
+                onClick={() => {
+                  setOpenConform(true);
+                  onClose()
+                }}
+              >
+                Create
+              </button>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -1,6 +1,6 @@
 import React from 'react'
 
-const EditOtherIncome = ({ onClose }) => {
+const EditOtherIncome = ({ onClose  }) => {
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-20 z-50">
             <div className="bg-white rounded-lg w-full max-w-md p-6 space-y-4 shadow-lg">
@@ -46,8 +46,6 @@ const EditOtherIncome = ({ onClose }) => {
                             required
                         />
                     </div>
-                   
-
                     <div className="flex justify-between mt-4">
                         <button
                             type="button"

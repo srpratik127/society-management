@@ -48,7 +48,6 @@ const CreateOtherIncome = ({ onClose }) => {
                         />
                         {errors.title && <span className="text-sm text-red-500">{errors.title}</span>}
                     </div>
-
                     <div className="flex space-x-4">
                         <div className="w-1/2">
                             <label className="block text-sm font-medium">Date</label>
@@ -71,7 +70,6 @@ const CreateOtherIncome = ({ onClose }) => {
                             {errors.dueDate && <span className="text-sm text-red-500">{errors.dueDate}</span>}
                         </div>
                     </div>
-
                     <div className='text-sm'>
                         <label className="block text-sm font-medium">Description</label>
                         <textarea
@@ -92,7 +90,7 @@ const CreateOtherIncome = ({ onClose }) => {
                                 placeholder=" 0000"
                                 value={amount}
                                 onChange={(e) => setAmount(e.target.value)}
-                                className={`w-full pr-3 py-2 focus:outline-none ${errors.amount ? 'border-red-500' : ''}`}
+                                className={`w-full pr-3 py-2 focus:outline-none ${errors.amount && 'border-red-500'}`}
                             />
                         </div>
                         {errors.amount && <span className="text-sm text-red-500">{errors.amount}</span>}

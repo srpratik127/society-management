@@ -1,14 +1,13 @@
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-
+import { useLocation, useNavigate } from "react-router-dom";
 
 const OtpScreen = () => {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
-  const [timer, setTimer] = useState(30);
+  const [timer, setTimer] = useState(180);
   const [isResendDisabled, setIsResendDisabled] = useState(false);
-  const user = useSelector((store) => store.auth.user);
+  const location = useLocation();
+  const email = location.state?.emailOrPhone;
   const [errorMessage, setErrorMessage] = useState("");
   const inputRefs = useRef([]);
   const navigate = useNavigate();
@@ -17,6 +16,8 @@ const OtpScreen = () => {
     if (timer > 0) {
       const interval = setInterval(() => setTimer((t) => t - 1), 1000);
       return () => clearInterval(interval);
+    } else {
+      setIsResendDisabled(false);
     }
   }, [timer]);
 
@@ -33,12 +34,19 @@ const OtpScreen = () => {
   };
 
   const handleResendOtp = async () => {
-    setIsResendDisabled(true);
-    await new Promise((resolve) => setTimeout(resolve, 12000));
-    setIsResendDisabled(false);
-    setTimer(30);
-    setOtp(["", "", "", "", "", ""]);
-    setErrorMessage("");
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_BASE_URL}/forgetpassword/otpmail`,
+        {
+          email: email,
+        }
+      );
+      if (response.data) {
+        console.log("mail sended in this mail : ", { email });
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleVerifyOtp = async () => {
@@ -50,7 +58,7 @@ const OtpScreen = () => {
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_BASE_URL}/forgetpassword/verify`,
-        { otp: otpValue, email: user.email }
+        { otp: otpValue, email: email }
       );
 
       if (response.status === 200) {
@@ -100,7 +108,7 @@ const OtpScreen = () => {
       <div className="flex justify-between mt-4">
         <p className="text-gray-600 flex gap-2">
           <img src="/assets/clock.svg" alt="" />
-          00:{timer} sec
+          {Math.floor(timer / 60)}:{String(timer % 60).padStart(2, "0")}
         </p>
         <button
           disabled={isResendDisabled}

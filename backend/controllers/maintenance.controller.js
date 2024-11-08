@@ -1,11 +1,11 @@
 const Maintenance = require('../models/maintenance.model');
-const User = require('../models/user.model');
+const Resident = require('../models/resident.model');
 
 const addMaintenance = async (req, res) => {
     try {
       const { amount, penaltyAmount, dueDate, penaltyDay } = req.body;
   
-      const users = await User.find();
+      const users = await Resident.find();
   
       const maintenanceRecords = users.map((user) => ({
         user: user._id,
@@ -29,7 +29,7 @@ const addMaintenance = async (req, res) => {
         const status = req.params.status;
         if (status === 'pending' || status === 'done') {
             const response = await Maintenance.find({ status })
-                .populate('user', 'firstname lastname profile_picture')
+                .populate('user', 'fullName profile_picture wing unit phone role')
                 .exec();
             res.status(200).json(response);
         } else {
@@ -45,7 +45,7 @@ const addMaintenance = async (req, res) => {
 const getAllStatus = async (req, res) => {
     try {
         const allMaintenance = await Maintenance.find()
-            .populate('user', 'firstname lastname profile_picture')
+            .populate('user', 'fullName profile_picture wing unit phone role')
             .exec();
         res.status(200).json(allMaintenance);
     } catch (error) {
