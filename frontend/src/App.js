@@ -9,14 +9,13 @@ import ResetPassword from "./pages/auth/ResetPassword";
 import Admin from "./pages/admin/Admin";
 import Dashboard from "./pages/admin/Dashboard";
 import Profile from "./pages/admin/Profile";
-import IncomeTable from "./pages/admin/IncomeTable";
+import Income from "./pages/admin/Income";
 import { ProtectedRoute, PublicRoute } from "./components/ProtectedRoute";
 import ErrorPage from "./pages/ErrorPage";
 import Resident from "./pages/admin/Recident";
 import ExpensesTable from "./pages/admin/Expance";
 import AddResident from "./components/admin/AddResident";
 import CreateOtherIncome from "./components/models/CreateOtherIncome";
-import EditOtherIncome from "./components/models/EditOtherIncome";
 import ViewMaintenanceDetails from "./components/models/ViewMaintenanceDetails";
 
 function App() {
@@ -34,7 +33,7 @@ function App() {
         <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>}>
           <Route path="" element={<Dashboard />} />
           <Route path="profile" element={<Profile />} />
-          <Route path="income" element={<IncomeTable />} />
+          <Route path="income" element={<Income/>} />
           <Route path="resident" element={<Resident />} />
           <Route path="expense" element={<ExpensesTable />} />
           <Route path="add-resident" element={<AddResident />} />

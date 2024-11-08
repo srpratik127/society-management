@@ -29,7 +29,7 @@ router.put('/:id', upload.fields([
     { name: 'addressProof', maxCount: 1 },
     { name: 'rentAgreement', maxCount: 1 },
   ]),  updateOwner);
-router.put('/:id', vacateflat);
+router.put('/vacate-flat/:id', vacateflat);
 
 module.exports = router;
 
