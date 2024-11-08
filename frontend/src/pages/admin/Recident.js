@@ -2,15 +2,14 @@ import React, { useEffect, useState } from "react";
 import ResidenceStatus from "../../components/models/ResidenceStatus";
 import axios from "axios";
 import ViewResident from "../../components/models/ViewResident";
-import { useNavigate } from "react-router-dom"; 
-
+import { useNavigate } from "react-router-dom";
 
 const Resident = () => {
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
   const [viewResident, setViewResident] = useState(false);
   const [selectedResident, setSelectedResident] = useState(null);
-  const [residents, setResidents] = useState(null);
+  const [residents, setResidents] = useState([]);
   const [selectResidents, setSelectResidents] = useState(null);
 
   useEffect(() => {
@@ -47,7 +46,7 @@ const Resident = () => {
           </h2>
           <button
             className="bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white font-bold py-2 px-4 rounded mb-4 flex"
-            onClick={() => navigate('/admin/add-resident')} 
+            onClick={() => navigate("/admin/add-resident")}
           >
             <span className="pr-2">
               <img src="/assets/add-square.svg" alt="Add" />
@@ -71,113 +70,123 @@ const Resident = () => {
             </tr>
           </thead>
           <tbody>
-            {residents?.map((resident) => (
-              <tr key={resident.id} className="border-t mx-auto">
-                <td className="py-4 px-4 flex items-center">
-                  <span className="mr-2">
-                    <img
-                      src={resident.profile_picture}
-                      alt={`${resident.fullName}'s Avatar`}
-                      className="h-8 w-8"
-                    />
-                  </span>
-                  {resident.fullName}
-                </td>
-                <td className="text-center">
-                  <span className="p-2 text-[#5678E9] bg-[#F6F8FB] font-semibold py-1 rounded-full">
-                    {resident.wing}
-                  </span>
-                  <span>{resident.unit}</span>
-                </td>
-                <td className="py-2 flex justify-center text-center">
-                  {resident.residenceStatus ? (
-                    <span
-                      className={`flex items-center ${
-                        resident.unitStatus === "Occupied"
-                          ? "text-[#14B8A6] font-semibold py-2 px-3 rounded-full bg-[#ECFFFF]"
-                          : "text-[#9333EA] font-semibold py-2 px-3 rounded-full bg-[#FFF6FF]"
-                      }`}
+            {residents.length > 0 ? (
+              residents?.map((resident) => (
+                <tr key={resident._id} className="border-t mx-auto">
+                  <td className="py-4 px-4 flex items-center capitalize">
+                    <span className="mr-2">
+                      <img
+                        src={resident.profile_picture}
+                        alt={`${resident.fullName}'s Avatar`}
+                        className="h-8 w-8 rounded-full"
+                      />
+                    </span>
+                    {resident.fullName}
+                  </td>
+                  <td className="text-center">
+                    <span className="p-2 text-[#5678E9] bg-[#F6F8FB] font-semibold py-1 rounded-full">
+                      {resident.wing}
+                    </span>
+                    <span>{resident.unit}</span>
+                  </td>
+                  <td className="py-2 flex justify-center text-center">
+                    {resident.residenceStatus ? (
+                      <span
+                        className={`flex items-center ${
+                          resident.unitStatus === "Occupied"
+                            ? "text-[#14B8A6] font-semibold py-2 px-3 rounded-full bg-[#ECFFFF]"
+                            : "text-[#9333EA] font-semibold py-2 px-3 rounded-full bg-[#FFF6FF]"
+                        }`}
+                      >
+                        <img
+                          src={
+                            resident.residenceStatus === "Occupied"
+                              ? "/assets/occupied.svg"
+                              : "/assets/vacate.svg"
+                          }
+                          alt="Residence Status Icon"
+                          className="h-5 w-5 mr-2"
+                        />
+                        {resident.residenceStatus}
+                      </span>
+                    ) : (
+                      <span className="bg-[#F6F8FB] rounded-full px-3">--</span>
+                    )}
+                  </td>
+                  <td className="text-center">
+                    {resident.role ? (
+                      <span
+                        className={`flex items-center justify-center ${
+                          resident.role === "tenant"
+                            ? "text-[#EC4899] font-semibold py-2 px-4 rounded-full bg-[#ECFFFF]"
+                            : "text-[#4F46E5] font-semibold py-2 px-4 rounded-full bg-[#FFF6FF]"
+                        }`}
+                      >
+                        <img
+                          src={
+                            resident.role === "owner"
+                              ? "/assets/owner.svg"
+                              : "/assets/user.svg"
+                          }
+                          alt={
+                            resident.role === "owner"
+                              ? "Owner Icon"
+                              : "User Icon"
+                          }
+                          className="h-5 w-5 mr-2"
+                        />
+                        {resident.role}
+                      </span>
+                    ) : (
+                      <span className="bg-[#F6F8FB] rounded-full px-3">--</span>
+                    )}
+                  </td>
+                  <td className="py-2 px-4">+91 {resident.phone}</td>
+                  <td className="py-2 text-center">
+                    <span className="bg-[#F6F8FB] px-2 py-1 rounded-full">
+                      0{resident?.members?.length}
+                    </span>
+                  </td>
+                  <td className="py-2 text-center">
+                    <span className="bg-[#F6F8FB] px-2 py-1 rounded-full">
+                      0{resident.vehicles?.length}
+                    </span>
+                  </td>
+                  <td className="py-2 px-4 flex justify-center">
+                    <button
+                      className="text-green-500 hover:text-green-700 px-2"
+                      aria-label={`Edit ${resident.name}`}
+                      onClick={() => handleEditClick(resident)}
                     >
                       <img
-                        src={
-                          resident.residenceStatus === "Occupied"
-                            ? "/assets/occupied.svg"
-                            : "/assets/vacate.svg"
-                        }
-                        alt="Residence Status Icon"
-                        className="h-5 w-5 mr-2"
+                        src="/assets/edit.svg"
+                        alt="Edit"
+                        className="h-8 w-8"
                       />
-                      {resident.residenceStatus}
-                    </span>
-                  ) : (
-                    <span className="bg-[#F6F8FB] rounded-full px-3">--</span>
-                  )}
-                </td>
-                <td className="text-center">
-                  {resident.role ? (
-                    <span
-                      className={`flex items-center justify-center ${
-                        resident.role === "tenant"
-                          ? "text-[#EC4899] font-semibold py-2 px-4 rounded-full bg-[#ECFFFF]"
-                          : "text-[#4F46E5] font-semibold py-2 px-4 rounded-full bg-[#FFF6FF]"
-                      }`}
+                    </button>
+                    <button
+                      className="text-blue-500 hover:text-blue-700 px-2"
+                      onClick={() => {
+                        setViewResident(true);
+                        setSelectResidents(resident);
+                      }}
                     >
                       <img
-                        src={
-                          resident.role === "owner"
-                            ? "/assets/owner.svg"
-                            : "/assets/user.svg"
-                        }
-                        alt={
-                          resident.role === "owner" ? "Owner Icon" : "User Icon"
-                        }
-                        className="h-5 w-5 mr-2"
+                        src="/assets/blueeye.svg"
+                        alt="View"
+                        className="h-8 w-8"
                       />
-                      {resident.role}
-                    </span>
-                  ) : (
-                    <span className="bg-[#F6F8FB] rounded-full px-3">--</span>
-                  )}
-                </td>
-                <td className="py-2 px-4">{resident.phone}</td>
-                <td className="py-2 text-center">
-                  <span className="bg-[#F6F8FB] px-2 py-1 rounded-full">
-                    {resident?.members?.length}
-                  </span>
-                </td>
-                <td className="py-2 text-center">
-                  <span className="bg-[#F6F8FB] px-2 py-1 rounded-full">
-                    {resident.vehicles?.length}
-                  </span>
-                </td>
-                <td className="py-2 px-4 flex justify-center">
-                  <button
-                    className="text-green-500 hover:text-green-700 px-2"
-                    aria-label={`Edit ${resident.name}`}
-                    onClick={() => handleEditClick(resident)}
-                  >
-                    <img
-                      src="/assets/edit.svg"
-                      alt="Edit"
-                      className="h-8 w-8"
-                    />
-                  </button>
-                  <button
-                    className="text-blue-500 hover:text-blue-700 px-2"
-                    onClick={() => {
-                      setViewResident(true);
-                      setSelectResidents(resident);
-                    }}
-                  >
-                    <img
-                      src="/assets/blueeye.svg"
-                      alt="View"
-                      className="h-8 w-8"
-                    />
-                  </button>
-                </td>
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+              <td className="text-center py-4 leading-[70vh] select-none" colSpan="100%">
+                No Data found.
+              </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
