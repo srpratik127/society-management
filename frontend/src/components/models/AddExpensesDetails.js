@@ -1,6 +1,25 @@
-import React from 'react'
+import React, { useRef, useState } from 'react';
 
-const AddExpensesDetails = () => {
+const AddExpensesDetails = ({ onClose }) => {
+    const [fileName, setFileName] = useState("");
+    const fileInputRef = useRef(null);
+    const dateInputRef = useRef(null);
+
+    const handleFileClick = () => {
+        fileInputRef.current.click();
+    };
+
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            setFileName(file.name);
+        }
+    };
+
+    const handleDateIconClick = () => {
+        dateInputRef.current.showPicker();
+    };
+
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-20 z-50">
             <div className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
@@ -13,7 +32,8 @@ const AddExpensesDetails = () => {
                         id="title"
                         type="text"
                         placeholder="Enter Title"
-                        className="mt-1 block w-full border border-gray-300 rounded-md p-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        className="mt-1 block w-full border border-gray-300 rounded-md p-2 text-sm focus:outline-none "
+                        required
                     />
                 </div>
                 <div className="mb-4">
@@ -21,7 +41,8 @@ const AddExpensesDetails = () => {
                     <textarea
                         id="description"
                         placeholder="Enter Description"
-                        className="mt-1 block w-full border border-gray-300 rounded-md p-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        className="mt-1 block w-full border border-gray-300 rounded-md p-2 text-sm focus:outline-none "
+                        required
                     />
                 </div>
                 <div className="flex space-x-4 mb-4">
@@ -31,12 +52,15 @@ const AddExpensesDetails = () => {
                             <input
                                 id="date"
                                 type="date"
-                                className="block w-full border border-gray-300 rounded-md p-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                ref={dateInputRef}
+                                className="block w-full border border-gray-300 rounded-md p-2 text-sm focus:outline-none "
+                                required
                             />
-                            <span className="absolute right-2 top-2 text-gray-400">
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m4 0v4m-4 0h4m4-4v4m0 0h4M4 9h16M4 13h16M4 17h16M7 21H5a2 2 0 01-2-2v-2h4m6 0h4v2a2 2 0 01-2 2h-2m4-14h2a2 2 0 012 2v4H3V9a2 2 0 012-2h2m-2 8h16m0 0v-2a2 2 0 00-2-2H7a2 2 0 00-2 2v2h16z"></path>
-                                </svg>
+                            <span
+                                className="absolute right-2 top-2 text-gray-400 cursor-pointer"
+                                onClick={handleDateIconClick}
+                            >
+                                <img src="/assets/calendar.svg" alt="" />
                             </span>
                         </div>
                     </div>
@@ -46,27 +70,50 @@ const AddExpensesDetails = () => {
                             id="amount"
                             type="text"
                             placeholder="₹ 0000"
-                            className="mt-1 block w-full border border-gray-300 rounded-md p-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            className="mt-1 block w-full border border-gray-300 rounded-lg p-2 text-sm focus:outline-none"
+                            required
                         />
                     </div>
                 </div>
                 <div className="mb-4">
                     <label className="text-sm font-medium" htmlFor="upload">Upload Bill<span className="text-red-500">*</span></label>
-                    <div className="mt-1 flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-md p-4">
-                        <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 5v14m7-7H5"></path>
-                        </svg>
-                        <p className="mt-2 text-sm text-blue-500 font-medium cursor-pointer">Upload a file</p>
-                        <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+                    <div
+                        className="mt-1 flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-4 cursor-pointer"
+                        onClick={handleFileClick} >
+                        {fileName ? (
+                            <div>
+                                <p className="mt-2 text-sm text-gray-700 font-medium">{fileName}</p>
+                                <p className='text-[#39973D]'>File Uploaded Successfully</p>
+                            </div>
+
+                        ) : (
+                           <div>
+                             <p className="mt-2 text-sm text-blue-500 font-medium">Upload a file</p>
+                             <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+                           </div>
+                        )}
                     </div>
+                    <input
+                        id="upload"
+                        type="file"
+                        ref={fileInputRef}
+                        className="hidden"
+                        onChange={handleFileChange}
+                        required
+                    />
                 </div>
                 <div className="flex justify-between">
-                    <button className="w-1/2 bg-gray-200 text-gray-700 rounded-md py-2 mr-2">Cancel</button>
-                    <button className="w-1/2 bg-blue-500 text-white rounded-md py-2 ml-2">Save</button>
+                    <button
+                        className="w-1/2 bg-gray-200 text-gray-700 rounded-lg py-2 mr-2"
+                        onClick={onClose}
+                    >
+                        Cancel
+                    </button>
+                    <button className="w-1/2 bg-blue-500 text-white rounded-lg py-2 ml-2">Save</button>
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default AddExpensesDetails
+export default AddExpensesDetails;
