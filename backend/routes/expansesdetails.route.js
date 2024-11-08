@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const expenseDetailsController = require('../controllers/expansesdetails.controller');
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
 
-router.post('/', expenseDetailsController.createExpense);
+router.post('/', upload.single('bill'), expenseDetailsController.createExpense);
 router.get('/', expenseDetailsController.getAllExpenses);
 router.get('/:id', expenseDetailsController.getExpenseById);
 router.put('/:id', expenseDetailsController.updateExpense);
