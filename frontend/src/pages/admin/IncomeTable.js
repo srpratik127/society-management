@@ -4,32 +4,48 @@ import { otherIncomeData } from "../../data/maintenanceData";
 import { Popover } from "@headlessui/react";
 import CreateOtherIncome from "../../components/models/CreateOtherIncome";
 import EditOtherIncome from "../../components/models/EditOtherIncome";
+import ViewMaintenanceDetails from "../../components/models/ViewMaintenanceDetails";
+import SetMaintenance from "../../components/models/SetMaintenance";
+import AddMaintenanceDetail from "../../components/models/AddMaintenanceDetail";
 
 const IncomeTable = () => {
   const [view, setView] = useState("maintenance");
   const [selectedOption, setSelectedOption] = useState(null);
   const [isCreatePopupOpen, setCreatePopupOpen] = useState(false);
-  const [isEditPopupVisible, setIsEditPopupVisible] = useState(false);  
-  const [selectedItem, setSelectedItem] = useState(null); //123
+  const [isEditPopupVisible, setIsEditPopupVisible] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [isViewMaintenanceVisible, setViewMaintenanceVisible] = useState(false);
+  const [isSetMaintenanceVisible, setSetMaintenanceVisible] = useState(false);
+  const [isAddMaintenanceDetail,setIsAddMaintenanceDetail] = useState(false)
 
-  const handleEditClick = (item) => {
-    setSelectedItem(item); //123
-    setIsEditPopupVisible(true); 
+  const handleEditClick = () => {
+    setSelectedItem();
+    setIsEditPopupVisible(true);
   };
-  
+
   const handleCreateOtherIncome = () => {
     setCreatePopupOpen(true);
   };
   const handleClosePopup = () => {
     setCreatePopupOpen(false);
-    setIsEditPopupVisible(false); 
-    setSelectedItem(null); //123
+    setIsEditPopupVisible(false);
+    setSelectedItem(null);
+    setViewMaintenanceVisible(false);
+    setSetMaintenanceVisible(false);
   };
+  const handleViewMaintenanceClick = () => {
+    setViewMaintenanceVisible(true);
+  };
+
+  const handleSetMaintenanceClick = () => {
+    setSetMaintenanceVisible(true);
+  };
+
   return (
     <div className="bg-blue-50 min-h-[100px] p-6 overflow-y-hidden">
       {view === "maintenance" && (
         <div className="flex justify-between items-center mb-6 p-4 bg-white rounded-xl">
-          <div className="flex space-x-4">
+          <div className="flex space-x-4 ">
             <div className="bg-white shadow rounded-lg p-4 w-[230px] flex flex-col justify-center">
               <div className="text-gray-500">Maintenance Amount</div>
               <div className="text-green-500 font-bold text-xl">₹ 0</div>
@@ -40,18 +56,26 @@ const IncomeTable = () => {
             </div>
           </div>
           <div className="flex">
-            <button className="text-white font-bold py-2 px-8 rounded-lg h-full" style={{
-              background: "linear-gradient(to right, #FE512E, #F09619)",
-            }}>
+            <button
+              className="text-white font-bold py-2 px-8 rounded-lg h-full"
+              style={{
+                background: "linear-gradient(to right, #FE512E, #F09619)",
+              }}
+              onClick={handleSetMaintenanceClick}>
               Set Maintenance
             </button>
+            {isSetMaintenanceVisible && (
+              <SetMaintenance onClose={handleClosePopup} setIsAddMaintenanceDetail={setIsAddMaintenanceDetail} />
+            )}
+            {isAddMaintenanceDetail && (
+              <AddMaintenanceDetail onClose={()=>setIsAddMaintenanceDetail(false)} />
+            )}
           </div>
         </div>
       )}
-
-      <div className="flex border-b mb-6">
+      <div className="flex ">
         <button
-          className={`py-2 px-4 font-bold rounded-tl-lg rounded-tr-lg ${view === "maintenance" ? "text-white" : "text-black"}`}
+          className={`py-2 px-4 font-semibold rounded-tl-lg rounded-tr-lg ${view === "maintenance" ? "text-white" : "text-black"}`}
           style={{
             background: view === "maintenance" ? "linear-gradient(to right, #FE512E, #F09619)" : "transparent",
           }}
@@ -59,7 +83,7 @@ const IncomeTable = () => {
           Maintenance
         </button>
         <button
-          className={`py-2 px-4 font-bold rounded-tl-lg rounded-tr-lg ${view === "other" ? "text-white" : "text-black"}`}
+          className={`py-2 px-4 font-semibold rounded-tl-lg rounded-tr-lg ${view === "other" ? "text-white" : "text-black"}`}
           style={{
             background: view === "other" ? "linear-gradient(to right, #FE512E, #F09619)" : "transparent",
           }}
@@ -67,7 +91,6 @@ const IncomeTable = () => {
           Other Income
         </button>
       </div>
-
       {/* Maintenance Table */}
       {view === "maintenance" && (
         <div className="bg-white shadow rounded-lg overflow-y-auto" style={{ maxHeight: "60vh" }}>
@@ -145,11 +168,12 @@ const IncomeTable = () => {
                     </span>
                   </td>
                   <td className="px-4 py-2">
-                    <button className="bg-gray-200 hover:bg-gray-300 rounded-full">
+                    <button className="bg-gray-200 hover:bg-gray-300 rounded-full" onClick={handleViewMaintenanceClick} >
                       <span className="material-icons">
                         <img src="/assets/blueeye.svg" alt="Action Icon" />
                       </span>
                     </button>
+                    {isViewMaintenanceVisible && <ViewMaintenanceDetails onClose={handleClosePopup} />}
                   </td>
                 </tr>
               ))}
@@ -157,13 +181,12 @@ const IncomeTable = () => {
           </table>
         </div>
       )}
-
       {/* Other Income Section */}
       {view === "other" && (
         <div className="bg-[#ffffff] border rounded-xl p-3">
 
           <div className="mt-6 flex justify-between align-center p-5">
-            <h2 className="text-2xl font-bold">Other Income</h2>
+            <h2 className="text-2xl font-semibold">Other Income</h2>
             <button
               className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 focus:outline-none"
               onClick={handleCreateOtherIncome}
@@ -192,7 +215,7 @@ const IncomeTable = () => {
                       <div className="py-2">
                         <button
                           className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
-                          onClick={handleEditClick(item)} //123
+                          onClick={handleEditClick}
                         >
                           Edit
                         </button>

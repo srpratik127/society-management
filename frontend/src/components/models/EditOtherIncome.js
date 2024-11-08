@@ -1,12 +1,12 @@
 import React from 'react'
 
-const EditOtherIncome = ({ onClose, item  }) => {
+const EditOtherIncome = ({ onClose }) => {
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-20 z-50">
             <div className="bg-white rounded-lg w-full max-w-md p-6 space-y-4 shadow-lg">
                 <h2 className="text-xl font-semibold">Ganesh Chturthi</h2>
                 <form className="space-y-4">
-                    <div>
+                     <div>
                         <label className="block text-sm font-medium">Amount</label>
                         <div className="flex border rounded-lg overflow-hidden">
                             <span className="flex items-center justify-center text-lg pl-3 py-2">₹</span>
@@ -46,7 +46,7 @@ const EditOtherIncome = ({ onClose, item  }) => {
                             required
                         />
                     </div>
-
+                   
 
                     <div className="flex justify-between mt-4">
                         <button
