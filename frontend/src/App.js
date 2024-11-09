@@ -17,6 +17,7 @@ import ExpensesTable from "./pages/admin/Expance";
 import AddResident from "./components/admin/AddResident";
 import AddExpensesDetails from "./components/models/AddExpensesDetails";
 import Note from "./pages/admin/Note";
+import FacilityManagement from "./pages/admin/FacilityManagement";
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
           <Route path="add-resident" element={<AddResident />} />
           <Route path="addexpensesdetails" element={<AddExpensesDetails/>}/>
           <Route path="edit-resident" element={<AddResident />} />
+          <Route path="facility" element={<FacilityManagement/>} />
         </Route>
         <Route path="*" element={<ErrorPage />} />
       </Routes>
