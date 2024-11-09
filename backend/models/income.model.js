@@ -30,8 +30,12 @@ const incomeSchema = new mongoose.Schema({
           },
           paymentDate: {
             type: String, 
+            default: new Date().toISOString().split('T')[0],
           },
           paymentMethod: {
+            type: String, 
+          },
+          payAmount: {
             type: String, 
           }
         }

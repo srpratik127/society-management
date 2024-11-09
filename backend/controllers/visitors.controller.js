@@ -1,0 +1,66 @@
+const Visitors = require("../models/visitors.model.js");
+
+const createVisitor = async (req, res) => {
+    try {
+        const { name, number, date, time, wing, unit_Number } = req.body;
+        const response = new Visitors({
+            name,
+            number,
+            date,
+            time,
+            wing,
+            unit_Number
+        });
+        await response.save();
+        res.status(200).json({ message: 'Visitor created successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error creating Visitor', error: error.message });
+    }
+};
+
+const getVisitor = async (req, res) => {
+    try {
+        const data = await Visitors.find();
+        res.status(200).json(data)
+    } catch (error) {
+        res.status(500).json({ message: 'Get Visitor controller error' })
+    }
+};
+
+const updateVisitor = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, number, date, time, wing, unit_Number } = req.body;
+        const updatedVisitor = await Visitors.findByIdAndUpdate(
+            id,
+            { name, number, date, time, wing, unit_Number },
+            { new: true, runValidators: true }
+        );
+        if (!updatedVisitor) {
+            return res.status(404).json({ message: "Visitor not found" });
+        }
+        res.status(200).json({ message: "Visitor updated successfully", data: updatedVisitor });
+    } catch (error) {
+        res.status(500).json({ message: "Error updating Visitor", error: error.message });
+    }
+};
+
+const deleteVisitor = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deletedVisitor = await Visitors.findByIdAndDelete(id);
+        if (!deletedVisitor) {
+            return res.status(404).json({ message: "Visitor not found" });
+        }
+        res.status(200).json({ message: "Visitor deleted successfully" });
+    } catch (error) {
+        res.status(500).json({ message: "Error deleting Visitor", error: error.message });
+    }
+};
+
+module.exports = {
+    createVisitor,
+    getVisitor,
+    updateVisitor,
+    deleteVisitor
+};
