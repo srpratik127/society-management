@@ -37,6 +37,7 @@ const facilitiesRoutes = require('./routes/facility.route.js');
 const requestsRoutes = require('./routes/request.route.js');
 const protocol = require('./routes/protocol.route.js');
 const guard = require('./routes/guard.route.js');
+const visitors = require('./routes/visitors.route.js');
 
 app.get("/", (req, res) => {
   res.send("Welcome...!!");
@@ -58,6 +59,7 @@ app.use('/api/facilities', facilitiesRoutes);
 app.use('/api/requests', requestsRoutes);
 app.use('/api/protocol', protocol);
 app.use('/api/guard', guard);
+app.use('/api/visitors', visitors);
 
 const port = process.env.PORT || 5000;  
 app.listen(port, () => {
