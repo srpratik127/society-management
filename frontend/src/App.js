@@ -17,6 +17,8 @@ import ExpensesTable from "./pages/admin/Expance";
 import AddResident from "./components/admin/AddResident";
 import AddExpensesDetails from "./components/models/AddExpensesDetails";
 import Note from "./pages/admin/Note";
+import CreateComplaint from "./pages/admin/CreateComplaint";
+import RequestTracking from "./pages/admin/RequestTracking";
 
 function App() {
   return (
@@ -40,8 +42,11 @@ function App() {
           <Route path="add-resident" element={<AddResident />} />
           <Route path="addexpensesdetails" element={<AddExpensesDetails/>}/>
           <Route path="edit-resident" element={<AddResident />} />
+          <Route path="create-complaint" element={<CreateComplaint/>}/>
+          <Route path="request-tracking" element={<RequestTracking/>}/>
+
         </Route>
-        <Route path="*" element={<ErrorPage />} />
+ઇ        <Route path="*" element={<ErrorPage />} />
       </Routes>
     </>
   );

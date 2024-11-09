@@ -34,14 +34,12 @@ const AddMaintenanceDetail = ({ onClose }) => {
       try {
         const response = await axios.post("http://localhost:5000/api/maintenance", payload);
         console.log("API response:", response.data);
-        // Reset fields if needed
         setMaintenanceAmount("");
         setPenaltyAmount("");
         setDueDate("");
         setPenaltyAfterDays("");
       } catch (error) {
         console.error("Error submitting maintenance details:", error);
-        // Handle error or show message to user
       }
     }
   };
