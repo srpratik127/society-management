@@ -33,7 +33,7 @@ const Navbar = () => {
   return (
     <div className="w-full bg-white shadow py-4 px-6 flex items-center justify-between">
       {location.pathname === "/admin" ? (
-        <div className={`flex items-center relative w-1/4 ${isOpenMenu && "ms-10"}`}>
+        <div className={`flex items-center relative w-1/4 ${!isOpenMenu && "ms-10"}`}>
           <span className="absolute left-3 text-gray-400">
             <img src="/assets/search-Bordere.svg" alt="" />
           </span>
@@ -44,7 +44,7 @@ const Navbar = () => {
           />
         </div>
       ) : (
-        <p className={` ${isOpenMenu && "ms-10"}`}>{breadcrumb}</p>
+        <p className={`${!isOpenMenu && "ms-10"}`}>{breadcrumb}</p>
       )}
 
       <div className="flex items-center space-x-6">

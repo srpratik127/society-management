@@ -19,14 +19,14 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`h-screen p-4 pt-0 w-82 bg-white shadow-lg flex flex-col xl:relative absolute z-30 xl:left-0 ${
-        isOpenMenu ? "right-[100%]" : "left-0"
-      }`}
-    >
+    className={`h-screen p-4 pt-0 w-82 bg-white shadow-lg flex flex-col xl:relative absolute transition-all duration-300 ease-in-out z-20 xl:left-0 ${
+      isOpenMenu ? "translate-x-0" : "-translate-x-full"
+    }`}ease-linear
+  >
       <img
         src="/assets/toggle-menu.png"
         alt=""
-        className="absolute right-[-50px] top-[20px] block xl:hidden hover:shadow-lg rounded-full cursor-pointer"
+        className="absolute right-[-50px] top-[20px] block xl:hidden hover:shadow-lg hover:border rounded-full cursor-pointer"
         onClick={() => dispatch(ToggleMenu())}
       />
       <div className="px-4 pb-2 text-center">

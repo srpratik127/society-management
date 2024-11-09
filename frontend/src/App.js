@@ -14,7 +14,6 @@ import { ProtectedRoute, PublicRoute } from "./components/ProtectedRoute";
 import ErrorPage from "./pages/ErrorPage";
 import Resident from "./pages/admin/Recident";
 import AddResident from "./components/admin/AddResident";
-import AddExpensesDetails from "./components/models/AddExpensesDetails";
 import Note from "./pages/admin/Note";
 import FacilityManagement from "./pages/admin/FacilityManagement";
 import Expenses from "./pages/admin/Expenses";
@@ -43,7 +42,6 @@ function App() {
           <Route path="edit-resident" element={<AddResident />} />
           <Route path="facility" element={<FacilityManagement/>} />
           <Route path="maintenance-details" element={<MaintenanceViewDetails />} />
-          <Route path="addexpensesdetails" element={<AddExpensesDetails/>}/>
         </Route>
         <Route path="*" element={<ErrorPage />} />
       </Routes>
