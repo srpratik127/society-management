@@ -15,6 +15,8 @@ import ErrorPage from "./pages/ErrorPage";
 import Resident from "./pages/admin/Recident";
 import AddResident from "./components/admin/AddResident";
 import Note from "./pages/admin/Note";
+import CreateComplaint from "./pages/admin/CreateComplaint";
+import RequestTracking from "./pages/admin/RequestTracking";
 import FacilityManagement from "./pages/admin/FacilityManagement";
 import Expenses from "./pages/admin/Expenses";
 import MaintenanceViewDetails from "./components/admin/MaintenanceViewDetails";
@@ -30,7 +32,6 @@ function App() {
           <Route path="get-otp" element={<PublicRoute><OtpScreen /></PublicRoute>} />
           <Route path="reset" element={<PublicRoute><ResetPassword /></PublicRoute>} />
         </Route> 
-
         <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>}>
           <Route path="" element={<Dashboard />} />
           <Route path="profile" element={<Profile />} />
@@ -40,10 +41,12 @@ function App() {
           <Route path="note" element={<Note/>} />
           <Route path="add-resident" element={<AddResident />} />
           <Route path="edit-resident" element={<AddResident />} />
+          <Route path="create-complaint" element={<CreateComplaint/>}/>
+          <Route path="request-tracking" element={<RequestTracking/>}/>
           <Route path="facility" element={<FacilityManagement/>} />
           <Route path="maintenance-details" element={<MaintenanceViewDetails />} />
         </Route>
-        <Route path="*" element={<ErrorPage />} />
+ઇ        <Route path="*" element={<ErrorPage />} />
       </Routes>
     </>
   );

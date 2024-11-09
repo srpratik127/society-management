@@ -1,13 +1,13 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState } from 'react'
 
-const AddExpensesDetails = ({ onClose }) => {
+const EditExpensesDetails = ({ onClose }) => {
     const [fileName, setFileName] = useState("");
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [date, setDate] = useState("");
     const [amount, setAmount] = useState("");
     const [errors, setErrors] = useState({});
-
+    
     const fileInputRef = useRef(null);
     const dateInputRef = useRef(null);
 
@@ -44,11 +44,10 @@ const AddExpensesDetails = ({ onClose }) => {
             onClose(); 
         }
     };
-
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-20 z-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10 z-50">
             <form onSubmit={handleSubmit} className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
-                <h2 className="text-lg font-semibold mb-4">Add Expenses Details</h2>
+                <h2 className="text-lg font-semibold mb-4">Edit Expenses Details</h2>
                 <hr className="mb-4" />
 
                 <div className="mb-4">
@@ -66,7 +65,7 @@ const AddExpensesDetails = ({ onClose }) => {
 
                 <div className="mb-4">
                     <label className="text-sm font-medium" htmlFor="description">Description<span className="text-red-500">*</span></label>
-                    <textarea   
+                    <textarea
                         id="description"
                         placeholder="Enter Description"
                         value={description}
@@ -158,7 +157,7 @@ const AddExpensesDetails = ({ onClose }) => {
                 </div>
             </form>
         </div>
-    );
-};
+    )
+}
 
-export default AddExpensesDetails;
+export default EditExpensesDetails
