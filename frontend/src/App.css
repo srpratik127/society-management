@@ -49,6 +49,9 @@ input[type="checkbox"]:checked::after {
 }
 .react-datepicker{
   width: 300px !important;
+  border: none !important;
+  border-radius: 10px !important;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px !important;
 }
 .react-datepicker__month-container {
   width: 100%;
@@ -58,7 +61,7 @@ input[type="checkbox"]:checked::after {
   background-color: white !important;
   border-bottom: none !important;
   width: 20px;
-  border-top-left-radius: 0.3rem;
+  border-top-left-radius: 60px !important;
   padding: 20px !important;
   position: relative;
 }
@@ -80,6 +83,12 @@ input[type="checkbox"]:checked::after {
 }
 .react-datepicker__day--selected{
   border-radius: 50% !important;
-  background-color: #e26d1f !important;
+  background-color: #f97316 !important;
   color: #fff;
+}
+.react-datepicker__day--keyboard-selected{
+  border-radius: 50% !important;
+}
+.react-datepicker-popper[data-placement^=bottom] .react-datepicker__triangle{
+  display: none;
 }

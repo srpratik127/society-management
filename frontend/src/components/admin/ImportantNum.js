@@ -35,12 +35,16 @@ export const ImportantNum = () => {
   };
 
   const handleDelete = async () => {
-    await axios.delete(
-      `${process.env.REACT_APP_BASE_URL}/api/numbers/${numberToDelete}`
-    );
-    setImportantNumbers((prev) =>
-      prev.filter((number) => number._id !== numberToDelete)
-    );
+    try {
+      await axios.delete(
+        `${process.env.REACT_APP_BASE_URL}/api/numbers/${numberToDelete}`
+      );
+      setImportantNumbers((prev) =>
+        prev.filter((number) => number._id !== numberToDelete)
+      );
+    } catch (error) {
+      console.log(error);
+    }
     setOpenDelete(false);
   };
 

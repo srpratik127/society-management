@@ -3,13 +3,16 @@ import React, { useEffect, useState } from "react";
 import EditOtherIncome from "../models/EditOtherIncome";
 import CreateOtherIncome from "../models/CreateOtherIncome";
 import axios from "axios";
+import DeleteModel from "../models/DeleteModel";
+import { useNavigate } from "react-router-dom";
 
 const OtherIncome = () => {
-  const [selectedOption, setSelectedOption] = useState(null);
   const [isCreatePopupOpen, setCreatePopupOpen] = useState(false);
   const [isEditPopupVisible, setIsEditPopupVisible] = useState(false);
+  const [openDeleteIncome, setOpenDeleteIncome] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [otherIncomeData, setOtherIncomeData] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const viewOtherIncome = async () => {
@@ -25,9 +28,19 @@ const OtherIncome = () => {
     viewOtherIncome();
   }, []);
 
-  const handleEditClick = (item) => {
-    setSelectedItem(item);
-    setIsEditPopupVisible(true);
+  const handleDelete = async () => {
+    try {
+      await axios.delete(
+        `${process.env.REACT_APP_BASE_URL}/api/income/${selectedItem._id}`
+      );
+      setOtherIncomeData((prev) =>
+        prev.filter((number) => number._id !== selectedItem._id)
+      );
+      setSelectedItem(null);
+    } catch (error) {
+      console.log(error);
+    }
+    setOpenDeleteIncome(false);
   };
 
   const handleClosePopup = () => {
@@ -41,8 +54,8 @@ const OtherIncome = () => {
       <div className="mt-3 flex justify-between align-center px-3">
         <h2 className="text-2xl font-bold">Other Income</h2>
         <button
-          className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 focus:outline-none"
-          onClick={()=> setCreatePopupOpen(true)}
+          className="bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white px-4 py-2 rounded-lg hover:bg-orange-600 focus:outline-none"
+          onClick={() => setCreatePopupOpen(true)}
         >
           Create Other Income
         </button>
@@ -57,23 +70,33 @@ const OtherIncome = () => {
                 <Popover.Button>
                   <img src="/assets/3dots.svg" alt="options" />
                 </Popover.Button>
-                <Popover.Panel className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 z-50">
+                <Popover.Panel className="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 z-50">
                   <div className="py-2">
                     <button
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
-                      onClick={() => handleEditClick(item)}
+                      onClick={() => {
+                        setSelectedItem(item);
+                        setIsEditPopupVisible(true);
+                      }}
                     >
                       Edit
                     </button>
                     <button
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
-                      onClick={() => setSelectedOption("View")}
+                      onClick={() => {
+                        navigate("/admin/maintenance-details", {
+                          state: { otherIncome: item },
+                        });
+                      }}
                     >
                       View
                     </button>
                     <button
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
-                      onClick={() => setSelectedOption("Delete")}
+                      onClick={() => {
+                        setOpenDeleteIncome(true);
+                        setSelectedItem(item);
+                      }}
                     >
                       Delete
                     </button>
@@ -87,7 +110,7 @@ const OtherIncome = () => {
             </div>
             <div className="flex justify-between px-3 py-1">
               <span className="text-sm text-gray-600">Total Members:</span>
-              <span className="font-medium">{item.members?.lenght || "0"}</span>
+              <span className="font-medium">{item.members?.length || "0"}</span>
             </div>
             <div className="flex justify-between px-3 py-1">
               <span className="text-sm text-gray-600">Date:</span>
@@ -101,26 +124,43 @@ const OtherIncome = () => {
             </div>
             <div className="flex justify-between px-3 py-1">
               <span className="text-sm text-gray-600">Due Date:</span>
-              <span className="font-medium">{new Date(item.dueDate).toLocaleString("en-GB", {
+              <span className="font-medium">
+                {new Date(item.dueDate).toLocaleString("en-GB", {
                   day: "2-digit",
                   month: "2-digit",
                   year: "numeric",
-                })}</span>
+                })}
+              </span>
             </div>
             <div className="flex justify-between px-3 py-1">
-              <span className="text-sm mt-2">
-                {item.description}
-              </span>
+              <span className="text-sm mt-2">{item.description}</span>
             </div>
           </div>
         ))}
       </div>
       {isCreatePopupOpen && (
-        <div className="fixed inset-0 flex justify-center items-center z-50 bg-black bg-opacity-50">
-          <CreateOtherIncome onClose={handleClosePopup} />
-        </div>
+        <CreateOtherIncome
+          onClose={handleClosePopup}
+          setOtherIncomeData={setOtherIncomeData}
+        />
       )}
-      {isEditPopupVisible && <EditOtherIncome onClose={handleClosePopup} />}
+      {isEditPopupVisible && (
+        <EditOtherIncome
+          onClose={handleClosePopup}
+          selectedItem={selectedItem}
+          setIncomeData={setOtherIncomeData}
+        />
+      )}
+      {openDeleteIncome && (
+        <DeleteModel
+          closePopup={() => setOpenDeleteIncome(false)}
+          onDelete={handleDelete}
+          message={{
+            title: `Delete ${selectedItem.title}?`,
+            sms: "Are you sure you want to delate this?",
+          }}
+        />
+      )}
     </div>
   );
 };

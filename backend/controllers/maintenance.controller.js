@@ -2,27 +2,29 @@ const Maintenance = require('../models/maintenance.model');
 const Resident = require('../models/resident.model');
 
 const addMaintenance = async (req, res) => {
-    try {
-      const { amount, penaltyAmount, dueDate, penaltyDay } = req.body;
-  
-      const users = await Resident.find();
-  
-      const maintenanceRecords = users.map((user) => ({
-        user: user._id,
-        amount,
-        penaltyAmount,
-        dueDate,
-        penaltyDay,
-        status: 'pending',
-      }));
-  
-      await Maintenance.insertMany(maintenanceRecords);
-  
-      res.status(200).json({ message: 'Maintenance records created for all users' });
-    } catch (error) {
-      res.status(500).json({ message: 'Error creating maintenance records', error: error.message });
-    }
-  };
+  try {
+    const { amount, penaltyAmount, dueDate, penaltyDay } = req.body;
+    const users = await Resident.find();
+
+    const maintenanceRecords = users.map((user) => ({
+      user: user._id,
+      amount,
+      penaltyAmount,
+      dueDate,
+      penaltyDay,
+      status: 'pending',
+    }));
+
+    const data = await Maintenance.insertMany(maintenanceRecords);
+    const populatedData = await Maintenance.find({ _id: { $in: data.map((d) => d._id) } })
+      .populate('user', 'fullName profile_picture wing unit phone role')
+      .exec();
+
+    res.status(200).json({ data: populatedData, message: 'Maintenance records created for all users' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error creating maintenance records', error: error.message });
+  }
+};
 
   const getStatus = async (req, res) => {
     try {
@@ -54,8 +56,32 @@ const getAllStatus = async (req, res) => {
     }
 };
 
+const applyPenalties = async () => {
+  try {
+    const today = new Date();
+    const maintenanceRecords = await Maintenance.find({
+      penaltyDay: { $lte: today },
+      status: 'pending',
+      penaltyAmount: { $gt: 0 },
+    });
+
+    const updatePromises = maintenanceRecords.map((record) => {
+      return Maintenance.findByIdAndUpdate(record._id, {
+        $inc: { amount: record.penaltyAmount },
+      });
+    });
+
+    await Promise.all(updatePromises);
+    console.log("Penalties applied to overdue maintenance records.");
+
+  } catch (error) {
+    console.error("Error applying penalties:", error);
+  }
+};
+
 module.exports = {
     addMaintenance,
     getStatus,
-    getAllStatus
+    getAllStatus,
+    applyPenalties
 }
