@@ -44,7 +44,7 @@ const Navbar = () => {
           />
         </div>
       ) : (
-        <p>{breadcrumb}</p>
+        <p className={` ${isOpenMenu && "ms-10"}`}>{breadcrumb}</p>
       )}
 
       <div className="flex items-center space-x-6">

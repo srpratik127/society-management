@@ -18,8 +18,17 @@ const Sidebar = () => {
   };
 
   return (
-    <div className={`h-screen p-4 pt-0 w-82 bg-white shadow-lg flex flex-col xl:relative absolute z-30 xl:${isOpenMenu ? "right-[100%]":""}`}>
-      <img src="/assets/toggle-menu.png" alt="" className="absolute right-[-50px] top-[20px] block xl:hidden cursor-pointer" onClick={()=> dispatch(ToggleMenu())}/>
+    <div
+      className={`h-screen p-4 pt-0 w-82 bg-white shadow-lg flex flex-col xl:relative absolute z-30 xl:left-0 ${
+        isOpenMenu ? "right-[100%]" : "left-0"
+      }`}
+    >
+      <img
+        src="/assets/toggle-menu.png"
+        alt=""
+        className="absolute right-[-50px] top-[20px] block xl:hidden hover:shadow-lg rounded-full cursor-pointer"
+        onClick={() => dispatch(ToggleMenu())}
+      />
       <div className="px-4 pb-2 text-center">
         <h1 className="text-4xl font-bold p-4 text-[#FE512E] to-[#F09619]">
           Dash<span className="text-black">Stack</span>
