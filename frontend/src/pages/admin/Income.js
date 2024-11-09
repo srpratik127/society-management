@@ -1,13 +1,30 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ViewMaintenance from "../../components/admin/ViewMaintenance";
 import OtherIncome from "../../components/admin/OtherIncome";
 import ConfirmPassword from "../../components/models/ConfirmPassword";
 import AddMaintenanceDetail from "../../components/models/AddMaintenanceDetail";
+import axios from "axios";
 
 const Income = () => {
   const [view, setView] = useState("maintenance");
   const [isConfirmPassword, setIsConfirmPassword] = useState(false);
   const [isAddMaintenance, setIsAddMaintenance] = useState(false);
+  const [maintenance, setMaintenance] = useState([]);
+
+  const viewMaintenanceFn = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/api/maintenance`
+      );
+      setMaintenance(response?.data);
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
+  useEffect(() => {
+    viewMaintenanceFn();
+  }, []);
 
   return (
     <>
@@ -17,11 +34,15 @@ const Income = () => {
             <div className="flex space-x-4">
               <div className="bg-white shadow rounded-lg p-4 w-[230px] flex flex-col justify-center">
                 <div className="text-gray-500">Maintenance Amount</div>
-                <div className="text-green-500 font-bold text-xl">₹ 0</div>
+                <div className="text-green-500 font-bold text-xl">
+                  ₹ {maintenance[0]?.amount || "00"}
+                </div>
               </div>
               <div className="bg-white shadow rounded-lg p-4 w-[230px] flex flex-col justify-center">
                 <div className="text-gray-500">Penalty Amount</div>
-                <div className="text-red-500 font-bold text-xl">₹ 0</div>
+                <div className="text-red-500 font-bold text-xl">
+                  ₹ {maintenance[0]?.penaltyAmount || "00"}
+                </div>
               </div>
             </div>
             <div className="flex">
@@ -67,7 +88,9 @@ const Income = () => {
             Other Income
           </button>
         </div>
-        {view === "maintenance" && <ViewMaintenance />}
+        {view === "maintenance" && (
+          <ViewMaintenance maintenance={maintenance} />
+        )}
         {view === "other" && <OtherIncome />}
       </div>
       {isConfirmPassword && (

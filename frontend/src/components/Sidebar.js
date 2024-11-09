@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { sidebardata } from "../data/sidebardata";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { removeToken } from "../store/authSlice";
 import { useLocation, useNavigate } from "react-router-dom";
+import { ToggleMenu } from "../store/ToggleMenuSlice";
 
 const Sidebar = () => {
   const [activeDropdown, setActiveDropdown] = useState(null);
+  const isOpenMenu = useSelector((store) => store.menu.openMenu);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -16,7 +18,8 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="h-screen p-4 pt-0 reletive w-82 bg-white shadow-lg flex flex-col ">
+    <div className={`h-screen p-4 pt-0 w-82 bg-white shadow-lg flex flex-col xl:relative absolute z-30 xl:${isOpenMenu ? "right-[100%]":""}`}>
+      <img src="/assets/toggle-menu.png" alt="" className="absolute right-[-50px] top-[20px] block xl:hidden cursor-pointer" onClick={()=> dispatch(ToggleMenu())}/>
       <div className="px-4 pb-2 text-center">
         <h1 className="text-4xl font-bold p-4 text-[#FE512E] to-[#F09619]">
           Dash<span className="text-black">Stack</span>
