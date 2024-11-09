@@ -6,7 +6,13 @@ const CreateFacilityManagement = ({ onClose, onSave }) => {
   const [scheduleDate, setScheduleDate] = useState('');
   const [remindBefore, setRemindBefore] = useState('');
   const [errors, setErrors] = useState({});
-  
+  const validateField = (name, value) => {
+    let error = '';
+    if (!value) {
+      error = `${name} is required`;
+    }
+    return error;
+  };
   const handleSubmit = (e) => {
     e.preventDefault();
     const formErrors = {};
@@ -14,9 +20,10 @@ const CreateFacilityManagement = ({ onClose, onSave }) => {
     if (!description) formErrors.description = 'Description is required';
     if (!scheduleDate) formErrors.scheduleDate = 'Schedule date is required';
     if (!remindBefore) formErrors.remindBefore = 'Reminder is required';
+
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors); 
-      return; 
+      return;
     }
     const facilityData = {
       facilityName,
@@ -26,6 +33,14 @@ const CreateFacilityManagement = ({ onClose, onSave }) => {
     };
     onSave(facilityData);
     onClose();
+  };
+  const handleFieldChange = (setter, fieldName) => (e) => {
+    const value = e.target.value;
+    setter(value);
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [fieldName]: validateField(fieldName, value),
+    }));
   };
   return (
     <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50">
@@ -37,7 +52,7 @@ const CreateFacilityManagement = ({ onClose, onSave }) => {
             <input
               type="text"
               value={facilityName}
-              onChange={(e) => setFacilityName(e.target.value)}
+              onChange={handleFieldChange(setFacilityName, 'facilityName')}
               className={`w-full border ${errors.facilityName ? 'border-red-500' : 'border-gray-300'} p-2 rounded-lg mt-1`}
               placeholder="Enter Name"
             />
@@ -47,7 +62,7 @@ const CreateFacilityManagement = ({ onClose, onSave }) => {
             <label className="block font-semibold text-gray-700">Description*</label>
             <textarea
               value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              onChange={handleFieldChange(setDescription, 'description')}
               className={`w-full border ${errors.description ? 'border-red-500' : 'border-gray-300'} p-2 rounded-lg mt-1`}
               placeholder="Enter Description"
             ></textarea>
@@ -58,16 +73,16 @@ const CreateFacilityManagement = ({ onClose, onSave }) => {
             <input
               type="date"
               value={scheduleDate}
-              onChange={(e) => setScheduleDate(e.target.value)}
+              onChange={handleFieldChange(setScheduleDate, 'scheduleDate')}
               className={`w-full border ${errors.scheduleDate ? 'border-red-500' : 'border-gray-300'} p-2 rounded-lg mt-1`}
             />
             {errors.scheduleDate && <p className="text-red-500 text-sm">{errors.scheduleDate}</p>}
           </div>
           <div className="mb-4">
-            <label className="block font-semibold text-gray-700">Remind Before</label>
+            <label className="block font-semibold text-gray-700">Remind Before*</label>
             <select
               value={remindBefore}
-              onChange={(e) => setRemindBefore(e.target.value)}
+              onChange={handleFieldChange(setRemindBefore, 'remindBefore')}
               className={`w-full border ${errors.remindBefore ? 'border-red-500' : 'border-gray-300'} p-2 rounded-lg mt-1`}
             >
               <option value="" disabled>Select Reminder</option>
