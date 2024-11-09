@@ -1,10 +1,12 @@
 const express = require("express");
 const app = express();
+const cron = require("node-cron");
 const mongoose = require("./database/db.js");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const controller = require("./controllers/maintenance.controller.js");
 dotenv.config();
 
 app.use(
@@ -17,6 +19,7 @@ app.use(
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
+cron.schedule("0 0 * * *", controller.applyPenalties);
 
 const userRouter = require("./routes/user.route.js");
 const SocietyRouter = require("./routes/society.route.js");

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { AddOwnerValidateFields } from '../../utils/validation';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const AddOwnerTenant = ({role, editResident}) => {
     const [OwnerfullName, setOwnerFullName] = useState(editResident?.ownerfullname || '');
@@ -209,7 +209,7 @@ const AddOwnerTenant = ({role, editResident}) => {
                                     />
                                     <div className="flex flex-col items-center space-x-2">
                                         <img src="/assets/addPhoto.svg" alt="Upload Icon" className="w-6 h-6" />
-                                        <p className="text-blue-500 py-2">{files.name || 'Upload a file or drag and drop'}</p>
+                                        <p className="text-blue-500 py-2">{files[label] ? files[label].name : 'Upload a file or drag and drop'}</p>
                                         <p className="font-poppins text-[12px] leading-[18px] text-center">
                                             PNG, JPG, GIF up to 10MB
                                         </p>
@@ -303,8 +303,9 @@ const AddOwnerTenant = ({role, editResident}) => {
                     </div>
                 </div>
             </div>
-            <div className="flex justify-end mt-4">
-                <button onClick={handleSubmit} className="bg-blue-500 text-white px-4 py-2 hover:bg-blue-600">Submit</button>
+            <div className="flex justify-end gap-3 mt-4 mb-4">
+                <Link to="/admin/resident" className="border text-[#202224] bg-white px-4 py-2 rounded-md">Cancel</Link>
+                <button onClick={handleSubmit} className="bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white px-4 py-2 rounded-md">Submit</button>
             </div>
         </div>
     );

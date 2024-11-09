@@ -13,10 +13,11 @@ import Income from "./pages/admin/Income";
 import { ProtectedRoute, PublicRoute } from "./components/ProtectedRoute";
 import ErrorPage from "./pages/ErrorPage";
 import Resident from "./pages/admin/Recident";
-import ExpensesTable from "./pages/admin/Expance";
 import AddResident from "./components/admin/AddResident";
 import AddExpensesDetails from "./components/models/AddExpensesDetails";
 import Note from "./pages/admin/Note";
+import Expenses from "./pages/admin/Expenses";
+import MaintenanceViewDetails from "./components/admin/MaintenanceViewDetails";
 
 function App() {
   return (
@@ -35,11 +36,12 @@ function App() {
           <Route path="profile" element={<Profile />} />
           <Route path="income" element={<Income/>} />
           <Route path="resident" element={<Resident />} />
-          <Route path="expense" element={<ExpensesTable />} />
+          <Route path="expense" element={<Expenses />} />
           <Route path="note" element={<Note/>} />
           <Route path="add-resident" element={<AddResident />} />
-          <Route path="addexpensesdetails" element={<AddExpensesDetails/>}/>
           <Route path="edit-resident" element={<AddResident />} />
+          <Route path="maintenance-details" element={<MaintenanceViewDetails />} />
+          <Route path="addexpensesdetails" element={<AddExpensesDetails/>}/>
         </Route>
         <Route path="*" element={<ErrorPage />} />
       </Routes>
