@@ -12,6 +12,7 @@ const maintenance = new mongoose.Schema(
     },
     penaltyAmount: {
       type: Number,
+      default: 0,
     },
     dueDate: {
       type: Date,
