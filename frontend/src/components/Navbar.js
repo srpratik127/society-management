@@ -14,10 +14,10 @@ const Navbar = () => {
   const breadcrumb = pathSegments.map((segment, index) => {
     const formattedSegment = segment.charAt(0).toUpperCase() + segment.slice(1);
     return (
-      <span key={index}>
+      <span key={index} className="flex">
         {index > 0 && " > "}
         {index === pathSegments.length - 1 ? (
-          <span className="text-gray-500">{formattedSegment}</span>
+          <span className="text-gray-500 w-48 block">{formattedSegment}</span>
         ) : (
           <Link
             to={`/${pathSegments.slice(0, index + 1).join("/")}`}
@@ -32,20 +32,28 @@ const Navbar = () => {
 
   return (
     <div className="w-full bg-white shadow py-4 px-6 flex items-center justify-between">
-      {location.pathname === "/admin" ? (
-        <div className={`flex items-center relative w-1/4 ${!isOpenMenu && "ms-10"}`}>
-          <span className="absolute left-3 text-gray-400">
-            <img src="/assets/search-Bordere.svg" alt="" />
-          </span>
-          <input
-            type="text"
-            placeholder="Search Here"
-            className="pl-10 pr-4 py-2 border w-56 xl:w-full border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-          />
-        </div>
-      ) : (
-        <p className={`${!isOpenMenu && "ms-10"}`}>{breadcrumb}</p>
-      )}
+      <div className="w-56">
+        {location.pathname === "/admin" ? (
+          <div
+            className={`items-center relative w-1/4 xl:ms-0 hidden md:flex ${
+              !isOpenMenu && "ms-10"
+            }`}
+          >
+            <span className="absolute left-3 text-gray-400">
+              <img src="/assets/search-Bordere.svg" alt="" />
+            </span>
+            <input
+              type="text"
+              placeholder="Search Here"
+              className="pl-10 pr-4 py-2 border  border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+            />
+          </div>
+        ) : (
+          <div>
+            <p className={`xl:ms-0 hidden md:flex ${!isOpenMenu && "ms-10"}`}>{breadcrumb}</p>
+          </div>
+        )}
+      </div>
 
       <div className="flex items-center space-x-6">
         <Popover className="relative">
@@ -78,7 +86,7 @@ const Navbar = () => {
             alt="Profile"
             className="w-10 h-10 rounded-full"
           />
-          <div className="flex flex-col text-right leading-5">
+          <div className="flex-col text-right leading-5 hidden sm:flex">
             <span className="font-medium text-gray-700">
               {user?.firstname} {user?.lastname}
             </span>

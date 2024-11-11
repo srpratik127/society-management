@@ -44,7 +44,7 @@ app.get("/", (req, res) => {
 });
 
 app.use('/users', userRouter);  
-app.use('/society', SocietyRouter);  
+app.use('/society', SocietyRouter);
 app.use('/forgetpassword', forgetPassword);
 app.use('/api/complaints', complaintRoutes);
 app.use('/api/numbers', importantNumRoutes);

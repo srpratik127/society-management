@@ -47,14 +47,46 @@ const ViewResident = ({ onClose, selectResidents }) => {
         </div>
         <div className="mb-6 bg-[white] p-4 rounded-xl">
           <h3 className="font-semibold text-lg mb-2">Documents</h3>
-          <div className="flex items-center justify-between p-2 border rounded-md mb-2">
-            <span>Adharcard Front Side.JPG</span>
-            <span className="text-sm text-gray-500">3.5 MB</span>
-          </div>
-          <div className="flex items-center justify-between p-2 border rounded-md">
-            <span>Address Proof Front Side.PDF</span>
-            <span className="text-sm text-gray-500">2.3 MB</span>
-          </div>
+          {selectResidents.aadharCardFront && (
+            <div className="flex items-center justify-between p-2 border rounded-md mb-2">
+              <div>
+                <span>Adharcard Front Side.JPG</span>
+                <span className="text-sm text-gray-500 block">3.5 MB</span>
+              </div>
+              <img
+                src="/assets/eye.svg"
+                alt=""
+                className="h-6 w-6 text-gray-400 cursor-pointer"
+                onClick={() =>
+                  window.open(
+                    selectResidents.aadharCardFront,
+                    "_blank",
+                    "width=800,height=600, left=500, top=200"
+                  )
+                }
+              />
+            </div>
+          )}
+          {selectResidents.aadharCardBack && (
+            <div className="flex items-center justify-between p-2 border rounded-md">
+              <div>
+                <span>Address Proof Front Side.PDF</span>
+                <span className="text-sm text-gray-500 block">2.3 MB</span>
+              </div>
+              <img
+                src="/assets/eye.svg"
+                alt=""
+                className="h-6 w-6 text-gray-400 cursor-pointer"
+                onClick={() =>
+                  window.open(
+                    selectResidents.aadharCardBack,
+                    "_blank",
+                    "width=800,height=600, left=500, top=200"
+                  )
+                }
+              />
+            </div>
+          )}
         </div>
         {selectResidents.role === "tenant" && (
           <div className="rounded-xl">
@@ -65,15 +97,21 @@ const ViewResident = ({ onClose, selectResidents }) => {
               <div className="space-y-4 bg-[white] p-4 rounded-xl">
                 <div className="flex justify-between border-b pb-2">
                   <span className="font-medium">Name</span>
-                  <span className="text-[#4F4F4F]">{selectResidents.ownerfullname}</span>
+                  <span className="text-[#4F4F4F]">
+                    {selectResidents.ownerfullname}
+                  </span>
                 </div>
                 <div className="flex justify-between border-b pb-2">
                   <span className="font-medium">Phone</span>
-                  <span className="text-[#4F4F4F]">{selectResidents.ownerphone}</span>
+                  <span className="text-[#4F4F4F]">
+                    {selectResidents.ownerphone}
+                  </span>
                 </div>
                 <div className="flex justify-between border-b pb-2">
                   <span className="font-medium">Address</span>
-                  <span className="text-[#4F4F4F]">{selectResidents.owneraddress}</span>
+                  <span className="text-[#4F4F4F]">
+                    {selectResidents.owneraddress}
+                  </span>
                 </div>
               </div>
             </div>

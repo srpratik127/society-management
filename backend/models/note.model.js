@@ -12,15 +12,7 @@ const noteSchema = new mongoose.Schema({
     description: {
         type: String,
         required: false,  
-    },
-    userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User', 
-    },
-    societyId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'societies', 
-    },
+    }
 }, {
     timestamps: true, 
 });

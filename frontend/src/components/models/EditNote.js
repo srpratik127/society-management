@@ -1,114 +1,72 @@
-import React, { useState } from 'react';
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import DatePicker from "react-datepicker";
 
-const EditNote = ({ note, onClose, onSave }) => {
-  const [title, setTitle] = useState(note.title || '');
-  const [description, setDescription] = useState(note.description || '');
-  const [date, setDate] = useState(note.date || '');
+const EditNote = ({ note, onClose, setNotes }) => {
+  const [formData, setFormData] = useState(note);
+  const [errors, setErrors] = useState({});
 
-  const [errors, setErrors] = useState({
-    title: '',
-    description: '',
-    date: ''
-  });
-  const isFormValid = title && description && date && !errors.title && !errors.description && !errors.date;
-  const validateField = (field, value) => {
-    switch (field) {
-      case 'title':
-        if (!value.trim()) {
-          setErrors((prevErrors) => ({ ...prevErrors, title: 'Title is required.' }));
-        } else {
-          setErrors((prevErrors) => ({ ...prevErrors, title: '' }));
-        }
-        break;
-      case 'description':
-        if (!value.trim()) {
-          setErrors((prevErrors) => ({ ...prevErrors, description: 'Description is required.' }));
-        } else {
-          setErrors((prevErrors) => ({ ...prevErrors, description: '' }));
-        }
-        break;
-      case 'date':
-        if (!value) {
-          setErrors((prevErrors) => ({ ...prevErrors, date: 'Date is required.' }));
-        } else {
-          setErrors((prevErrors) => ({ ...prevErrors, date: '' }));
-        }
-        break;
-      default:
-        break;
-    }
-  };
-  const handleBlur = (field, value) => {
-    validateField(field, value);
-  };
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    setFormData(note);
+  }, [note]);
+
+  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleDateChange = (date) => setFormData({ ...formData, date });
+
+  const validateField = (field, value) => setErrors((prev) => ({
+    ...prev,
+    [field]: value ? "" : `${field.charAt(0).toUpperCase() + field.slice(1)} is required.`,
+  }));
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isFormValid) {
-      onSave({ ...note, title, description, date });
-      onClose(); 
+    const { title, description, date } = formData;
+    if (title && description && date) {
+      try {
+        const response = await axios.put(`${process.env.REACT_APP_BASE_URL}/api/notes/${note._id}`, { title, description, date });
+        setNotes((prev) => prev.map((n) => (n._id === note._id ? response.data : n)));
+        onClose();
+      } catch (error) {
+        console.error(error);
+      }
     } else {
-      validateField('title', title);
-      validateField('description', description);
-      validateField('date', date);
+      ["title", "description", "date"].forEach((field) => validateField(field, formData[field]));
     }
   };
+
   return (
-    <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50">
-      <div className="bg-white p-6 rounded-[25px]  shadow-lg w-96 max-w-md">
+   <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+      <div className="min-w-[370px] bg-white p-6 rounded-lg shadow-md">
         <h2 className="text-2xl font-semibold mb-4">Edit Note</h2>
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block font-semibold text-gray-700">Title*</label>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              onBlur={(e) => handleBlur('title', e.target.value)}
-              className="w-full border border-gray-300 p-2 rounded-[15px] mt-1"
-              placeholder="Enter title"
-              required
-            />
-            {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title}</p>}
-          </div>
-          <div className="mb-4">
-            <label className="block font-semibold text-gray-700">Description*</label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              onBlur={(e) => handleBlur('description', e.target.value)}
-              className="w-full border border-gray-300 p-2 rounded-[15px] mt-1"
-              placeholder="Enter description"
-              required
-            ></textarea>
-            {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description}</p>}
-          </div>
-          <div className="mb-4">
-            <label className="block font-semibold text-gray-700">Date*</label>
-            <input
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              onBlur={(e) => handleBlur('date', e.target.value)}
-              className="w-full border border-gray-300 p-2 rounded-[15px] mt-1"
-              required
-            />
-            {errors.date && <p className="text-red-500 text-sm mt-1">{errors.date}</p>}
-          </div>
-          <div className="flex justify-between">
-            <button
-              type="button"
-              onClick={onClose}
-              className="bg-white-300 border-[1px] font-semibold text-gray-700 w-[175px] py-2 px-4 rounded-lg"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={!isFormValid}
-              className={`py-2 px-4 rounded-lg w-[175px] ${isFormValid ? 'bg-gradient-to-r from-[#FE512E] to-[#F09619] font-semibold text-white' : 'bg-gray-300 text-gray-500'}`}
-            >
-              Save
-            </button>
+          {["title", "description", "date"].map((field) => (
+            <div className="mb-4" key={field}>
+              <label className="block font-semibold text-gray-700">{field.charAt(0).toUpperCase() + field.slice(1)}*</label>
+              {field !== "date" ? (
+                <input
+                  type={field === "title" ? "text" : "textarea"}
+                  name={field}
+                  value={formData[field]}
+                  onChange={handleChange}
+                  onBlur={(e) => validateField(field, e.target.value)}
+                  className={`w-full border p-2 rounded-md outline-none mt-1 ${errors[field] && "border-red-500"}`}
+                  placeholder={`Enter ${field}`}
+                />
+              ) : (
+                <DatePicker
+                  selected={formData.date}
+                  onChange={handleDateChange}
+                  minDate={new Date()}
+                  dateFormat="dd-MM-yyyy"
+                  className={`w-full border p-2 rounded-md outline-none mt-1 ${errors[field] && "border-red-500"}`}
+                />
+              )}
+              {errors[field] && <p className="text-red-500 text-sm">{errors[field]}</p>}
+            </div>
+          ))}
+          <div className="flex gap-3">
+            <button type="button" onClick={onClose} className="py-2 px-4 w-full rounded-lg border text-gray-700">Cancel</button>
+            <button type="submit" className={`py-2 px-4 rounded-lg w-full ${formData.title && formData.description && formData.date ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white" : "bg-gray-300 text-gray-500"}`}>Save</button>
           </div>
         </form>
       </div>

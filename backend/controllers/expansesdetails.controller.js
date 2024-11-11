@@ -4,7 +4,7 @@ const cloudinary = require('../utils/cloudinary');
 
 const createExpense = async (req, res) => {
     try {
-      const { title, dueDate, description, amount, societyId, userId } = req.body;
+      const { title, dueDate, description, amount } = req.body;
       if (!title || !dueDate || !amount) {
         return res.status(400).json({
           success: false,
@@ -32,8 +32,6 @@ const createExpense = async (req, res) => {
         description,
         amount,
         bill: billUrl,  
-        societyId,
-        userId,
       });
       const savedExpense = await newExpense.save();
       res.status(201).json({
@@ -47,7 +45,7 @@ const createExpense = async (req, res) => {
   
  const getAllExpenses = async (req, res) => {
     try {
-        const expenses = await ExpenseDetails.find().populate('societyId userId');
+        const expenses = await ExpenseDetails.find();
         res.status(200).json(expenses);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -67,20 +65,43 @@ const getExpenseById = async (req, res) => {
 };
 
 const updateExpense = async (req, res) => {
-    try {
-        const { title, dueDate, description, amount, bill } = req.body;
-        const updatedExpense = await ExpenseDetails.findByIdAndUpdate(
-            req.params.id,
-            { title, dueDate, description, amount, bill },
-            { new: true }
-        );
-        if (!updatedExpense) {
-            return res.status(404).json({ message: 'Expense not found' });
+  try {
+    const { title, dueDate, description, amount } = req.body;
+    let updatedBillUrl = null;
+    if (req.file) {
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: 'expenses_bills', 
+      });
+      updatedBillUrl = result.secure_url;
+      const existingExpense = await ExpenseDetails.findById(req.params.id);
+      if (existingExpense && existingExpense.bill) {
+        const publicId = existingExpense.bill.split('/').slice(-2).join('/').split('.')[0]; 
+        const destroyResponse = await cloudinary.uploader.destroy(publicId); 
+        if (destroyResponse.result !== 'ok') {
+          console.error('Error deleting old bill:', destroyResponse);
         }
-        res.status(200).json(updatedExpense);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
+      }
+      fs.unlinkSync(req.file.path);
     }
+    const updatedExpense = await ExpenseDetails.findByIdAndUpdate(
+      req.params.id,
+      { 
+        title, 
+        dueDate, 
+        description, 
+        amount, 
+        bill: updatedBillUrl || undefined, 
+      },
+      { new: true }
+    );
+    if (!updatedExpense) {
+      return res.status(404).json({ message: 'Expense not found' });
+    }
+    res.status(200).json(updatedExpense);
+  } catch (error) {
+    console.error('Error in updating expense:', error);
+    res.status(500).json({ message: error.message });
+  }
 };
 
 const deleteExpense = async (req, res) => {
