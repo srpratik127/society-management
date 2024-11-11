@@ -14,6 +14,13 @@ const EditFacilityManagement = ({ onClose, onSave, facility }) => {
       setRemindBefore(facility.remindBefore);
     }
   }, [facility]);
+  const validateField = (name, value) => {
+    let error = '';
+    if (!value) {
+      error = `${name} is required`;
+    }
+    return error;
+  };
   const handleSubmit = (e) => {
     e.preventDefault();
     const formErrors = {};
@@ -23,7 +30,7 @@ const EditFacilityManagement = ({ onClose, onSave, facility }) => {
     if (!remindBefore) formErrors.remindBefore = 'Reminder is required';
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors); 
-      return; 
+      return;
     }
     const facilityData = {
       facilityName,
@@ -31,9 +38,19 @@ const EditFacilityManagement = ({ onClose, onSave, facility }) => {
       scheduleDate,
       remindBefore,
     };
+
     onSave(facilityData); 
     onClose();  
   };
+  const handleFieldChange = (setter, fieldName) => (e) => {
+    const value = e.target.value;
+    setter(value);
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [fieldName]: validateField(fieldName, value),
+    }));
+  };
+
   return (
     <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
@@ -44,7 +61,7 @@ const EditFacilityManagement = ({ onClose, onSave, facility }) => {
             <input
               type="text"
               value={facilityName}
-              onChange={(e) => setFacilityName(e.target.value)}
+              onChange={handleFieldChange(setFacilityName, 'facilityName')}
               className={`w-full border ${errors.facilityName ? 'border-red-500' : 'border-gray-300'} p-2 rounded-lg mt-1`}
               placeholder="Enter Name"
             />
@@ -54,7 +71,7 @@ const EditFacilityManagement = ({ onClose, onSave, facility }) => {
             <label className="block font-semibold text-gray-700">Description*</label>
             <textarea
               value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              onChange={handleFieldChange(setDescription, 'description')}
               className={`w-full border ${errors.description ? 'border-red-500' : 'border-gray-300'} p-2 rounded-lg mt-1`}
               placeholder="Enter Description"
             ></textarea>
@@ -65,16 +82,16 @@ const EditFacilityManagement = ({ onClose, onSave, facility }) => {
             <input
               type="date"
               value={scheduleDate}
-              onChange={(e) => setScheduleDate(e.target.value)}
+              onChange={handleFieldChange(setScheduleDate, 'scheduleDate')}
               className={`w-full border ${errors.scheduleDate ? 'border-red-500' : 'border-gray-300'} p-2 rounded-lg mt-1`}
             />
             {errors.scheduleDate && <p className="text-red-500 text-sm">{errors.scheduleDate}</p>}
           </div>
           <div className="mb-4">
-            <label className="block font-semibold text-gray-700">Remind Before</label>
+            <label className="block font-semibold text-gray-700">Remind Before*</label>
             <select
               value={remindBefore}
-              onChange={(e) => setRemindBefore(e.target.value)}
+              onChange={handleFieldChange(setRemindBefore, 'remindBefore')}
               className={`w-full border ${errors.remindBefore ? 'border-red-500' : 'border-gray-300'} p-2 rounded-lg mt-1`}
             >
               <option value="" disabled>Select Reminder</option>
@@ -95,7 +112,6 @@ const EditFacilityManagement = ({ onClose, onSave, facility }) => {
             </button>
             <button
               type="submit"
-              disabled={!facilityName || !description || !scheduleDate || !remindBefore}
               className={`py-2 px-4 rounded-lg w-[175px] ${facilityName && description && scheduleDate && remindBefore ? 'bg-gradient-to-r from-[#FE512E] to-[#F09619] font-semibold text-white' : 'bg-gray-300 text-gray-500'}`}
             >
               Save
