@@ -20,6 +20,8 @@ import RequestTracking from "./pages/admin/RequestTracking";
 import FacilityManagement from "./pages/admin/FacilityManagement";
 import Expenses from "./pages/admin/Expenses";
 import MaintenanceViewDetails from "./components/admin/MaintenanceViewDetails";
+import VisitorLogs from "./pages/admin/VisitorLogs";
+import SecurityProtocols from "./pages/admin/SecurityProtocols";
 
 function App() {
   return (
@@ -45,6 +47,8 @@ function App() {
           <Route path="request-tracking" element={<RequestTracking/>}/>
           <Route path="facility" element={<FacilityManagement/>} />
           <Route path="maintenance-details" element={<MaintenanceViewDetails />} />
+          <Route path="visitor-logs" element={<VisitorLogs/>} />
+          <Route path="access-control" element={<SecurityProtocols/>} />
         </Route>
 ઇ        <Route path="*" element={<ErrorPage />} />
       </Routes>

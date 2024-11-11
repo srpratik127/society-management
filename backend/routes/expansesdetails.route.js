@@ -7,7 +7,7 @@ const upload = multer({ dest: 'uploads/' });
 router.post('/', upload.single('bill'), expenseDetailsController.createExpense);
 router.get('/', expenseDetailsController.getAllExpenses);
 router.get('/:id', expenseDetailsController.getExpenseById);
-router.put('/:id', expenseDetailsController.updateExpense);
+router.put('/:id', upload.single('bill'), expenseDetailsController.updateExpense);
 router.delete('/:id', expenseDetailsController.deleteExpense);
 
 module.exports = router;
