@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs");
 const Resident = require("../models/resident.model");
 const cloudinary = require('../utils/cloudinary');
 const fs = require('fs');
+const Society = require('../models/society.model');
 
 const Register = async (req, res) => {
   try {
@@ -19,6 +20,11 @@ const Register = async (req, res) => {
       select_society,
     } = req.body;
 
+    const society = await Society.findById(select_society);
+    if (!society) {
+      return res.status(404).json({ msg: "Society not found" });
+    }
+
     if (!password) {
       return res.status(400).json({ msg: "Passwords is mendetory" });
     }
@@ -27,6 +33,8 @@ const Register = async (req, res) => {
     if (user) {
       return res.status(400).json({ msg: "User already exists" });
     }
+
+    
 
     const salt = await bcrypt.genSalt(10);
     const hashpassword = await bcrypt.hash(password, salt);
@@ -39,7 +47,7 @@ const Register = async (req, res) => {
       country,
       state,
       city,
-      select_society,
+      select_society: society,
       password: hashpassword,
     });
 
@@ -91,12 +99,12 @@ const updateUser = async (req, res) => {
       state,
       city,
       select_society,
-      profile_picture, 
+      profile_picture,
     } = req.body;
     let profilePictureUrl = profile_picture;
     if (req.file) {
       const result = await cloudinary.uploader.upload(req.file.path, {
-        folder: "profile_pictures", 
+        folder: "profile_pictures",
       });
       profilePictureUrl = result.secure_url;
     }
@@ -107,7 +115,7 @@ const updateUser = async (req, res) => {
         console.log("File deleted successfully");
       }
     });
-    
+
     const updatedUser = await User.findByIdAndUpdate(
       id,
       {
@@ -119,7 +127,7 @@ const updateUser = async (req, res) => {
         state,
         city,
         select_society,
-        profile_picture: profilePictureUrl, 
+        profile_picture: profilePictureUrl,
       },
       { new: true, runValidators: true }
     );
@@ -130,7 +138,7 @@ const updateUser = async (req, res) => {
     const token = jwt.sign(
       { user: userWithoutPassword },
       process.env.JWT_SECRET,
-      { expiresIn: "30d" } 
+      { expiresIn: "30d" }
     );
     res.status(200).json({ msg: "User updated successfully", user: updatedUser, token });
   } catch (error) {

@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema({
   phone: {
     type: String,
     required: true,
-    unique:true
+    unique: true
   },
   country: {
     type: String,
@@ -36,11 +36,12 @@ const userSchema = new mongoose.Schema({
     required: true
   },
   select_society: {
-    type: String,
-    required: true,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "societies",
+    required: true
   },
-  profile_picture:{
-    type:String,
+  profile_picture: {
+    type: String,
     default:
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKc08Wq1A-TIERnJUrHsmF9Asnmz5f_EnD5Mr8kQsJNZCdHjg_medKyoo&s",
   }
