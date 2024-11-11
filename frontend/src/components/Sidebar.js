@@ -3,7 +3,7 @@ import { sidebardata } from "../data/sidebardata";
 import { useDispatch, useSelector } from "react-redux";
 import { removeToken } from "../store/authSlice";
 import { useLocation, useNavigate } from "react-router-dom";
-import { ToggleMenu } from "../store/ToggleMenuSlice";
+import { removeMenu, ToggleMenu } from "../store/ToggleMenuSlice";
 
 const Sidebar = () => {
   const [activeDropdown, setActiveDropdown] = useState(null);
@@ -14,13 +14,16 @@ const Sidebar = () => {
 
   const handleButtonClick = (sidebar) => {
     setActiveDropdown(activeDropdown === sidebar.id ? null : sidebar.id);
-    if (!sidebar.dropdown) navigate(sidebar.link);
+    if (!sidebar.dropdown) {
+      navigate(sidebar.link);
+      dispatch(removeMenu());
+    }
   };
 
   return (
     <div
-      className={`h-screen p-4 pt-0 w-82 bg-white shadow-lg flex flex-col xl:relative absolute z-30 xl:left-0 ${
-        isOpenMenu ? "right-[100%]" : "left-0"
+      className={`h-screen p-4 pt-0 w-82 bg-white shadow-lg flex flex-col xl:relative absolute transition-all duration-300 ease-in-out z-20 xl:translate-x-0 ${
+        isOpenMenu ? "translate-x-0" : "-translate-x-full"
       }`}
     >
       <img
@@ -43,7 +46,6 @@ const Sidebar = () => {
                 sidebar.dropdown.some((dropdownItem) =>
                   location.pathname.includes(dropdownItem.link)
                 ));
-
             return (
               <div key={sidebar.id}>
                 <button
@@ -68,19 +70,29 @@ const Sidebar = () => {
                   </span>
                   <span className="font-normal">{sidebar.title}</span>
                 </button>
+
                 {sidebar.dropdown && activeDropdown === sidebar.id && (
-                  <ul className="ml-8 space-y-2">
-                    {sidebar.dropdown.map((dropdownItem) => (
-                      <li
-                        key={dropdownItem.id}
-                        className="flex items-center py-2 pl-4 hover:bg-gray-50 cursor-pointer rounded"
-                        onClick={() => navigate(dropdownItem.link)}
-                      >
-                        <span className="font-normal">
-                          {dropdownItem.title}
-                        </span>
-                      </li>
-                    ))}
+                  <ul className="ml-6 mt-2">
+                    {sidebar.dropdown.map((dropdownItem) => {
+                      const isDropdownActive = location.pathname.includes(
+                        dropdownItem.link
+                      );
+                      return (
+                        <li
+                          key={dropdownItem.id}
+                          className={`flex items-center py-1 pl-4 cursor-pointer border-l-4 hover:bg-gray-50 ${
+                            isDropdownActive
+                              ? "border-black text-black"
+                              : "text-[#4F4F4F]"
+                          }`}
+                          onClick={() => {navigate(dropdownItem.link); dispatch(removeMenu())}}
+                        >
+                          <span className="font-normal">
+                            {dropdownItem.title}
+                          </span>
+                        </li>
+                      );
+                    })}
                   </ul>
                 )}
               </div>

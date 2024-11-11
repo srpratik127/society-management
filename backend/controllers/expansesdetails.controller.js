@@ -4,7 +4,7 @@ const cloudinary = require('../utils/cloudinary');
 
 const createExpense = async (req, res) => {
     try {
-      const { title, dueDate, description, amount, societyId, userId } = req.body;
+      const { title, dueDate, description, amount } = req.body;
       if (!title || !dueDate || !amount) {
         return res.status(400).json({
           success: false,
@@ -32,8 +32,6 @@ const createExpense = async (req, res) => {
         description,
         amount,
         bill: billUrl,  
-        societyId,
-        userId,
       });
       const savedExpense = await newExpense.save();
       res.status(201).json({
@@ -47,7 +45,7 @@ const createExpense = async (req, res) => {
   
  const getAllExpenses = async (req, res) => {
     try {
-        const expenses = await ExpenseDetails.find().populate('societyId userId');
+        const expenses = await ExpenseDetails.find();
         res.status(200).json(expenses);
     } catch (error) {
         res.status(500).json({ message: error.message });

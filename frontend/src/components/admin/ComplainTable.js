@@ -58,9 +58,9 @@ const ComplainTable = () => {
           </select>
         </div>
       </div>
-      <div className="overflow-x-auto max-h-[225px] overflow-y-auto">
+      <div className="overflow-x-auto h-[225px] overflow-y-auto">
         <table className="min-w-full bg-white">
-          <thead className="sticky top-0 bg-gray-100 z-10">
+          <thead className="sticky top-0 bg-gray-100">
             <tr className="text-left text-sm ">
               <th className="py-3 text-light px-4">Complainer Name</th>
               <th className="py-3 text-light px-4">Complaint Name</th>

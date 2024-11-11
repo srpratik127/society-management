@@ -2,13 +2,11 @@ const Note = require('../models/note.model');
 
 const createNote = async (req, res) => {
     try {
-        const { title, date, description, userId, societyId } = req.body;
+        const { title, date, description } = req.body;
         const newNote = new Note({
             title,
             date,
             description,
-            userId,
-            societyId,
         });
         const savedNote = await newNote.save();
         res.status(201).json(savedNote);
@@ -19,11 +17,7 @@ const createNote = async (req, res) => {
 
 const getNotes = async (req, res) => {
     try {
-        const { societyId, userId } = req.query; 
-        const filter = {};
-        if (societyId) filter.societyId = societyId;
-        if (userId) filter.userId = userId;
-        const notes = await Note.find(filter).populate('userId societyId');
+        const notes = await Note.find();
         res.status(200).json(notes);
     } catch (error) {
         res.status(500).json({ message: error.message });

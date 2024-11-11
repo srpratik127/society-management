@@ -1,164 +1,190 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState } from "react";
+import axios from "axios";
+import DatePicker from "react-datepicker";
 
-const AddExpensesDetails = ({ onClose }) => {
-    const [fileName, setFileName] = useState("");
-    const [title, setTitle] = useState("");
-    const [description, setDescription] = useState("");
-    const [date, setDate] = useState("");
-    const [amount, setAmount] = useState("");
-    const [errors, setErrors] = useState({});
+const AddExpensesDetails = ({ onClose, setExpansesData }) => {
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    date: "",
+    amount: "",
+  });
+  const [fileName, setFileName] = useState("");
+  const [errors, setErrors] = useState({});
+  const fileInputRef = useRef(null);
 
-    const fileInputRef = useRef(null);
-    const dateInputRef = useRef(null);
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) setFileName(file.name);
+  };
 
-    const handleFileClick = () => {
-        fileInputRef.current.click();
-    };
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: name === "amount" ? parseFloat(value) || "" : value,
+    });
+  };
 
-    const handleFileChange = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            setFileName(file.name);
-        }
-    };
-
-    const handleDateIconClick = () => {
-        dateInputRef.current.showPicker();
-    };
-
-    const validateForm = () => {
-        const newErrors = {};
-        if (!title) newErrors.title = "Title is required";
-        if (!description) newErrors.description = "Description is required";
-        if (!date) newErrors.date = "Date is required";
-        if (!amount) newErrors.amount = "Amount is required";
-        if (!fileName) newErrors.fileName = "File upload is required";
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (validateForm()) {
-            console.log("Form submitted successfully");
-            onClose(); 
-        }
-    };
-
-    return (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-20 z-50">
-            <form onSubmit={handleSubmit} className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
-                <h2 className="text-lg font-semibold mb-4">Add Expenses Details</h2>
-                <hr className="mb-4" />
-
-                <div className="mb-4">
-                    <label className="text-sm font-medium" htmlFor="title">Title<span className="text-red-500">*</span></label>
-                    <input
-                        id="title"
-                        type="text"
-                        placeholder="Enter Title"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        className="mt-1 block w-full border border-gray-300 rounded-md p-2 text-sm focus:outline-none"
-                    />
-                    {errors.title && <p className="text-red-500 text-xs">{errors.title}</p>}
-                </div>
-
-                <div className="mb-4">
-                    <label className="text-sm font-medium" htmlFor="description">Description<span className="text-red-500">*</span></label>
-                    <textarea   
-                        id="description"
-                        placeholder="Enter Description"
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        className="mt-1 block w-full border border-gray-300 rounded-md p-2 text-sm focus:outline-none"
-                    />
-                    {errors.description && <p className="text-red-500 text-xs">{errors.description}</p>}
-                </div>
-
-                <div className="flex space-x-4 mb-4">
-                    <div className="w-1/2">
-                        <label className="text-sm font-medium" htmlFor="date">Date<span className="text-red-500">*</span></label>
-                        <div className="relative mt-1">
-                            <input
-                                id="date"
-                                type="date"
-                                ref={dateInputRef}
-                                value={date}
-                                onChange={(e) => setDate(e.target.value)}
-                                className="block w-full border border-gray-300 rounded-md p-2 text-sm focus:outline-none"
-                            />
-                            <span
-                                className="absolute right-2 top-2 text-gray-400 cursor-pointer"
-                                onClick={handleDateIconClick}
-                            >
-                                <img src="/assets/calendar.svg" alt="" />
-                            </span>
-                        </div>
-                        {errors.date && <p className="text-red-500 text-xs">{errors.date}</p>}
-                    </div>
-                    <div className="w-1/2">
-                        <label className="text-sm font-medium" htmlFor="amount">Amount<span className="text-red-500">*</span></label>
-                        <input
-                            id="amount"
-                            type="text"
-                            placeholder="₹ 0000"
-                            value={amount}
-                            onChange={(e) => setAmount(e.target.value)}
-                            className="mt-1 block w-full border border-gray-300 rounded-lg p-2 text-sm focus:outline-none"
-                        />
-                        {errors.amount && <p className="text-red-500 text-xs">{errors.amount}</p>}
-                    </div>
-                </div>
-
-                <div className="mb-4">
-                    <label className="text-sm font-medium" htmlFor="upload">Upload Bill<span className="text-red-500">*</span></label>
-                    <div
-                        className="mt-1 flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-4 cursor-pointer"
-                        onClick={handleFileClick}
-                    >
-                        {fileName ? (
-                            <div>
-                                <p className="mt-2 text-sm text-gray-700 font-medium">{fileName}</p>
-                                <p className='text-[#39973D]'>File Uploaded Successfully</p>
-                            </div>
-                        ) : (
-                            <div className="flex flex-col items-center justify-center">
-                                <img src="/assets/addPhoto.svg" alt="" className="h-6 w-6" />
-                                <p className="mt-2 text-sm text-blue-500 font-medium">Upload a file</p>
-                                <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
-                            </div>
-
-                        )}
-                    </div>
-                    <input
-                        id="upload"
-                        type="file"
-                        ref={fileInputRef}
-                        className="hidden"
-                        onChange={handleFileChange}
-                    />
-                    {errors.fileName && <p className="text-red-500 text-xs">{errors.fileName}</p>}
-                </div>
-
-                <div className="flex justify-between">
-                    <button
-                        type="button"
-                        className="w-1/2 bg-gray-200 text-gray-700 rounded-lg py-2 mr-2"
-                        onClick={onClose}
-                    >
-                        Cancel
-                    </button>
-                    <button
-                        type="submit"
-                        className="w-1/2 bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white rounded-lg py-2 ml-2"
-                    >
-                        Save
-                    </button>
-                </div>
-            </form>
-        </div>
+  const validateForm = () => {
+    const newErrors = ["title", "description", "date", "amount"].reduce(
+      (acc, field) => {
+        if (!formData[field]) acc[field] = `${field} is required`;
+        return acc;
+      },
+      {}
     );
+    if (!fileName) newErrors.fileName = "File upload is required";
+    setErrors(newErrors);
+    return !Object.keys(newErrors).length;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (validateForm()) {
+      try {
+        const { title, description, date, amount } = formData;
+        const formDataToSend = new FormData();
+        formDataToSend.append("title", title);
+        formDataToSend.append("dueDate", date);
+        formDataToSend.append("description", description);
+        formDataToSend.append("amount", amount);
+        formDataToSend.append("bill", fileInputRef.current.files[0]);
+        const response = await axios.post(
+          `${process.env.REACT_APP_BASE_URL}/api/expenses`,
+          formDataToSend
+        );
+        setExpansesData((pre) => [...pre, response.data?.data]);
+        onClose();
+      } catch (error) {
+        console.error("Error submitting expense:", error);
+      }
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+      <form
+        className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md"
+        onSubmit={handleSubmit}
+      >
+        <h2 className="text-lg font-semibold mb-4">Add Expenses Details</h2>
+        <hr className="mb-4" />
+        {["title", "description"].map((field) => (
+          <div key={field} className="mb-4">
+            <label className="text-sm font-medium">
+              {field.charAt(0).toUpperCase() + field.slice(1)}
+              <span className="text-red-500">*</span>
+            </label>
+            <input
+              name={field}
+              type="text"
+              placeholder={`Enter ${field}`}
+              value={formData[field]}
+              onChange={handleChange}
+              className={`block w-full border rounded-lg p-2 text-sm outline-none ${
+                errors[field] && "border-red-500"
+              }`}
+            />
+            {errors[field] && (
+              <p className="text-red-500 text-xs">{errors[field]}</p>
+            )}
+          </div>
+        ))}
+        <div className="flex space-x-4 mb-4">
+          <div className="w-1/2">
+            <label className="text-sm font-medium">
+              Date<span className="text-red-500">*</span>
+            </label>
+            <DatePicker
+              selected={formData.date}
+              onChange={(date) => setFormData({ ...formData, date })}
+              minDate={new Date()}
+              dateFormat="dd-MM-yyyy"
+              placeholderText="Select Date"
+              className={`block w-full border rounded-lg p-2 outline-none ${
+                errors.date && "border-red-500"
+              }`}
+            />
+            {errors.date && (
+              <p className="text-red-500 text-xs">{errors.date}</p>
+            )}
+          </div>
+          <div className="w-1/2">
+            <label className="text-sm font-medium">
+              Amount<span className="text-red-500">*</span>
+            </label>
+            <input
+              name="amount"
+              type="number"
+              placeholder="₹ 0000"
+              value={formData.amount}
+              onChange={handleChange}
+              className={`block w-full border rounded-lg p-2 outline-none ${
+                errors.amount && "border-red-500"
+              }`}
+            />
+            {errors.amount && (
+              <p className="text-red-500 text-xs">{errors.amount}</p>
+            )}
+          </div>
+        </div>
+        <div className="mb-4">
+          <label className="text-sm font-medium">
+            Upload Bill<span className="text-red-500">*</span>
+          </label>
+          <div
+            onClick={() => fileInputRef.current.click()}
+            className={`mt-1 flex flex-col items-center justify-center rounded-md border-2 border-dashed p-4 cursor-pointer ${
+                errors.fileName && "border-red-500"
+              }`}
+          >
+            <img
+              src="/assets/addPhoto.svg"
+              alt="Upload Icon"
+              className="w-6 h-6"
+            />
+            {fileName ? (
+              <p className="mt-2 text-sm text-gray-700 font-medium">
+                {fileName}
+              </p>
+            ) : (
+              <p className="mt-2 text-sm text-blue-500 font-medium">
+                Upload a file
+              </p>
+            )}
+            <span className="text-[#A7A7A7] text-sm mt-3">
+              PNG, JPG, GIF up to 10MB
+            </span>
+          </div>
+          <input
+            type="file"
+            ref={fileInputRef}
+            className="hidden"
+            onChange={handleFileChange}
+          />
+          {errors.fileName && (
+            <p className="text-red-500 text-xs">{errors.fileName}</p>
+          )}
+        </div>
+        <div className="flex justify-between gap-3">
+          <button
+            type="button"
+            className="w-1/2 border text-gray-700 rounded-lg py-2"
+            onClick={onClose}
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="w-1/2 bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white rounded-lg py-2"
+          >
+            Save
+          </button>
+        </div>
+      </form>
+    </div>
+  );
 };
 
 export default AddExpensesDetails;
