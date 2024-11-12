@@ -51,10 +51,10 @@ export const ImportantNum = () => {
   return (
     <>
       <div className="flex justify-between items-center text-xl font-semibold bg-whitep pb-1 rounded-lg">
-        <h1>Important Numbers</h1>
+        <h1 className="">Important Numbers</h1>
         <button
           onClick={handleAdd}
-          className="flex items-center space-x-2 p-2 px-3 rounded-xl text-white bg-gradient-to-r from-[#FE512E] to-[#F09619]"
+          className="flex items-center space-x-2 p-1 px-3 rounded-lg text-white bg-gradient-to-r from-[#FE512E] to-[#F09619]"
         >
           <img
             src="/assets/add-square.svg"
