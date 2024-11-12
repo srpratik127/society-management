@@ -21,9 +21,9 @@ const PendingMaintenances = () => {
 
   return (
     <>
-      <div className="flex justify-between items-center text-xl font-semibold bg-white pb-1">
-        <h2 className="m-0">Pending Maintenances</h2>
-        <button className="flex items-center space-x-2 px-3 rounded-md text-[#5678E9] text-lg">
+      <div className="flex justify-between items-center font-semibold bg-white pb-1">
+        <h2 className="m-0 text-xl">Pending Maintenances</h2>
+        <button className="flex items-center space-x-2 px-3 rounded-md text-[#5678E9]">
           <span>View all</span>
         </button>
       </div>

@@ -18,7 +18,7 @@ const ViewComplain = ({ closePopup, selectedComplain }) => {
 
         <div className="flex items-center mb-4">
           <img
-            src={selectedComplain.user.profile_picture}
+            src={selectedComplain.user?.profile_picture}
             alt="User Avatar"
             className="w-16 h-16 rounded-full mr-4"
           />

@@ -128,6 +128,7 @@ const Login = () => {
           <div className="flex items-center justify-between">
             <input
               type="checkbox"
+              defaultChecked
               id="rememberMe"
               className="h-4 w-4 cursor-pointer"
             />

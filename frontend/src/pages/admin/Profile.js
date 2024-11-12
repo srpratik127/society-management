@@ -16,7 +16,7 @@ const Profile = () => {
         lastname: user.lastname,
         phone: user.phone,
         email: user.email,
-        select_society: user.select_society,
+        select_society: user.select_society.name,
         country: user.country,
         state: user.state,
         city: user.city,
@@ -34,19 +34,25 @@ const Profile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const updatedFormData = {
+      ...formData,
+      select_society: {
+        name: formData.select_society,
+        _id: user.select_society._id, 
+      },
+    };
+  
     try {
       const response = await axios.put(
         `${process.env.REACT_APP_BASE_URL}/users/update/${user._id}`,
-        formData
+        updatedFormData
       );
-
       dispatch(addToken(response.data.token));
       setIsEditing(false);
     } catch (error) {
       console.error("Error updating user:", error);
     }
   };
-
   return (
     <>
       <div className="flex flex-col items-center h-auto relative">

@@ -29,7 +29,7 @@ const Register = () => {
       try {
         const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/society`);
         const societies = response.data.map(society => ({
-          value: society.name,
+          value: society._id,
           label: society.name,
         }));
         setOptions(prev => [
@@ -50,6 +50,8 @@ const Register = () => {
   };
 
   const handleSelectChange = (selectedOption) => {
+    console.log(selectedOption);
+    
     selectedOption.value === "create_society"
       ? setIsOpen(true)
       : setFormData((prev) => ({ ...prev, select_society: selectedOption }));

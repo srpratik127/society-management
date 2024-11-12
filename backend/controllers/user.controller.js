@@ -2,9 +2,9 @@ const User = require("../models/user.model");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const Resident = require("../models/resident.model");
-const cloudinary = require('../utils/cloudinary');
-const fs = require('fs');
-const Society = require('../models/society.model');
+const cloudinary = require("../utils/cloudinary");
+const fs = require("fs");
+const Society = require("../models/society.model");
 
 const Register = async (req, res) => {
   try {
@@ -34,8 +34,6 @@ const Register = async (req, res) => {
       return res.status(400).json({ msg: "User already exists" });
     }
 
-    
-
     const salt = await bcrypt.genSalt(10);
     const hashpassword = await bcrypt.hash(password, salt);
 
@@ -62,7 +60,7 @@ const Register = async (req, res) => {
 const Login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    let user = await User.findOne({ email });
+    let user = await User.findOne({ email }).populate("select_society", "name");
 
     if (!user) {
       user = await Resident.findOne({ email });
@@ -102,18 +100,25 @@ const updateUser = async (req, res) => {
       profile_picture,
     } = req.body;
     let profilePictureUrl = profile_picture;
+
     if (req.file) {
       const result = await cloudinary.uploader.upload(req.file.path, {
         folder: "profile_pictures",
       });
       profilePictureUrl = result.secure_url;
+      fs.unlink(req.file.path, (err) => {
+        if (err) {
+          console.error("Error deleting the file:", err);
+        } else {
+          console.log("File deleted successfully");
+        }
+      });
     }
-    fs.unlink(req.file.path, (err) => {
-      if (err) {
-        console.error("Error deleting the file:", err);
-      } else {
-        console.log("File deleted successfully");
-      }
+
+    console.log(select_society);
+
+    await Society.findByIdAndUpdate(select_society._id, {
+      name: select_society.name,
     });
 
     const updatedUser = await User.findByIdAndUpdate(
@@ -126,11 +131,11 @@ const updateUser = async (req, res) => {
         country,
         state,
         city,
-        select_society,
+        select_society: select_society._id,
         profile_picture: profilePictureUrl,
       },
       { new: true, runValidators: true }
-    );
+    ).populate("select_society", "name");
     if (!updatedUser) {
       return res.status(404).json({ msg: "User not found" });
     }
@@ -140,7 +145,12 @@ const updateUser = async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: "30d" }
     );
-    res.status(200).json({ msg: "User updated successfully", user: updatedUser, token });
+    if (!token) {
+      res.status(400).json({ msg: "token is invalid" });
+    }
+    res
+      .status(200)
+      .json({ msg: "User updated successfully", user: updatedUser, token });
   } catch (error) {
     console.error("Error updating user:", error.message);
     res.status(500).json({ msg: "Server error" });
@@ -154,25 +164,25 @@ const verifyPassword = async (req, res) => {
     if (!user) {
       return res.status(400).json({
         success: false,
-        message: 'Email not found.',
+        message: "Email not found.",
       });
     }
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({
         success: false,
-        message: 'Incorrect Password.',
+        message: "Incorrect Password.",
       });
     }
     return res.status(200).json({
       success: true,
-      message: 'Password is correct.',
+      message: "Password is correct.",
     });
   } catch (error) {
     console.error("Error in checkPassword:", error.message);
     res.status(500).json({
       success: false,
-      message: 'Server error,',
+      message: "Server error,",
     });
   }
 };

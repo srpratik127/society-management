@@ -58,12 +58,12 @@ const ComplainTable = () => {
           </select>
         </div>
       </div>
-      <div className="overflow-x-auto h-[225px] overflow-y-auto">
-        <table className="min-w-full bg-white">
+      <div className="max-w-[91vw] overflow-auto h-[225px] ">
+        <table className="min-w-full  bg-white">
           <thead className="sticky top-0 bg-gray-100">
             <tr className="text-left text-sm ">
-              <th className="py-3 text-light px-4">Complainer Name</th>
-              <th className="py-3 text-light px-4">Complaint Name</th>
+              <th className="py-3 text-light px-4 text-nowrap">Complainer Name</th>
+              <th className="py-3 text-light px-4 text-nowrap">Complaint Name</th>
               <th className="py-3 text-light px-8">Date</th>
               <th className="py-3 text-light text-center px-5">Priority</th>
               <th className="py-3 text-light text-center px-4">
@@ -76,7 +76,7 @@ const ComplainTable = () => {
             {complainList.length > 0 ? (
               complainList.map((complaint, index) => (
                 <tr key={index} className="border-b">
-                  <td className="py-1 px-4 flex items-center space-x-3">
+                  <td className="py-1 px-4 flex items-center space-x-3 text-nowrap">
                     <img
                       src={complaint.user?.profile_picture}
                       alt={complaint.complainerName}
@@ -85,7 +85,7 @@ const ComplainTable = () => {
                     <span>{complaint.complainerName}</span>
                   </td>
                   <td className="py-3 px-4">{complaint.complaintName}</td>
-                  <td className="py-3 px-4">
+                  <td className="py-3 px-4 text-nowrap">
                     {complaint.updatedAt.slice(0, 10)}
                   </td>
                   <td className="py-3 px-6">
