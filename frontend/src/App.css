@@ -1,5 +1,8 @@
-*{
+* {
   font-family: "Poppins", serif;
+}
+.main {
+  width: calc(100vw - 296px);
 }
 input[type="checkbox"] {
   appearance: none;
@@ -12,7 +15,7 @@ input[type="checkbox"] {
 }
 
 input[type="checkbox"]:checked {
-  background: linear-gradient(#FE512E, #F09619);
+  background: linear-gradient(#fe512e, #f09619);
   border: none;
   position: relative;
 }
@@ -33,21 +36,21 @@ input[type="checkbox"]:checked::after {
 }
 
 ::-webkit-scrollbar-track {
-  background: #F4F4F4;
+  background: #f4f4f4;
 }
 
 ::-webkit-scrollbar-thumb {
   background-color: #202224;
   border-radius: 10px;
-  }
+}
 
 ::-webkit-scrollbar-thumb:hover {
   background: #202224;
 }
-.react-datepicker-wrapper{
+.react-datepicker-wrapper {
   width: 100%;
 }
-.react-datepicker{
+.react-datepicker {
   width: 300px !important;
   border: none !important;
   border-radius: 10px !important;
@@ -56,7 +59,7 @@ input[type="checkbox"]:checked::after {
 .react-datepicker__month-container {
   width: 100%;
 }
-.react-datepicker__header{
+.react-datepicker__header {
   text-align: center;
   background-color: white !important;
   border-bottom: none !important;
@@ -69,26 +72,36 @@ input[type="checkbox"]:checked::after {
   margin-top: 20px;
 }
 .react-datepicker__navigation--previous {
- left: 230px !important;
+  left: 230px !important;
 }
-.react-datepicker__day{
+.react-datepicker__day {
   color: #000;
   width: 33px !important;
   height: 33px !important;
   font-weight: 600;
   line-height: 33px !important;
 }
-.react-datepicker__day:not([aria-disabled=true]):hover{
+.react-datepicker__day:not([aria-disabled="true"]):hover {
   border-radius: 50% !important;
 }
-.react-datepicker__day--selected{
+.react-datepicker__day--selected {
   border-radius: 50% !important;
   background-color: #f97316 !important;
   color: #fff;
 }
-.react-datepicker__day--keyboard-selected{
+.react-datepicker__day--keyboard-selected {
   border-radius: 50% !important;
 }
-.react-datepicker-popper[data-placement^=bottom] .react-datepicker__triangle{
+.react-datepicker-popper[data-placement^="bottom"] .react-datepicker__triangle {
   display: none;
+}
+
+/* ==================================
+            media query
+===================================== */
+
+@media screen and (max-width: 1280px) {
+  .main {
+    width: calc(100vw);
+  }
 }

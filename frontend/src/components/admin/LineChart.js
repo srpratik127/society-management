@@ -73,7 +73,7 @@ const LineChart = () => {
           <option value="Last Week">Last Week</option>
         </select>
       </div>
-      <div className=" max-h-[350px]">
+      <div className="max-h-[350px] flex justify-center items-center">
         <Line data={data} options={options} />
       </div>
     </>
