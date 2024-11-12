@@ -50,7 +50,7 @@ function App() {
           <Route path="visitor-logs" element={<VisitorLogs/>} />
           <Route path="access-control" element={<SecurityProtocols/>} />
         </Route>
-ઇ        <Route path="*" element={<ErrorPage />} />
+        <Route path="*" element={<ErrorPage />} />
       </Routes>
     </>
   );
