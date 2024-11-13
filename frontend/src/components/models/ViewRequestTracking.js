@@ -2,7 +2,7 @@ import React from "react";
 
 const ViewRequestTracking = ({ complaint, onClose }) => {
   return (
-    <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50">
+    <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50 z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-[400px]">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">View Request</h2>

@@ -46,7 +46,7 @@ const EditProtocol = ({ protocol, onClose, onSave }) => {
   };
   const isFormValid = title && description && date && time;
   return (
-    <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50">
+    <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50 z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-96 max-w-md">
         <h2 className="text-2xl font-semibold mb-4">Edit Security Protocols</h2>
         <form onSubmit={handleSubmit}>
