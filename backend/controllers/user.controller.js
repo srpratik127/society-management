@@ -60,7 +60,7 @@ const Register = async (req, res) => {
 const Login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    let user = await User.findOne({ email }).populate("select_society", "name");
+    let user = await User.findOne({ email });
 
     if (!user) {
       user = await Resident.findOne({ email });
@@ -85,6 +85,7 @@ const Login = async (req, res) => {
   }
 };
 
+
 const updateUser = async (req, res) => {
   try {
     const { id } = req.params;
@@ -99,27 +100,48 @@ const updateUser = async (req, res) => {
       select_society,
       profile_picture,
     } = req.body;
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ msg: "User not found" });
+    }
     let profilePictureUrl = profile_picture;
-
     if (req.file) {
+      if (user.profile_picture && user.profile_picture.includes("cloudinary.com")) {
+        const publicIdWithExtension = user.profile_picture.split('/').pop();
+        const oldProfilePicturePublicId = `profile_pictures/${publicIdWithExtension.split('.')[0]}`;
+        await cloudinary.uploader.destroy(oldProfilePicturePublicId, (error, result) => {
+          if (error) {
+            console.error("Error deleting old image from Cloudinary:", error);
+          } else {
+            console.log("Old image deleted from Cloudinary:", result);
+          }
+        });
+      }
       const result = await cloudinary.uploader.upload(req.file.path, {
         folder: "profile_pictures",
       });
       profilePictureUrl = result.secure_url;
       fs.unlink(req.file.path, (err) => {
         if (err) {
-          console.error("Error deleting the file:", err);
+          console.error("Error deleting the file from local storage:", err);
         } else {
-          console.log("File deleted successfully");
+          console.log("File deleted successfully from local storage");
         }
       });
     }
-
-    console.log(select_society);
-
-    await Society.findByIdAndUpdate(select_society._id, {
-      name: select_society.name,
-    });
+    let parsedSociety = select_society;
+    if (typeof select_society === "string") {
+      try {
+        parsedSociety = JSON.parse(select_society);
+      } catch (err) {
+        return res.status(400).json({ msg: "Invalid select_society format" });
+      }
+    }
+    if (parsedSociety && parsedSociety._id) {
+      await Society.findByIdAndUpdate(parsedSociety._id, {
+        name: parsedSociety.name,
+      });
+    }
 
     const updatedUser = await User.findByIdAndUpdate(
       id,
@@ -131,11 +153,11 @@ const updateUser = async (req, res) => {
         country,
         state,
         city,
-        select_society: select_society._id,
+        select_society: parsedSociety._id, 
         profile_picture: profilePictureUrl,
       },
       { new: true, runValidators: true }
-    ).populate("select_society", "name");
+    ); 
     if (!updatedUser) {
       return res.status(404).json({ msg: "User not found" });
     }
@@ -146,11 +168,13 @@ const updateUser = async (req, res) => {
       { expiresIn: "30d" }
     );
     if (!token) {
-      res.status(400).json({ msg: "token is invalid" });
+      return res.status(400).json({ msg: "Token generation failed" });
     }
-    res
-      .status(200)
-      .json({ msg: "User updated successfully", user: updatedUser, token });
+    res.status(200).json({
+      msg: "User updated successfully",
+      user: updatedUser,
+      token,
+    });
   } catch (error) {
     console.error("Error updating user:", error.message);
     res.status(500).json({ msg: "Server error" });

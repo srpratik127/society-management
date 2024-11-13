@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import CreateFacilityManagement from "../../components/models/CreateFacilityManagement";
 import EditFacilityManagement from "../../components/models/EditFacilityManagement";
 import axios from "axios";
+import { Popover } from "@headlessui/react";
 
 const FacilityManagement = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [facilities, setFacilities] = useState([]);
+  const [selectedFacility, setSelectedFacility] = useState(null);
 
   useEffect(() => {
     const fetchComplainList = async () => {
@@ -22,41 +24,19 @@ const FacilityManagement = () => {
 
     fetchComplainList();
   }, []);
-
-  const [selectedFacility, setSelectedFacility] = useState(null);
-  const handleCreateFacility = () => {
-    setIsCreateModalOpen(true);
-  };
-  const handleEditFacility = (facility) => {
-    setSelectedFacility(facility);
-    setIsEditModalOpen(true);
-  };
-  const handleClose = () => {
-    setIsCreateModalOpen(false);
-    setIsEditModalOpen(false);
-    setSelectedFacility(null);
-  };
-  const handleSave = (facilityData) => {
-    if (selectedFacility) {
-      console.log("Facility updated:", facilityData);
-    } else {
-      console.log("Facility saved:", facilityData);
-    }
-    setIsCreateModalOpen(false);
-    setIsEditModalOpen(false);
-  };
+ 
   return (
     <div className="p-6 bg-white m-5 rounded-lg">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold">Facility Management</h1>
         <button
           className="bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white py-2 px-4 rounded-lg"
-          onClick={handleCreateFacility}
+          onClick={() => setIsCreateModalOpen(true)}
         >
           Create Facility
         </button>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {facilities.length > 0 ? (
           facilities.map((facility, index) => (
             <div
@@ -64,21 +44,44 @@ const FacilityManagement = () => {
               className="bg-white shadow rounded-lg overflow-hidden"
             >
               <div className="bg-[#5678E9] text-white px-4 py-2 flex justify-between items-center">
-                <h2 className="text-lg font-medium">{facility.title}</h2>
-                <button
-                  className="relative text-white"
-                  onClick={() => handleEditFacility(facility)}
-                >
-                  <img src="/assets/3dots.svg" alt="Menu" />
-                </button>
+                <h2 className="text-lg font-medium">{facility.name}</h2>
+                <Popover className="relative">
+                  <Popover.Button className="outline-none">
+                    <img src="/assets/3dots.svg" alt="Menu" />
+                  </Popover.Button>
+                  <Popover.Panel className="absolute right-0  w-32 bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 z-50">
+                    <div className="py-2">
+                      <button
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                        onClick={() => {
+                          setSelectedFacility(facility);
+                          setIsEditModalOpen(true);
+                        }}
+                      >
+                        Edit
+                      </button>
+                    </div>
+                  </Popover.Panel>
+                </Popover>
               </div>
               <div className="p-4">
                 <p className="text-gray-600">
-                  <strong>Upcoming Schedule Service Date:</strong>{" "}
-                  {facility.date}
+                  <span className="text-[#4F4F4F]">
+                    Upcoming Schedule Service Date:
+                  </span>{" "}
+                  <span className="text-black">
+                    {new Date(facility.serviceData).toLocaleString("en-GB", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                    })}
+                  </span>
                 </p>
                 <p className="text-gray-600 mt-2">
-                  <strong>Description:</strong> {facility.description}
+                  <span className="text-[#4F4F4F]">Description:</span>{" "}
+                  <span className="text-black block">
+                    {facility.description}
+                  </span>
                 </p>
               </div>
             </div>
@@ -92,13 +95,16 @@ const FacilityManagement = () => {
         )}
       </div>
       {isCreateModalOpen && (
-        <CreateFacilityManagement onClose={handleClose} onSave={handleSave} />
+        <CreateFacilityManagement
+          onClose={()=> setIsCreateModalOpen(false)}
+          setFacilities={setFacilities}
+        />
       )}
-      {isEditModalOpen && selectedFacility && (
+      {isEditModalOpen && (
         <EditFacilityManagement
-          onClose={handleClose}
-          onSave={handleSave}
-          facility={selectedFacility}
+          onClose={()=>setIsEditModalOpen(false)}
+          selectedFacility={selectedFacility}
+          setFacilities={setFacilities}
         />
       )}
     </div>

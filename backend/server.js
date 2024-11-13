@@ -44,7 +44,7 @@ app.get("/", (req, res) => {
   res.send("Welcome...!!");
 });
 
-app.use('/users', userRouter);  
+app.use('/users', userRouter);
 app.use('/society', SocietyRouter);
 app.use('/forgetpassword', forgetPassword);
 app.use('/api/complaints', complaintRoutes);

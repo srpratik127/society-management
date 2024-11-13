@@ -20,8 +20,8 @@ const CreateComplaintTracking = ({ onClose }) => {
     onClose(); 
   };
   return (
-    <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-[400px]">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+      <div className="bg-white rounded-xl p-6 w-96">
         <h2 className="text-xl font-semibold mb-4">Create Complaint</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -31,7 +31,6 @@ const CreateComplaintTracking = ({ onClose }) => {
               className="w-full border border-gray-300 p-2 rounded-lg"
               value={ComplainerName}
               onChange={(e) => setComplainerName(e.target.value)}
-              required
             />
           </div>
           <div className="mb-4">
@@ -41,7 +40,6 @@ const CreateComplaintTracking = ({ onClose }) => {
               className="w-full border border-gray-300 p-2 rounded-lg"
               value={ComplainerName}
               onChange={(e) => setComplainerName(e.target.value)}
-              required
             />
           </div>
           <div className="mb-4">
@@ -50,7 +48,6 @@ const CreateComplaintTracking = ({ onClose }) => {
               className="w-full border border-gray-300 p-2 rounded-lg"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              required
             />
           </div>
           <div className="flex space-x-4 mb-4">
@@ -61,7 +58,6 @@ const CreateComplaintTracking = ({ onClose }) => {
                 className="w-full border border-gray-300 p-2 rounded-lg"
                 value={wing}
                 onChange={(e) => setWing(e.target.value)}
-                required
               />
             </div>
             <div>
@@ -71,7 +67,6 @@ const CreateComplaintTracking = ({ onClose }) => {
                 className="w-full border border-gray-300 p-2 rounded-lg"
                 value={unit}
                 onChange={(e) => setUnit(e.target.value)}
-                required
               />
             </div>
           </div>

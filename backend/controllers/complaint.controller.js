@@ -1,17 +1,27 @@
 const Complaint = require("../models/complaint.model.js");
+const Resident = require("../models/resident.model.js");
 const User = require("../models/user.model.js");
 
 
 const createComplaint = async (req, res) => {
   try {
     const { complaintName, complainerName, description, wing, unit, priority, userId } = req.body;
-    const user = await User.findById(userId);
+
+    let user = await User.findById(userId);
+    let userType = 'User'; 
+
+    if (!user) {
+      user = await Resident.findById(userId);
+      userType = 'Resident';
+    }
+
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "User not found",
+        message: "User or Resident not found",
       });
     }
+
     const newComplaint = await Complaint.create({
       complaintName,
       complainerName,
@@ -19,8 +29,10 @@ const createComplaint = async (req, res) => {
       wing,
       unit,
       priority,
-      user: user._id,  
+      userType,
+      user: user._id,
     });
+
     res.status(201).json({
       success: true,
       data: newComplaint,
@@ -35,7 +47,15 @@ const createComplaint = async (req, res) => {
 
 const getComplaints = async (req, res) => {
   try {
-    const complaints = await Complaint.find().populate('user', 'name profile_picture');
+    const complaints = await Complaint.find();
+    for (let complaint of complaints) {
+      if (complaint.userType === 'User') {
+        complaint.user = await User.findById(complaint.user).select('name profile_picture');
+      } else if (complaint.userType === 'Resident') {
+        complaint.user = await Resident.findById(complaint.user).select('name profile_picture');
+      }
+    }
+
     res.status(200).json({
       success: true,
       data: complaints,

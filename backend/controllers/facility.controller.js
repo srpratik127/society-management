@@ -2,13 +2,12 @@ const Facility = require('../models/facility.model');
 
 const createFacility = async (req, res) => {
     try {
-        const { name, serviceData, description, remindBefore, date } = req.body;
+        const { name, serviceData, description, remindBefore } = req.body;
         const newFacility = new Facility({
             name,
             serviceData,
             description,
             remindBefore,
-            date
         });
         const savedFacility = await newFacility.save();
         res.status(201).json(savedFacility);
@@ -40,11 +39,11 @@ const getFacilityById = async (req, res) => {
 
 const updateFacility = async (req, res) => {
     try {
-        const { name, serviceData, description, remindBefore, date } = req.body;
+        const { name, serviceData, description, remindBefore } = req.body;
 
         const updatedFacility = await Facility.findByIdAndUpdate(
             req.params.id,
-            { name, serviceData, description, remindBefore, date },
+            { name, serviceData, description, remindBefore },
             { new: true }
         );
         if (!updatedFacility) {
