@@ -58,7 +58,7 @@ const Resident = () => {
   };
 
   return (
-    <div className="p-4 max-w-full lg:max-w-6xl mx-auto">
+    <div className="p-4 max-w-full lg:max-w-full mx-auto">
       <div className="bg-white rounded-lg shadow p-4">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
           <h2 className="text-xl font-semibold mb-4">
@@ -78,16 +78,16 @@ const Resident = () => {
           <table className="min-w-full bg-white">
             <thead className="bg-[#5678E9] bg-opacity-10">
               <tr>
-                <th className="py-3 font-semibold px-8 text-start">Full Name</th>
-                <th className="py-3 font-semibold px-4">Unit Number</th>
-                <th className="py-3 font-semibold px-4">Unit Status</th>
-                <th className="py-3 font-semibold px-4">Resident Status</th>
-                <th className="py-3 font-semibold px-4 text-start">
+                <th className="py-3 font-semibold px-8 text-start text-nowrap">Full Name</th>
+                <th className="py-3 font-semibold px-4 text-nowrap">Unit Number</th>
+                <th className="py-3 font-semibold px-4 text-nowrap">Unit Status</th>
+                <th className="py-3 font-semibold px-4 text-nowrap">Resident Status</th>
+                <th className="py-3 font-semibold px-4 text-nowrap text-start">
                   Phone Number
                 </th>
-                <th className="py-3 font-semibold px-4">Member</th>
-                <th className="py-3 font-semibold px-4">Vehicle</th>
-                <th className="py-3 font-semibold">Action</th>
+                <th className="py-3 font-semibold px-4 text-nowrap">Member</th>
+                <th className="py-3 font-semibold px-4 text-nowrap">Vehicle</th>
+                <th className="py-3 font-semibold text-nowrap">Action</th>
               </tr>
             </thead>
             <tbody>

@@ -28,7 +28,7 @@ const Income = () => {
 
   return (
     <>
-      <div className="bg-blue-50 min-h-[100px] p-6 overflow-y-hidden max-w-full lg:max-w-6xl md:max-w-4xl sm:max-w-md mx-auto">
+      <div className="bg-blue-50 min-h-[100px] p-6 overflow-y-hidden max-w-full ">
         {view === "maintenance" && (
           <div className="flex flex-col lg:flex-row justify-between items-center mb-6 p-4 bg-white rounded-xl">
             <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 mb-4 lg:mb-0">

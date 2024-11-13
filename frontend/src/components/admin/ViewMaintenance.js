@@ -14,16 +14,16 @@ const ViewMaintenance = ({ maintenance }) => {
         <table className="w-full table-auto">
           <thead className="bg-gray-100 sticky top-0">
             <tr className="text-left text-gray-600">
-              <th className="px-4 py-2">Name</th>
-              <th className="px-4 py-2 text-center">Unit Number</th>
-              <th className="px-4 py-2 text-center">Date</th>
-              <th className="px-4 py-2 text-center">Status</th>
-              <th className="px-4 py-2">Phone Number</th>
-              <th className="px-4 py-2">Amount</th>
-              <th className="px-4 py-2 text-center">Penalty</th>
-              <th className="px-4 py-2 text-center">Status</th>
-              <th className="px-4 py-2 text-center">Payment</th>
-              <th className="px-4 py-2">Action</th>
+              <th className="text-nowrap px-4 py-2">Name</th>
+              <th className="text-nowrap px-4 py-2 text-center">Unit Number</th>
+              <th className="text-nowrap px-4 py-2 text-center">Date</th>
+              <th className="text-nowrap px-4 py-2 text-center">Status</th>
+              <th className="text-nowrap px-4 py-2">Phone Number</th>
+              <th className="text-nowrap px-4 py-2">Amount</th>
+              <th className="text-nowrap px-4 py-2 text-center">Penalty</th>
+              <th className="text-nowrap px-4 py-2 text-center">Status</th>
+              <th className="text-nowrap px-4 py-2 text-center">Payment</th>
+              <th className="text-nowrap px-4 py-2">Action</th>
             </tr>
           </thead>
           <tbody>
