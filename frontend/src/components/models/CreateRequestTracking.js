@@ -22,7 +22,7 @@ const CreateRequestTracking = ({ onClose }) => {
     onClose();
   };
   return (
-    <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50">
+    <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50 z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-[400px]">
         <h2 className="text-xl font-semibold mb-4">Create Request</h2>
         <form onSubmit={handleSubmit}>

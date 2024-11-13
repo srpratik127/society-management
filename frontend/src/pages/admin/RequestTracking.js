@@ -26,8 +26,6 @@ const RequestTracking = () => {
   const openDeleteModal = (entry) => {
     setSelectedRequest(entry);
   };
-  const closeDeleteModal = () => {
-  };
   const openViewModal = (entry) => {
     setSelectedRequest(entry);
     setIsViewModalOpen(true);
@@ -35,10 +33,6 @@ const RequestTracking = () => {
   const closeViewModal = () => {
     setIsViewModalOpen(false);
     setSelectedRequest(null);
-  };
-  const handleDelete = () => {
-    console.log('Deleting request:', selectedRequest);
-    closeDeleteModal();
   };
   return (
     <div className="p-6 bg-gray-50 m-6 rounded-lg shadow-lg">
