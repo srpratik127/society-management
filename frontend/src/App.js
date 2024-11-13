@@ -23,6 +23,7 @@ import MaintenanceViewDetails from "./components/admin/MaintenanceViewDetails";
 import VisitorLogs from "./pages/admin/VisitorLogs";
 import SecurityProtocols from "./pages/admin/SecurityProtocols";
 import SecurityGuard from "./pages/admin/SecurityGuard";
+import Announcement from "./components/admin/Announcement";
 
 function App() {
   return (
@@ -51,8 +52,9 @@ function App() {
           <Route path="visitor-logs" element={<VisitorLogs/>} />
           <Route path="access-control" element={<SecurityProtocols/>} />
           <Route path="security" element={<SecurityGuard/>} />
+          <Route path="announcement" element={<Announcement/>} />
         </Route>
-ઇ        <Route path="*" element={<ErrorPage />} />
+        <Route path="*" element={<ErrorPage />} />
       </Routes>
     </>
   );
