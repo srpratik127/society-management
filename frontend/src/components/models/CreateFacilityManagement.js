@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 
-const CreateFacilityManagement = ({ onClose, onSave }) => {
+const CreateFacilityManagement = ({ onClose, setFacilities }) => {
   const [facilityName, setFacilityName] = useState("");
   const [description, setDescription] = useState("");
   const [scheduleDate, setScheduleDate] = useState("");
@@ -32,15 +32,15 @@ const CreateFacilityManagement = ({ onClose, onSave }) => {
     const facilityData = {
       name: facilityName,
       description,
-      date: scheduleDate,
-      remindBefore,
+      serviceData: scheduleDate,
+      remindBefore: parseInt(remindBefore.split("-")[0]),
     };
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_BASE_URL}/api/facilities`,
         facilityData
       );
-      console.log("Facility created:", response.data);
+      setFacilities((pre) => [...pre, response.data]);
       onClose();
     } catch (error) {
       console.error("Error creating facility:", error);
@@ -57,24 +57,21 @@ const CreateFacilityManagement = ({ onClose, onSave }) => {
     }));
   };
 
-
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
-    <div className="fixed inset-0 bg-black opacity-50"></div>
-    <div className="bg-white p-6 rounded-lg shadow-lg z-10 w-full max-w-96 mx-auto">
+      <div className="fixed inset-0 bg-black opacity-50"></div>
+      <div className="bg-white p-6 rounded-lg shadow-lg z-10 w-full max-w-96 mx-auto">
         <h2 className="text-2xl font-semibold mb-4">Create Facility</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block font-semibold text-gray-700">
-              Facility Name*
-            </label>
+            <label className="block">Facility Name*</label>
             <input
               type="text"
               value={facilityName}
               onChange={handleFieldChange(setFacilityName, "facilityName")}
               className={`w-full border ${
                 errors.facilityName ? "border-red-500" : "border-gray-300"
-              } p-2 rounded-lg mt-1`}
+              } p-2 rounded-lg mt-1 outline-none`}
               placeholder="Enter Name"
             />
             {errors.facilityName && (
@@ -82,15 +79,13 @@ const CreateFacilityManagement = ({ onClose, onSave }) => {
             )}
           </div>
           <div className="mb-4">
-            <label className="block font-semibold text-gray-700">
-              Description*
-            </label>
+            <label className="block">Description*</label>
             <textarea
               value={description}
               onChange={handleFieldChange(setDescription, "description")}
               className={`w-full border ${
                 errors.description ? "border-red-500" : "border-gray-300"
-              } p-2 rounded-lg mt-1`}
+              } p-2 rounded-lg mt-1 outline-none`}
               placeholder="Enter Description"
             ></textarea>
             {errors.description && (
@@ -98,9 +93,7 @@ const CreateFacilityManagement = ({ onClose, onSave }) => {
             )}
           </div>
           <div className="mb-4">
-            <label className="block font-semibold text-gray-700">
-              Schedule Service Date*
-            </label>
+            <label className="block">Schedule Service Date*</label>
             <DatePicker
               selected={scheduleDate}
               onChange={(date) => setScheduleDate(date)}
@@ -116,13 +109,11 @@ const CreateFacilityManagement = ({ onClose, onSave }) => {
             )}
           </div>
           <div className="mb-4">
-            <label className="block font-semibold text-gray-700">
-              Remind Before*
-            </label>
+            <label className="block">Remind Before*</label>
             <select
               value={remindBefore}
               onChange={handleFieldChange(setRemindBefore, "remindBefore")}
-              className={`w-full border ${
+              className={`w-full border outline-none ${
                 errors.remindBefore ? "border-red-500" : "border-gray-300"
               } p-2 rounded-lg mt-1`}
             >
@@ -142,7 +133,7 @@ const CreateFacilityManagement = ({ onClose, onSave }) => {
             <button
               type="button"
               onClick={onClose}
-              className="bg-white border w-full border-gray-300 font-semibold text-gray-700 py-2 px-4 rounded-lg"
+              className="bg-white border w-full border-gray-300 py-2 px-4 rounded-lg"
             >
               Cancel
             </button>
@@ -151,7 +142,7 @@ const CreateFacilityManagement = ({ onClose, onSave }) => {
               className={`py-2 px-4 rounded-lg w-full ${
                 facilityName && description && scheduleDate && remindBefore
                   ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] font-semibold text-white"
-                  : "bg-gray-300 text-gray-500"
+                  : "border bg-gray-100"
               }`}
             >
               Save

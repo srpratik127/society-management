@@ -32,9 +32,14 @@ const complaintSchema = new mongoose.Schema(
       enum: ["Open", "Pending", "Solve"],
       default: "Open",
     },
+    userType: {
+      type: String,
+      enum: ['User', 'Resident'],
+      required: true,
+    },
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      refPath: 'userType',
       required: true,
     },
   },

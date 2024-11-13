@@ -4,5 +4,6 @@ const societyController = require('../controllers/society.controller')
 
 router.post('/', societyController.createSociety);
 router.get('/', societyController.getAllSociety);
+router.get('/:id', societyController.getSocietyById);
 
 module.exports = router;

@@ -19,6 +19,27 @@ const createSociety = async (req, res) => {
     }
 };
 
+const getSocietyById = async (req, res) => {
+    try {
+      const society = await Society.findById(req.params.id);
+      if (!society) {
+        return res.status(404).json({
+          success: false,
+          message: 'Society not found'
+        });
+      }
+      res.status(200).json({
+        success: true,
+        data: society
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: error.message
+      });
+    }
+  };
+
 const getAllSociety = async (req, res) => {
     try {
         const response = await Society.find();       
@@ -30,5 +51,6 @@ const getAllSociety = async (req, res) => {
 
 module.exports = {
     createSociety,
-    getAllSociety
+    getAllSociety,
+    getSocietyById
 };

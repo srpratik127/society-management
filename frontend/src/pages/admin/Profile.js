@@ -7,16 +7,32 @@ const Profile = () => {
   const dispatch = useDispatch();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({});
+  const [profilePicture, setProfilePicture] = useState(null);
+  const [userSociety, setUserSociety] = useState({ _id: "", name: "" });
+
   const user = useSelector((store) => store.auth.user);
 
   useEffect(() => {
     if (user) {
+      const fetchUserSociety = async () => {
+        try {
+          const response = await axios.get(
+            `${process.env.REACT_APP_BASE_URL}/society/${user?.select_society}`
+          );
+          const { _id, name } = response?.data?.data;
+          setUserSociety({ _id, name });
+        } catch (err) {
+          console.log(err.message);
+        }
+      };
+      fetchUserSociety();
+
       setFormData({
         firstname: user.firstname,
         lastname: user.lastname,
         phone: user.phone,
         email: user.email,
-        select_society: user.select_society.name,
+        select_society: userSociety,
         country: user.country,
         state: user.state,
         city: user.city,
@@ -26,26 +42,38 @@ const Profile = () => {
 
   const handleChange = (e) => {
     const { id, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [id]: value,
-    }));
+
+    if (id === "select_society") {
+      setUserSociety((prevSociety) => ({
+        ...prevSociety,
+        name: value,
+      }));
+    } else {
+      setFormData((prevData) => ({
+        ...prevData,
+        [id]: value,
+      }));
+    }
   };
+
+  const handleFileChange = (e) => setProfilePicture(e.target.files[0]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const updatedFormData = {
-      ...formData,
-      select_society: {
-        name: formData.select_society,
-        _id: user.select_society._id, 
-      },
-    };
-  
+    const updatedData = new FormData();
+    Object.keys(formData).forEach((key) => {
+      if (key === "select_society") {
+        updatedData.append("select_society", JSON.stringify(userSociety)); 
+      } else {
+        updatedData.append(key, formData[key]);
+      }
+    });
+    if (profilePicture) updatedData.append("profile_picture", profilePicture);
     try {
       const response = await axios.put(
         `${process.env.REACT_APP_BASE_URL}/users/update/${user._id}`,
-        updatedFormData
+        updatedData,
+        { headers: { "Content-Type": "multipart/form-data" } }
       );
       dispatch(addToken(response.data.token));
       setIsEditing(false);
@@ -53,6 +81,7 @@ const Profile = () => {
       console.error("Error updating user:", error);
     }
   };
+
   return (
     <>
       <div className="flex flex-col items-center h-auto relative">
@@ -80,18 +109,31 @@ const Profile = () => {
           >
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
               <div className="flex flex-col items-center md:col-span-1">
-                <div className="relative w-32 rounded-full overflow-hidden border-2 border-gray-300">
+                <div className="relative w- rounded-full">
                   <img
-                    src={user?.profile_picture}
+                    src={
+                      profilePicture
+                        ? URL.createObjectURL(profilePicture)
+                        : user?.profile_picture
+                    }
                     alt="User Avatar"
-                    className="w-full h-full object-cover"
+                    className="w-32 h-32 rounded-full overflow-hidden object-cover"
                   />
                   {isEditing && (
                     <>
-                    <input type="file" className="hidden" id="profile_picture" />
-                    <label type="button" className="absolute bottom-2 right-2 bg-black bg-opacity-50 p-1 rounded-full text-white hover:bg-opacity-75" htmlFor="profile_picture">
-                      <span className="material-icons">photo_camera</span>
-                    </label>
+                      <input
+                        type="file"
+                        className="hidden"
+                        onChange={handleFileChange}
+                        id="profile_picture"
+                      />
+                      <label
+                        type="button"
+                        className="absolute bottom-1 right-1 cursor-pointer"
+                        htmlFor="profile_picture"
+                      >
+                        <img src="/assets/edit.svg" alt="" />
+                      </label>
                     </>
                   )}
                 </div>
@@ -163,7 +205,7 @@ const Profile = () => {
                     type="text"
                     id="select_society"
                     disabled={!isEditing}
-                    value={formData.select_society || ""}
+                    value={userSociety.name || ""}
                     onChange={handleChange}
                     className={`w-full bg-white border p-2 rounded-md`}
                   />
