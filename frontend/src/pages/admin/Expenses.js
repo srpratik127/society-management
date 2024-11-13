@@ -53,12 +53,12 @@ const Expenses = () => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-blue-100">
-                <th className="p-3 text-gray-600 font-semibold">Title</th>
-                <th className="p-3 text-gray-600 font-semibold">Description</th>
-                <th className="p-3 text-gray-600 font-semibold text-center">Date</th>
-                <th className="p-3 text-gray-600 font-semibold text-center">Amount</th>
-                <th className="p-3 text-gray-600 font-semibold text-center">Bill Format</th>
-                <th className="p-3 text-gray-600 font-semibold text-center">Action</th>
+                <th className="p-3 text-gray-600 text-nowrap">Title</th>
+                <th className="p-3 text-gray-600 text-nowrap">Description</th>
+                <th className="p-3 text-gray-600 text-nowrap text-center">Date</th>
+                <th className="p-3 text-gray-600 text-nowrap text-center">Amount</th>
+                <th className="p-3 text-gray-600 text-nowrap text-center">Bill Format</th>
+                <th className="p-3 text-gray-600 text-nowrap text-center">Action</th>
               </tr>
             </thead>
             <tbody>

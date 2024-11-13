@@ -50,7 +50,7 @@ function App() {
           <Route path="facility" element={<FacilityManagement/>} />
           <Route path="maintenance-details" element={<MaintenanceViewDetails />} />
           <Route path="visitor-logs" element={<VisitorLogs/>} />
-          <Route path="access-control" element={<SecurityProtocols/>} />
+          <Route path="security-protocols" element={<SecurityProtocols/>} />
           <Route path="security" element={<SecurityGuard/>} />
           <Route path="announcement" element={<Announcement/>} />
         </Route>

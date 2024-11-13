@@ -64,7 +64,7 @@ const SecurityProtocols = () => {
   };
 
   return (
-    <div className="p-6 bg-gray-50 m-6 rounded-lg shadow-lg max-w-screen-xl mx-auto">
+    <div className="p-6 bg-gray-50 m-6 rounded-lg shadow-lg max-w-full">
       <div className="flex flex-col md:flex-row justify-between items-center mb-6">
         <h2 className="text-2xl font-semibold text-gray-800 mb-4 md:mb-0">Security Protocols</h2>
         <button
@@ -88,10 +88,10 @@ const SecurityProtocols = () => {
           <tbody>
             {protocols.map((protocol) => (
               <tr key={protocol.id} className="border-b border-gray-200">
-                <td className="py-3 px-4 text-gray-700 text-center">{protocol.title}</td>
-                <td className="py-3 px-4 text-gray-700 text-center">{protocol.description}</td>
-                <td className="py-3 px-4 text-gray-700 text-center">{protocol.date}</td>
-                <td className="py-3 px-4 text-gray-700 text-center">{protocol.time}</td>
+                <td className="py-3 px-4 text-gray-700 text-center text-nowrap">{protocol.title}</td>
+                <td className="py-3 px-4 text-gray-700 text-center text-nowrap">{protocol.description}</td>
+                <td className="py-3 px-4 text-gray-700 text-center text-nowrap">{protocol.date}</td>
+                <td className="py-3 px-4 text-gray-700 text-center text-nowrap">{protocol.time}</td>
                 <td className="py-3 px-4 flex justify-center space-x-3">
                   <button onClick={() => openEditModal(protocol)} className="text-green-500 hover:text-green-700 h-10 w-10">
                     <img src="/assets/edit.svg" alt="Edit" />
