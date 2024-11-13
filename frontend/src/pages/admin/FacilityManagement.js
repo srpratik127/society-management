@@ -39,10 +39,7 @@ const FacilityManagement = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {facilities.length > 0 ? (
           facilities.map((facility, index) => (
-            <div
-              key={index}
-              className="bg-white shadow rounded-lg overflow-hidden"
-            >
+            <div key={index} className="bg-white shadow rounded-lg overflow-hidden max-w-full sm:max-w-xs md:max-w-sm lg:max-w-md">
               <div className="bg-[#5678E9] text-white px-4 py-2 flex justify-between items-center">
                 <h2 className="text-lg font-medium">{facility.name}</h2>
                 <Popover className="relative">
@@ -88,9 +85,7 @@ const FacilityManagement = () => {
           ))
         ) : (
           <div className="flex justify-center items-center col-span-full h-full">
-            <p className="text-gray-500 text-center select-none">
-              No Data found.
-            </p>
+            <p className="text-gray-500 text-center select-none">No Data found.</p>
           </div>
         )}
       </div>

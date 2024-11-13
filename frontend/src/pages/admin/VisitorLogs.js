@@ -8,33 +8,33 @@ const VisitorLogs = () => {
         <table className="min-w-full bg-white shadow-md rounded-lg">
           <thead>
             <tr className="bg-gray-100 text-left">
-              <th className="py-3 px-6 text-gray-700">Visitor Name</th>
-              <th className="py-3 px-6 text-gray-700">Phone Number</th>
-              <th className="py-3 px-6 text-gray-700">Date</th>
-              <th className="py-3 px-6 text-gray-700">Unit Number</th>
-              <th className="py-3 px-6 text-gray-700">Time</th>
+              <th className="py-3 px-6 text-gray-700 text-center">Visitor Name</th>
+              <th className="py-3 px-6 text-gray-700 text-center">Phone Number</th>
+              <th className="py-3 px-6 text-gray-700 text-center">Date</th>
+              <th className="py-3 px-6 text-gray-700 text-center">Unit Number</th>
+              <th className="py-3 px-6 text-gray-700 text-center">Time</th>
             </tr>
           </thead>
           <tbody>
             {securityManagement.map((securityManagement, index) => (
               <tr key={index} className="border-b">
-                <td className="py-3 px-6 flex items-center">
+                <td className="py-3 px-6 flex items-center text-center min-w-[200px]">
                   <img
-                    src="https://via.placeholder.com/40"
+                    src="/assets/Avatar.png"
                     alt="Visitor"
                     className="rounded-full mr-3"
                   />
                   <span>{securityManagement.name}</span>
                 </td>
-                <td className="py-3 px-6">{securityManagement.phone}</td>
-                <td className="py-3 px-6">{securityManagement.date}</td>
-                <td className="py-3 px-6">
+                <td className="py-3 px-6 text-center min-w-[200px]">{securityManagement.phone}</td>
+                <td className="py-3 px-6 text-center min-w-[200px]">{securityManagement.date}</td>
+                <td className="py-3 px-6 text-center min-w-[200px]">
                   <span className="inline-flex items-center justify-center h-6 w-6 rounded-full bg-blue-100 text-blue-600">
                     {securityManagement.block}
                   </span>
                   <span className="ml-2">{securityManagement.unit}</span>
                 </td>
-                <td className="py-3 px-6">{securityManagement.time}</td>
+                <td className="py-3 px-6 text-center min-w-[200px]">{securityManagement.time}</td>
               </tr>
             ))}
           </tbody>

@@ -40,11 +40,11 @@ const Expenses = () => {
   return (
     <>
       <div className="m-5 p-5 max-w-full bg-white rounded-lg">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-semibold">Add Expenses Details</h2>
+        <div className="flex justify-between items-center mb-4 flex-wrap">
+          <h2 className="text-2xl font-semibold w-full sm:w-auto">Add Expenses Details</h2>
           <button
             onClick={() => setIsPopupOpen(true)}
-            className="bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white py-2 px-4 rounded"
+            className="bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white py-2 px-4 rounded mt-2 sm:mt-0"
           >
             Add New Expenses Details
           </button>
@@ -55,18 +55,10 @@ const Expenses = () => {
               <tr className="bg-blue-100">
                 <th className="p-3 text-gray-600 font-semibold">Title</th>
                 <th className="p-3 text-gray-600 font-semibold">Description</th>
-                <th className="p-3 text-gray-600 font-semibold text-center">
-                  Date
-                </th>
-                <th className="p-3 text-gray-600 font-semibold text-center">
-                  Amount
-                </th>
-                <th className="p-3 text-gray-600 font-semibold text-center">
-                  Bill Format
-                </th>
-                <th className="p-3 text-gray-600 font-semibold text-center">
-                  Action
-                </th>
+                <th className="p-3 text-gray-600 font-semibold text-center">Date</th>
+                <th className="p-3 text-gray-600 font-semibold text-center">Amount</th>
+                <th className="p-3 text-gray-600 font-semibold text-center">Bill Format</th>
+                <th className="p-3 text-gray-600 font-semibold text-center">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -106,7 +98,7 @@ const Expenses = () => {
                     <td className="px-3 flex justify-center space-x-2">
                       <img
                         src="/assets/edit.svg"
-                        alt=""
+                        alt="Edit"
                         className="h-8 w-8 rounded cursor-pointer"
                         onClick={() => {
                           setIsPopupEdit(true);
@@ -115,7 +107,7 @@ const Expenses = () => {
                       />
                       <img
                         src="/assets/blueeye.svg"
-                        alt=""
+                        alt="View"
                         className="h-8 w-8 rounded cursor-pointer"
                         onClick={() => {
                           setIsPopupView(true);
@@ -124,7 +116,7 @@ const Expenses = () => {
                       />
                       <img
                         src="/assets/delete.svg"
-                        alt=""
+                        alt="Delete"
                         className="h-8 w-8 rounded cursor-pointer"
                         onClick={() => {
                           setIsPopupDelete(true);
@@ -173,7 +165,7 @@ const Expenses = () => {
           onDelete={handleDelete}
           message={{
             title: "Delete Expense?",
-            sms: "Are you sure you want to delate this?",
+            sms: "Are you sure you want to delete this?",
           }}
         />
       )}

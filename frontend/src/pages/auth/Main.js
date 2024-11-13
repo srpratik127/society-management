@@ -8,7 +8,7 @@ const Main = () => {
     switch (location.pathname) {
       case "/":
         return (
-          <>
+          <div className="hidden md:block">
             <img
               src="/assets/register.JPEG"
               alt="Registration"
@@ -22,15 +22,15 @@ const Main = () => {
               </span>
               Simplified
             </p>
-          </>
+          </div>
         );
       case "/login":
         return (
-          <>
+          <div className="hidden md:block">
             <img
               src="/assets/login-bg.png"
               alt="Login"
-              className="w-full max-w-xl"
+              className="w-full max-w-xl "
             />
             <p className="mt-6 text-2xl text-center text-gray-600 font-medium">
               Your Space, Your Place:
@@ -40,7 +40,7 @@ const Main = () => {
               <br />
               Made Simple.
             </p>
-          </>
+          </div>
         );
       case "/forget":
       case "/get-otp":
@@ -58,11 +58,11 @@ const Main = () => {
   };
 
   return (
-    <div className="flex justify-center relative">
-      <div className="absolute right-0 h-screen overflow-hidden -z-50">
+    <div className="flex justify-center relative ">
+      <div className="absolute right-0 h-screen overflow-hidden -z-50 ">
         <img src="/assets/background.png" alt="Background" />
       </div>
-      <div className="w-1/2 h-screen overflow-hidden bg-[#F6F8FB]">
+      <div className="w-1/2 h-screen overflow-hidden bg-[#F6F8FB] hidden md:block">
         <img src="/assets/logo.png" className="w-60 px-9 mt-6" alt="Logo" />
         <div className="flex flex-col min-h-screen items-center justify-center ">
           {renderContent()}
