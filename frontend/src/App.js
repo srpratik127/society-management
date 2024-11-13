@@ -22,6 +22,7 @@ import Expenses from "./pages/admin/Expenses";
 import MaintenanceViewDetails from "./components/admin/MaintenanceViewDetails";
 import VisitorLogs from "./pages/admin/VisitorLogs";
 import SecurityProtocols from "./pages/admin/SecurityProtocols";
+import Announcement from "./components/admin/Announcement";
 
 function App() {
   return (
@@ -49,8 +50,9 @@ function App() {
           <Route path="maintenance-details" element={<MaintenanceViewDetails />} />
           <Route path="visitor-logs" element={<VisitorLogs/>} />
           <Route path="access-control" element={<SecurityProtocols/>} />
+          <Route path="announcement" element={<Announcement/>} />
         </Route>
-ઇ        <Route path="*" element={<ErrorPage />} />
+        <Route path="*" element={<ErrorPage />} />
       </Routes>
     </>
   );

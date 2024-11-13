@@ -50,11 +50,11 @@ const OtherIncome = () => {
   };
 
   return (
-    <div className="bg-[#ffffff] border rounded-b-xl p-3">
-      <div className="mt-3 flex justify-between align-center px-3">
+    <div className="bg-[#ffffff] border rounded-b-xl p-3 max-w-full lg:max-w-6xl md:max-w-4xl sm:max-w-md mx-auto">
+      <div className="mt-3 flex flex-col sm:flex-row justify-between align-center px-3">
         <h2 className="text-2xl font-bold">Other Income</h2>
         <button
-          className="bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white px-4 py-2 rounded-lg hover:bg-orange-600 focus:outline-none"
+          className="bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white px-4 py-2 rounded-lg hover:bg-orange-600 focus:outline-none mt-2 sm:mt-0"
           onClick={() => setCreatePopupOpen(true)}
         >
           Create Other Income
@@ -157,7 +157,7 @@ const OtherIncome = () => {
           onDelete={handleDelete}
           message={{
             title: `Delete ${selectedItem.title}?`,
-            sms: "Are you sure you want to delate this?",
+            sms: "Are you sure you want to delete this?",
           }}
         />
       )}
