@@ -2,17 +2,17 @@ const Visitors = require("../models/visitors.model.js");
 
 const createVisitor = async (req, res) => {
     try {
-        const { name, number, date, time, wing, unit_Number } = req.body;
+        const { name, number, date, time, wing, unit } = req.body;
         const response = new Visitors({
             name,
             number,
             date,
             time,
             wing,
-            unit_Number
+            unit
         });
         await response.save();
-        res.status(200).json({ message: 'Visitor created successfully' });
+        res.status(200).json({ message: 'Visitor created successfully', date: response});
     } catch (error) {
         res.status(500).json({ message: 'Error creating Visitor', error: error.message });
     }
@@ -30,10 +30,10 @@ const getVisitor = async (req, res) => {
 const updateVisitor = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, number, date, time, wing, unit_Number } = req.body;
+        const { name, number, date, time, wing, unit } = req.body;
         const updatedVisitor = await Visitors.findByIdAndUpdate(
             id,
-            { name, number, date, time, wing, unit_Number },
+            { name, number, date, time, wing, unit },
             { new: true, runValidators: true }
         );
         if (!updatedVisitor) {

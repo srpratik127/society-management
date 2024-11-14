@@ -6,7 +6,7 @@ const visitorSchema = new mongoose.Schema({
         required: true,
     },
     number: {
-        type: Number,
+        type: String,
         required: true,
     },
     date: {
@@ -20,7 +20,7 @@ const visitorSchema = new mongoose.Schema({
     wing: {
         type: String
     },
-    unit_Number: {
+    unit: {
         type: String
     }
 }); 

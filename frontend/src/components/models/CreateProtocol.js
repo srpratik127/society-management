@@ -1,95 +1,78 @@
-import React, { useState } from 'react';
+import axios from "axios";
+import React, { useState } from "react";
 
-const CreateProtocol = ({ onClose, onSave }) => {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [errors, setErrors] = useState({
-    title: '',
-    description: '',
-  });
-  const isFormValid = title && description && !errors.title && !errors.description;
+const CreateProtocol = ({ onClose, setProtocols }) => {
+  const [formData, setFormData] = useState({ title: "", description: "" });
+  const [errors, setErrors] = useState({});
+  
   const validateField = (field, value) => {
-    switch (field) {
-      case 'title':
-        if (!value.trim()) {
-          setErrors((prevErrors) => ({ ...prevErrors, title: 'Title is required.' }));
-        } else {
-          setErrors((prevErrors) => ({ ...prevErrors, title: '' }));
-        }
-        break;
-      case 'description':
-        if (!value.trim()) {
-          setErrors((prevErrors) => ({ ...prevErrors, description: 'Description is required.' }));
-        } else {
-          setErrors((prevErrors) => ({ ...prevErrors, description: '' }));
-        }
-        break;
-      default:
-        break;
-    }
+    setErrors((prev) => ({
+      ...prev,
+      [field]: value.trim() ? "" : `${field.charAt(0).toUpperCase() + field.slice(1)} is required.`,
+    }));
   };
-  const handleBlur = (field, value) => {
-    validateField(field, value);
+  
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    validateField(name, value);
   };
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    if (isFormValid) {
-      const newProtocol = {
-        title,
-        description,
-      };
-      onSave(newProtocol); 
-      setTitle('');
-      setDescription('');
-      onClose(); 
+    const isValid = formData.title && formData.description;
+    if (isValid) {
+      try {
+        const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/api/protocol`, formData);
+        
+        if (response.status === 200) {
+          setProtocols((prev) => [...prev, response.data.data]);
+          onClose();
+        }
+      } catch (error) {
+        console.error("Error creating protocol:", error);
+      }
     } else {
-      validateField('title', title);
-      validateField('description', description);
+      ["title", "description"].forEach((field) => validateField(field, formData[field]));
     }
   };
+
   return (
-    <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50 z-50">
-      <div className="bg-white p-6 rounded-[25px] shadow-lg w-96 max-w-md">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+      <div className="bg-white rounded-xl p-6 w-96">
         <h2 className="text-2xl font-semibold mb-4">Security Protocols</h2>
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block font-semibold text-gray-700">Title*</label>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              onBlur={(e) => handleBlur('title', e.target.value)}
-              className="w-full border p-2 rounded-[10px] mt-1"
-              placeholder="Enter title"
-              required
-            />
-            {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title}</p>}
-          </div>
-          <div className="mb-4">
-            <label className="block font-semibold text-gray-700">Description*</label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              onBlur={(e) => handleBlur('description', e.target.value)}
-              className="w-full border rounded-[10px] p-2 mt-1"
-              placeholder="Enter description"
-              required
-            ></textarea>
-            {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description}</p>}
-          </div>
-          <div className="flex justify-between">
-            <button
-              type="button"
-              onClick={onClose}
-              className="bg-white-300 border-[1px] font-semibold text-gray-700 w-[175px] py-2 px-4 rounded-lg"
-            >
+          {["title", "description"].map((field) => (
+            <div key={field} className="mb-4">
+              <label className="block font-semibold text-gray-700">
+                {field.charAt(0).toUpperCase() + field.slice(1)}*
+              </label>
+              {field === "description" ? (
+                <textarea
+                  name={field}
+                  value={formData[field]}
+                  onChange={handleChange}
+                  className={`w-full border rounded-md outline-none p-2 mt-1 ${errors[field] && "border-red-500"}`}
+                  placeholder={`Enter ${field}`}
+                />
+              ) : (
+                <input
+                  type="text"
+                  name={field}
+                  value={formData[field]}
+                  onChange={handleChange}
+                  className={`w-full border rounded-md outline-none p-2 mt-1 ${errors[field] && "border-red-500"}`}
+                  placeholder={`Enter ${field}`}
+                />
+              )}
+              {errors[field] && <p className="text-red-500 text-sm mt-1">{errors[field]}</p>}
+            </div>
+          ))}
+          <div className="flex gap-3">
+            <button onClick={onClose} className="border font-semibold text-gray-700 w-1/2 py-2 rounded-lg">
               Cancel
             </button>
-            <button
-              type="submit"
-              disabled={!isFormValid}
-              className={`py-2 px-4 rounded-lg w-[175px] ${isFormValid ? 'bg-gradient-to-r from-[#FE512E] to-[#F09619] font-semibold text-white' : 'bg-[#F6F8FB] text-black'}`}
-            >
+            <button type="submit" className="w-1/2 py-2 bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white font-semibold rounded-lg">
               Save
             </button>
           </div>

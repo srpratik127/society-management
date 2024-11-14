@@ -1,99 +1,138 @@
-import React, { useState, useEffect } from 'react';
+import axios from "axios";
+import React, { useState, useEffect } from "react";
+import DatePicker from "react-datepicker";
 
-const EditProtocol = ({ protocol, onClose, onSave }) => {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [date, setDate] = useState('');
-  const [time, setTime] = useState('');
+const EditProtocol = ({ protocol, onClose, setProtocols }) => {
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    date: new Date(),
+    time: new Date(),
+  });
   const [errors, setErrors] = useState({});
+
   useEffect(() => {
     if (protocol) {
-      setTitle(protocol.title);
-      setDescription(protocol.description);
-      setDate(protocol.date);
-      setTime(protocol.time);
+      setFormData({
+        title: protocol.title,
+        description: protocol.description,
+        date: new Date(protocol.date),
+        time: protocol.time ? new Date(protocol.time) : new Date(),
+      });
     }
   }, [protocol]);
-  const validateField = (field, value) => {
-    let error = '';
-    if (!value) {
-      error = `${field.charAt(0).toUpperCase() + field.slice(1)} is required.`;
-    }
-    return error;
-  };
-  const handleFieldChange = (setter, fieldName) => (e) => {
-    const value = e.target.value;
-    setter(value);
-    setErrors((prevErrors) => ({
-      ...prevErrors,
-      [fieldName]: validateField(fieldName, value),
+
+  const handleFieldChange = (field) => (e) => {
+    const value = e?.target ? e.target.value : e;
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    setErrors((prev) => ({
+      ...prev,
+      [field]: !value
+        ? `${field.charAt(0).toUpperCase() + field.slice(1)} is required.`
+        : "",
     }));
   };
+
+  const updateProtocol = async () => {
+    try {
+      const response = await axios.put(
+        `${process.env.REACT_APP_BASE_URL}/api/protocol/${protocol._id}`,
+        formData
+      );
+      const updatedProtocol = response.data.data;
+
+      setProtocols((prevProtocols) =>
+        prevProtocols.map((p) => (p._id === protocol._id ? updatedProtocol : p))
+      );
+  
+      onClose();
+    } catch (error) {
+      console.error(
+        "Error updating protocol:",
+        error.response?.data || error.message
+      );
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    const formErrors = {};
-    if (!title) formErrors.title = 'Title is required.';
-    if (!description) formErrors.description = 'Description is required.';
-    if (!date) formErrors.date = 'Date is required.';
-    if (!time) formErrors.time = 'Time is required.';
-    if (Object.keys(formErrors).length > 0) {
-      setErrors(formErrors); 
-      return;
-    }
-    const updatedProtocol = { title, description, date, time };
-    onSave(updatedProtocol); 
-    onClose(); 
+    const newErrors = Object.keys(formData).reduce((acc, key) => {
+      if (!formData[key])
+        acc[key] = `${key.charAt(0).toUpperCase() + key.slice(1)} is required.`;
+      return acc;
+    }, {});
+    if (Object.keys(newErrors).length) return setErrors(newErrors);
+    updateProtocol();
   };
-  const isFormValid = title && description && date && time;
+
   return (
-    <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50 z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-96 max-w-md">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+      <div className="bg-white rounded-xl p-6 w-[390px]">
         <h2 className="text-2xl font-semibold mb-4">Edit Security Protocols</h2>
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block font-semibold text-gray-700">Title*</label>
-            <input
-              type="text"
-              value={title}
-              onChange={handleFieldChange(setTitle, 'title')}
-              className={`w-full border ${errors.title ? 'border-red-500' : 'border-gray-300'} p-2 rounded-lg mt-1`}
-              placeholder="Enter title"
-            />
-            {errors.title && <p className="text-red-500 text-sm">{errors.title}</p>}
-          </div>
-          <div className="mb-4">
-            <label className="block font-semibold text-gray-700">Description*</label>
-            <textarea
-              value={description}
-              onChange={handleFieldChange(setDescription, 'description')}
-              className={`w-full border ${errors.description ? 'border-red-500' : 'border-gray-300'} p-2 rounded-lg mt-1`}
-              placeholder="Enter description"
-            ></textarea>
-            {errors.description && <p className="text-red-500 text-sm">{errors.description}</p>}
-          </div>
+          {["title", "description"].map((field) => (
+            <div key={field} className="mb-4">
+              <label className="block font-semibold text-gray-700">
+                {field.charAt(0).toUpperCase() + field.slice(1)}*
+              </label>
+              {field === "description" ? (
+                <textarea
+                  value={formData[field]}
+                  onChange={handleFieldChange(field)}
+                  className={`w-full border ${
+                    errors[field] ? "border-red-500" : "border-gray-300"
+                  } p-2 rounded-lg mt-1`}
+                  placeholder={`Enter ${field}`}
+                />
+              ) : (
+                <input
+                  type="text"
+                  value={formData[field]}
+                  onChange={handleFieldChange(field)}
+                  className={`w-full border ${
+                    errors[field] ? "border-red-500" : "border-gray-300"
+                  } p-2 rounded-lg mt-1`}
+                  placeholder={`Enter ${field}`}
+                />
+              )}
+              {errors[field] && (
+                <p className="text-red-500 text-sm">{errors[field]}</p>
+              )}
+            </div>
+          ))}
           <div className="flex space-x-4 mb-4">
             <div className="w-1/2">
               <label className="block font-semibold text-gray-700">Date*</label>
-              <input
-                type="date"
-                value={date}
-                onChange={handleFieldChange(setDate, 'date')}
-                className={`w-full border ${errors.date ? 'border-red-500' : 'border-gray-300'} p-2 rounded-lg mt-1`}
+              <DatePicker
+                selected={formData.date}
+                onChange={handleFieldChange("date")}
+                minDate={new Date()}
+                dateFormat="dd-MM-yyyy"
+                placeholderText="Select Date"
+                className={`w-full border ${
+                  errors.date ? "border-red-500" : "border-gray-300"
+                } p-2 rounded-lg`}
               />
-              {errors.date && <p className="text-red-500 text-sm">{errors.date}</p>}
+              {errors.date && (
+                <p className="text-red-500 text-sm">{errors.date}</p>
+              )}
             </div>
             <div className="w-1/2">
               <label className="block font-semibold text-gray-700">Time*</label>
               <input
                 type="time"
-                value={time}
-                onChange={handleFieldChange(setTime, 'time')}
-                className={`w-full border ${errors.time ? 'border-red-500' : 'border-gray-300'} p-2 rounded-lg mt-1`}
+                value={formData.time}
+                onChange={handleFieldChange("time")}
+                className={`w-full border ${
+                  errors.time ? "border-red-500" : "border-gray-300"
+                } p-2 rounded-lg mt-1`}
               />
-              {errors.time && <p className="text-red-500 text-sm">{errors.time}</p>}
+              {errors.time && (
+                <p className="text-red-500 text-sm">{errors.time}</p>
+              )}
             </div>
           </div>
-          <div className="flex justify-between">
+          <div className="flex gap-3">
             <button
               type="button"
               onClick={onClose}
@@ -103,8 +142,7 @@ const EditProtocol = ({ protocol, onClose, onSave }) => {
             </button>
             <button
               type="submit"
-              disabled={!isFormValid}
-              className={`py-2 px-4 rounded-lg w-[175px] ${isFormValid ? 'bg-gradient-to-r from-[#FE512E] to-[#F09619] font-semibold text-white' : 'bg-gray-300 text-gray-500'}`}
+              className="py-2 px-4 rounded-lg w-[175px] bg-gradient-to-r from-[#FE512E] to-[#F09619] font-semibold text-white"
             >
               Save
             </button>

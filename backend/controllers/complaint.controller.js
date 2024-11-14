@@ -2,25 +2,14 @@ const Complaint = require("../models/complaint.model.js");
 const Resident = require("../models/resident.model.js");
 const User = require("../models/user.model.js");
 
-
 const createComplaint = async (req, res) => {
   try {
     const { complaintName, complainerName, description, wing, unit, priority, userId } = req.body;
 
-    let user = await User.findById(userId);
-    let userType = 'User'; 
+    const user = await User.findById(userId) || await Resident.findById(userId);
+    const userType = user instanceof User ? "User" : user instanceof Resident ? "Resident" : null;
 
-    if (!user) {
-      user = await Resident.findById(userId);
-      userType = 'Resident';
-    }
-
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User or Resident not found",
-      });
-    }
+    if (!userType) return res.status(404).json({ success: false, message: "Admin or Resident not found" });
 
     const newComplaint = await Complaint.create({
       complaintName,
@@ -33,15 +22,15 @@ const createComplaint = async (req, res) => {
       user: user._id,
     });
 
-    res.status(201).json({
-      success: true,
-      data: newComplaint,
+    const populatedComplaint = await Complaint.findById(newComplaint._id).populate({
+      path: 'user',
+      select: 'name profile_picture',
+      model: userType,
     });
+
+    res.status(201).json({ success: true, data: populatedComplaint });
   } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: error.message,
-    });
+    res.status(400).json({ success: false, message: error.message });
   }
 };
 
@@ -49,10 +38,14 @@ const getComplaints = async (req, res) => {
   try {
     const complaints = await Complaint.find();
     for (let complaint of complaints) {
-      if (complaint.userType === 'User') {
-        complaint.user = await User.findById(complaint.user).select('name profile_picture');
-      } else if (complaint.userType === 'Resident') {
-        complaint.user = await Resident.findById(complaint.user).select('name profile_picture');
+      if (complaint.userType === "User") {
+        complaint.user = await User.findById(complaint.user).select(
+          "name profile_picture"
+        );
+      } else if (complaint.userType === "Resident") {
+        complaint.user = await Resident.findById(complaint.user).select(
+          "name profile_picture"
+        );
       }
     }
 
@@ -70,7 +63,10 @@ const getComplaints = async (req, res) => {
 
 const getComplaintById = async (req, res) => {
   try {
-    const complaint = await Complaint.findById(req.params.id).populate('userId', 'firstname lastname profile_picture');
+    const complaint = await Complaint.findById(req.params.id).populate(
+      "userId",
+      "firstname lastname profile_picture"
+    );
 
     if (!complaint) {
       return res.status(404).json({
@@ -106,6 +102,16 @@ const updateComplaint = async (req, res) => {
         success: false,
         message: "Complaint not found",
       });
+    }
+
+    if (complaint.userType === "User") {
+      complaint.user = await User.findById(complaint.user).select(
+        "name profile_picture"
+      );
+    } else if (complaint.userType === "Resident") {
+      complaint.user = await Resident.findById(complaint.user).select(
+        "name profile_picture"
+      );
     }
 
     res.status(200).json({
