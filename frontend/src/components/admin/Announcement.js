@@ -3,6 +3,8 @@ import { announcementData } from '../../data/announcement';
 import { Popover } from '@headlessui/react';
 import ViewAnnounce from '../models/ViewAnnouncement';
 
+import { useNavigate } from 'react-router-dom';
+import AddAnnouncement from '../models/AddAnnouncement';
 
 const Announcement = () => {
     const [selectedItem, setSelectedItem] = useState(null);
@@ -10,11 +12,16 @@ const Announcement = () => {
     const [openDeleteIncome, setOpenDeleteIncome] = useState(false);
     const [isViewPopupVisible, setIsViewPopupVisible] = useState(false);
 
+    const [isAddAnnouncementOpen, setIsAddAnnouncementOpen] = useState(false);
+    const navigate = useNavigate();
     return (
-        <div className="p-6 m-6 rounded-xl bg-[#FFFFFF] ">
+        <div className="p-6 m-6 rounded-xl bg-[#FFFFFF]">
             <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-semibold text-gray-800">Announcement</h2>
-                <button className="bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white py-2 px-4 rounded-lg">
+                <button
+                    className="bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white py-2 px-4 rounded-lg"
+                    onClick={() => setIsAddAnnouncementOpen(true)}
+                >
                     Create Announcement
                 </button>
             </div>
@@ -42,7 +49,7 @@ const Announcement = () => {
                                             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
                                             onClick={() => {
                                                 setSelectedItem(announcement);
-                                                setIsViewPopupVisible(true); 
+                                                setIsViewPopupVisible(true);
                                             }}
                                         >
                                             View
@@ -71,7 +78,13 @@ const Announcement = () => {
             {isViewPopupVisible && selectedItem && (
                 <ViewAnnounce
                     announcement={selectedItem}
-                    onClose={() => setIsViewPopupVisible(false)} 
+                    onClose={() => setIsViewPopupVisible(false)}
+                />
+            )}
+            {isAddAnnouncementOpen && (
+                <AddAnnouncement
+                    isOpen={isAddAnnouncementOpen}
+                    onClose={() => setIsAddAnnouncementOpen(false)}
                 />
             )}
         </div>
