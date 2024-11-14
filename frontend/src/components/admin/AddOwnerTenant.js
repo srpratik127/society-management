@@ -281,7 +281,7 @@ const AddOwnerTenant = ({role, editResident}) => {
                                         <label className="text-gray-700 font-semibold mb-1">Vehicle {field}</label>
                                         {label === 'Type' ? (
                                                 <select className={`border border-gray-300 rounded-lg p-2`} onChange={(e) => handleDetailChange(setVehicles, index, 'type', e.target.value)}>
-                                                    <option disabled>Select Type</option>
+                                                    <option>Select Type</option>
                                                     <option value="Two Wheeler">Two Wheeler</option>
                                                     <option value="Four Wheeler">Four Wheeler</option>
                                                 </select>
