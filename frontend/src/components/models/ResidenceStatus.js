@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DeleteModel from "./DeleteModel";
 
-const ResidenceStatus = ({ resident, onClose, setOpenConform}) => {
+const ResidenceStatus = ({ resident, onClose, setOpenConform }) => {
   const [selectedStatus, setSelectedStatus] = useState(
     resident.residenceStatus
   );
@@ -42,8 +42,8 @@ const ResidenceStatus = ({ resident, onClose, setOpenConform}) => {
 
   return (
     <>
-      <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
-        <div className="bg-white p-6 rounded-xl w-[390px] shadow-lg">
+      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+        <div className="bg-white rounded-xl p-6 w-[390px]">
           <h1 className="text-xl font-semibold mb-4">Residence Status</h1>
           <div className="mb-4">
             {unitPopup ? (
@@ -110,7 +110,7 @@ const ResidenceStatus = ({ resident, onClose, setOpenConform}) => {
                 }`}
                 onClick={() => {
                   setOpenConform(true);
-                  onClose()
+                  onClose();
                 }}
               >
                 Create
