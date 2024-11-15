@@ -59,7 +59,11 @@ const VisitorLogs = () => {
                     {securityManagement.number}
                   </td>
                   <td className="py-3 px-6 text-center text-nowrap min-w-[200px]">
-                    {securityManagement.date}
+                    {new Date(securityManagement.date).toLocaleString("en-GB", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                    })}
                   </td>
                   <td className="py-3 px-6 text-center text-nowrap min-w-[200px]">
                     <span className="inline-flex items-center justify-center h-6 w-6 rounded-full bg-blue-100 text-blue-600 capitalize">

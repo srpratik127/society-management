@@ -46,6 +46,7 @@ const ComplainTable = () => {
     );
     setOpenDeleteComplain(false);
   };
+  
   return (
     <div className="bg-white rounded-lg px-4 pt-2 w-full shadow">
       <div className="flex justify-between items-center mb-2">

@@ -40,6 +40,7 @@ const LineChart = () => {
       legend: {
         display: false,
       },
+      text: (ctx) => 'Point Style: ' + ctx.chart.dzata.datasets[0].pointStyle,
     },
     scales: {
       x: {

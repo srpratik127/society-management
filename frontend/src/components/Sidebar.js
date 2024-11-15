@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { sidebardata } from "../data/sidebardata";
+import React, { useEffect, useState } from "react";
+import { sidebarAdminData, sidebarResidentData } from "../data/sidebardata";
 import { useDispatch, useSelector } from "react-redux";
 import { removeToken } from "../store/authSlice";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -8,9 +8,19 @@ import { removeMenu, ToggleMenu } from "../store/ToggleMenuSlice";
 const Sidebar = () => {
   const [activeDropdown, setActiveDropdown] = useState(null);
   const isOpenMenu = useSelector((store) => store.menu.openMenu);
+  const user = useSelector((store) => store.auth.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const [sidebarData, setSidebarData] = useState([]);
+
+  useEffect(() => {
+    if (user.role) {
+      setSidebarData(sidebarResidentData);
+    } else {
+      setSidebarData(sidebarAdminData);
+    }
+  }, []);
 
   const handleButtonClick = (sidebar) => {
     setActiveDropdown(activeDropdown === sidebar.id ? null : sidebar.id);
@@ -39,7 +49,7 @@ const Sidebar = () => {
       </div>
       <div className="flex-1">
         <ul className="space-y-2">
-          {sidebardata.map((sidebar) => {
+          {sidebarData.map((sidebar) => {
             const isActive =
               location.pathname.endsWith(sidebar.link) ||
               (sidebar.dropdown &&
@@ -85,7 +95,10 @@ const Sidebar = () => {
                               ? "border-black text-black"
                               : "text-[#4F4F4F]"
                           }`}
-                          onClick={() => {navigate(dropdownItem.link); dispatch(removeMenu())}}
+                          onClick={() => {
+                            navigate(dropdownItem.link);
+                            dispatch(removeMenu());
+                          }}
                         >
                           <span className="font-normal">
                             {dropdownItem.title}

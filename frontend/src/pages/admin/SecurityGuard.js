@@ -1,52 +1,57 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AddSecurity from '../../components/models/AddSecurity'; 
 import EditSecurity from '../../components/models/EditSecurity';
 import ViewSecurity from '../../components/models/ViewSecurity'; 
-import guardsData from '../../data/guardData';
+import axios from 'axios';
+import DeleteModel from '../../components/models/DeleteModel';
 
 const SecurityGuard = () => {
-  const [guards, setGuards] = useState(guardsData);
+  const [guards, setGuards] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false); 
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false); 
   const [selectedGuard, setSelectedGuard] = useState(null);
   const [selectedViewGuard, setSelectedViewGuard] = useState(null); 
 
-  const handleAddSecurity = () => {
-    setIsModalOpen(true);
-  };
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
-  const handleEdit = (id) => {
-    const guardToEdit = guards.find((guard) => guard.id === id);
-    setSelectedGuard(guardToEdit);
-    setIsEditModalOpen(true);
-  };
-  const handleCloseEditModal = () => {
-    setIsEditModalOpen(false);
-    setSelectedGuard(null);
-  };
-  const handleView = (id) => {
-    const guardToView = guards.find((guard) => guard.id === id);
-    setSelectedViewGuard(guardToView); 
-    setIsViewModalOpen(true); 
-  };
-  const handleCloseViewModal = () => {
-    setIsViewModalOpen(false); 
-    setSelectedViewGuard(null); 
-  };
-  const handleDelete = (id) => {
-    console.log('Delete guard with ID:', id);
+  useEffect(() => {
+    const fetchGuards = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_BASE_URL}/api/guard`
+        );
+        setGuards(response?.data);
+      } catch (err) {
+        console.log(err.message);
+      }
+    };
+
+    fetchGuards();
+  }, []);
+
+  const handleDelete = async () => {
+    try {
+      const response = await axios.delete(
+        `${process.env.REACT_APP_BASE_URL}/api/guard/${selectedGuard._id}`
+      );
+  
+      if (response.status === 200) {
+        setGuards((prevGuards) => prevGuards.filter((guard) => guard._id !== selectedGuard._id));
+        setSelectedGuard(null);
+        setIsDeleteOpen(false);
+      }
+    } catch (err) {
+      console.error("Error deleting guard:", err.message);
+    }
   };
 
   return (
-    <div className="p-4 sm:p-6 bg-white shadow-md rounded-lg m-4 sm:m-6 max-w-full ">
+    <div className="p-4 sm:p-6 bg-white shadow rounded-lg m-4 sm:m-6 max-w-full ">
       <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
         <h2 className="text-xl sm:text-2xl font-semibold">Security Guard Details</h2>
         <button
           className="mt-4 sm:mt-0 bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white py-2 px-4 rounded flex items-center"
-          onClick={handleAddSecurity}
+          onClick={()=>setIsModalOpen(true)}
         >
           <span className="pr-2">
             <img src="/assets/add-square.svg" alt="Add" />
@@ -69,16 +74,16 @@ const SecurityGuard = () => {
           </thead>
           <tbody>
             {guards.map((guard) => (
-              <tr key={guard.id} className="border-b hover:bg-gray-50">
+              <tr key={guard._id} className="border-b hover:bg-gray-50">
                 <td className="py-4 px-2 sm:px-6 flex items-center text-nowrap">
                   <img
                     className="w-8 h-8 sm:w-10 sm:h-10 rounded-full mr-2 sm:mr-3"
-                    src={guard.image}
-                    alt={guard.name}
+                    src={guard.profile_photo}
+                    alt={guard.fullName}
                   />
-                  {guard.name}
+                  {guard.fullName}
                 </td>
-                <td className="py-4 px-2 sm:px-6 text-nowrap">{guard.phone}</td>
+                <td className="py-4 px-2 sm:px-6 text-nowrap">{guard.phoneNumber}</td>
                 <td className="py-4 px-2 sm:px-6 text-nowrap text-center">
                   {guard.shift === 'Day' ? (
                     <span className="inline-block px-2 py-1 text-xs sm:text-sm font-medium rounded-full">
@@ -90,7 +95,11 @@ const SecurityGuard = () => {
                     </span>
                   )}
                 </td>
-                <td className="py-4 px-2 sm:px-6 text-center text-nowrap">{guard.shiftDate}</td>
+                <td className="py-4 px-2 sm:px-6 text-center text-nowrap">{new Date(guard.shiftDate).toLocaleString("en-GB", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                    })}</td>
                 <td className="py-4 px-2 sm:px-6 text-center text-nowrap">{guard.shiftTime}</td>
                 <td className="py-4 px-2 sm:px-6 text-center text-nowrap">
                   {guard.gender === 'Male' ? (
@@ -106,19 +115,28 @@ const SecurityGuard = () => {
                 <td className="py-4 px-2 sm:px-6 text-center flex justify-center space-x-3">
                   <button
                     className="text-green-500 hover:text-green-700 h-10 w-10"
-                    onClick={() => handleEdit(guard.id)}
+                    onClick={() => {
+                      setSelectedGuard(guard);
+                      setIsEditModalOpen(true);
+                    }}
                   >
                     <img src="/assets/edit.svg" alt="Edit" />
                   </button>
                   <button
                     className="text-blue-500 hover:text-blue-700 h-10 w-10"
-                    onClick={() => handleView(guard.id)}
+                    onClick={() => {
+                      setSelectedViewGuard(guard); 
+                      setIsViewModalOpen(true); 
+                    }}
                   >
                     <img src="/assets/blueeye.svg" alt="View" />
                   </button>
                   <button
                     className="text-red-500 hover:text-red-700 h-10 w-10"
-                    onClick={() => handleDelete(guard.id)}
+                    onClick={() => {
+                      setIsDeleteOpen(true);
+                      setSelectedGuard(guard);
+                    }}
                   >
                     <img src="/assets/delete.svg" alt="Delete" />
                   </button>
@@ -128,18 +146,35 @@ const SecurityGuard = () => {
           </tbody>
         </table>
       </div>
-      <AddSecurity isOpen={isModalOpen} onClose={handleCloseModal} />
+      <AddSecurity isOpen={isModalOpen} onClose={()=>setIsModalOpen(false)} setGuards={setGuards} />
       {selectedGuard && (
         <EditSecurity
           isOpen={isEditModalOpen}
-          onClose={handleCloseEditModal}
+          onClose={()=>{
+            setIsEditModalOpen(false);
+            setSelectedGuard(null);
+          }}
           guardData={selectedGuard} 
+          setGuards={setGuards}
         />
       )}
-      {selectedViewGuard && (
+      {isViewModalOpen && (
         <ViewSecurity
           guard={selectedViewGuard} 
-          onClose={handleCloseViewModal} 
+          onClose={() => {
+            setIsViewModalOpen(false); 
+            setSelectedViewGuard(null); 
+          }} 
+        />
+      )}
+      {isDeleteOpen && (
+        <DeleteModel
+          closePopup={() => setIsDeleteOpen(false)}
+          onDelete={handleDelete}
+          message={{
+            title: "Delete Security?",
+            sms: "Are you sure you want to delate this Security?",
+          }}
         />
       )}
     </div>
