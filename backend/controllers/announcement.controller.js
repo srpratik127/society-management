@@ -10,7 +10,7 @@ const createAnnouncement = async (req, res) => {
             time
         });
         await response.save();
-        res.status(200).json({ message: 'Announcement created successfully' });
+        res.status(200).json({ message: 'Announcement created successfully', data:response });
     } catch (error) {
         res.status(500).json({ message: 'Error creating Announcement', error: error.message });
     }

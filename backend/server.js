@@ -53,7 +53,7 @@ app.use('/api/numbers', importantNumRoutes);
 app.use('/api/maintenance', maintenance);
 app.use('/api/resident', ownerRoutes);
 app.use('/api/announcement', announcement);  
-app.use('/api/activity', activity);  
+app.use('/api/activity', activity);   // no use in frontend (don't remove from here)
 app.use('/api/income', income);  
 app.use('/api/expenses', expenseDetailsRoutes);
 app.use('/api/notes', notesRoutes);

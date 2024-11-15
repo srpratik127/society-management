@@ -18,7 +18,7 @@ const upload = multer({ dest: 'uploads/' }).fields([
 
 router.post('/', upload, controller.createGuard);
 router.get('/', controller.getGuard)
-router.put('/:id', controller.updateGuard);
+router.put('/:id', upload, controller.updateGuard);
 router.delete('/:id', controller.deleteGuard);
 
 module.exports = router;

@@ -24,6 +24,7 @@ import VisitorLogs from "./pages/admin/VisitorLogs";
 import SecurityProtocols from "./pages/admin/SecurityProtocols";
 import SecurityGuard from "./pages/admin/SecurityGuard";
 import Announcement from "./components/admin/Announcement";
+import User from "./pages/user/User";
 
 function App() {
   return (
@@ -54,6 +55,11 @@ function App() {
           <Route path="security" element={<SecurityGuard/>} />
           <Route path="announcement" element={<Announcement/>} />
         </Route>
+
+        <Route path="/resident" element={<ProtectedRoute><User /></ProtectedRoute>}>
+          <Route path="" element={<Dashboard />} />
+        </Route>
+
         <Route path="*" element={<ErrorPage />} />
       </Routes>
     </>

@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { addToken } from "../../store/authSlice";
 
@@ -9,6 +9,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
+  // const user = useSelector((store) => store.auth.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -40,11 +41,10 @@ const Login = () => {
           { email: emailOrPhone, password }
         );
         dispatch(addToken(response.data.token));
-
-        setPassword("");
-        setEmailOrPhone("");
-        setShowPassword(false);
-        navigate("/admin");
+        const parts = response.data.token.split(".");
+        const user = JSON.parse(atob(parts[1])).user;
+        
+        navigate(user.role ? "/resident" :"/admin");
       } catch (error) {
         console.log(error);
       }

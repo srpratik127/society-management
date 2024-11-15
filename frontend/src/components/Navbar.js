@@ -33,7 +33,7 @@ const Navbar = () => {
   return (
     <div className="w-full bg-white shadow py-4 px-6 flex items-center justify-between">
       <div className="w-56">
-        {location.pathname === "/admin" ? (
+        {(location.pathname === "/admin" || "/resident") ? (
           <div
             className={`items-center relative w-1/4 xl:ms-0 hidden md:flex ${
               !isOpenMenu && "ms-10"
@@ -50,7 +50,9 @@ const Navbar = () => {
           </div>
         ) : (
           <div>
-            <p className={`xl:ms-0 hidden md:flex ${!isOpenMenu && "ms-10"}`}>{breadcrumb}</p>
+            <p className={`xl:ms-0 hidden md:flex ${!isOpenMenu && "ms-10"}`}>
+              {breadcrumb}
+            </p>
           </div>
         )}
       </div>
@@ -80,17 +82,24 @@ const Navbar = () => {
           </Popover.Panel>
         </Popover>
 
-        <Link to="/admin/profile" className="flex items-center space-x-2">
+        <Link
+          to={!user.role && "/admin/profile"}
+          className="flex items-center space-x-2"
+        >
           <img
             src={user?.profile_picture}
             alt="Profile"
             className="w-10 h-10 rounded-full"
           />
-          <div className="flex-col text-right leading-5 hidden sm:flex">
+          <div className="flex-col text-left leading-5 hidden sm:flex">
             <span className="font-medium text-gray-700">
-              {user?.firstname} {user?.lastname}
+              {user.role
+                ? user.fullName
+                : `${user?.firstname || ""} ${user?.lastname || ""}`}
             </span>
-            <span className="text-sm text-left text-gray-400">Admin</span>
+            <span className="text-sm text-left text-gray-400">
+              {user.role ? "Resident" : "Admin"}
+            </span>
           </div>
         </Link>
       </div>

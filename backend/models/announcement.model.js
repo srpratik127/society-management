@@ -15,7 +15,7 @@ const announcementSchema = new mongoose.Schema({
     },
     time: {
         type: String,
-        default: new Date().toLocaleTimeString(),
+        default: () => new Date().toLocaleString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true }),
     }
 });
 
