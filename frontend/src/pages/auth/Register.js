@@ -122,13 +122,14 @@ const Register = () => {
     );
 
   return (
-    <div className="flex justify-center items-center">
-      <div className="w-full max-w-lg bg-white p-11 md:px-10 md:py-11 rounded-lg shadow">
+    <div className=" min-w-[370px]">
+    <div className="w-full max-w-lg bg-white p-11 md:px-10 md:py-11 rounded-lg shadow">
+  
         <h1 className="text-3xl font-bold text-gray-800 mb-4 text-left">
           Registration
         </h1>
-        <form className="space-y-5" onSubmit={handleSubmit}>
-          <div className="grid grid-cols-2 gap-4">
+        <form className="space-y-5 max-w-lg md:max-w-2xl lg:max-w-3xl mx-auto" onSubmit={handleSubmit}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label
                 htmlFor="firstname"
@@ -152,7 +153,7 @@ const Register = () => {
                 <p className="text-red-500 text-sm">{errors.firstname}</p>
               )}
             </div>
-            <div>
+            <div className="grid grid-cols-1 ">
               <label
                 htmlFor="lastname"
                 className="block text-sm font-medium text-gray-700"
@@ -177,7 +178,7 @@ const Register = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2  gap-4">
             <div>
               <label
                 htmlFor="email"
@@ -227,7 +228,7 @@ const Register = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-1  md:grid-cols-3 sm:grid-cols-2  gap-2">
             <div>
               <label
                 htmlFor="country"
