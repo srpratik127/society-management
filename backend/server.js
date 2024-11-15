@@ -39,6 +39,7 @@ const protocol = require('./routes/protocol.route.js');
 const guard = require('./routes/guard.route.js');
 const visitors = require('./routes/visitors.route.js');
 const polls = require('./routes/polls.route.js');
+const notificationRoutes = require('./routes/notification.routes.js');
 
 app.get("/", (req, res) => {
   res.send("Welcome...!!");
@@ -62,6 +63,7 @@ app.use('/api/protocol', protocol);
 app.use('/api/guard', guard);
 app.use('/api/visitors', visitors);
 app.use('/api/user/polls', polls);
+app.use('/api/notifications', notificationRoutes);
 
 const port = process.env.PORT || 5000;  
 app.listen(port, () => {
