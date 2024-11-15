@@ -1,7 +1,11 @@
 const Facility = require('../models/facility.model');
+const Notification = require('../models/notification.model');
 
 const createFacility = async (req, res) => {
     try {
+        if (!req.user || !req.user._id) {
+            return res.status(400).json({ message: 'User not authenticated or user ID missing' });
+        }
         const { name, serviceData, description, remindBefore } = req.body;
         const newFacility = new Facility({
             name,
@@ -10,8 +14,15 @@ const createFacility = async (req, res) => {
             remindBefore,
         });
         const savedFacility = await newFacility.save();
+        const notification = new Notification({
+            title: "New Facility Created",
+            message: `A new facility "${name}" has been created. Please check the details.`,
+            user: req.user._id,  
+        });
+        await notification.save();  
         res.status(201).json(savedFacility);
     } catch (error) {
+        console.error('Error during facility creation:', error);
         res.status(500).json({ message: error.message });
     }
 };

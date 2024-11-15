@@ -1,11 +1,11 @@
 const Maintenance = require('../models/maintenance.model');
 const Resident = require('../models/resident.model');
+const Notification = require('../models/notification.model');
 
 const addMaintenance = async (req, res) => {
   try {
     const { amount, penaltyAmount, dueDate, penaltyDay } = req.body;
     const users = await Resident.find();
-
     const maintenanceRecords = users.map((user) => ({
       user: user._id,
       amount,
@@ -14,15 +14,21 @@ const addMaintenance = async (req, res) => {
       penaltyDay,
       status: 'pending',
     }));
-
     const data = await Maintenance.insertMany(maintenanceRecords);
     const populatedData = await Maintenance.find({ _id: { $in: data.map((d) => d._id) } })
       .populate('user', 'fullName profile_picture wing unit phone role')
       .exec();
-
-    res.status(200).json({ data: populatedData, message: 'Maintenance records created for all users' });
+    for (let record of populatedData) {
+      const notification = new Notification({
+        title: "New Maintenance Record Created",
+        message: `A new maintenance record of ${record.amount} has been created. Due Date: ${record.dueDate}`,
+        user: record.user._id, 
+      });
+      await notification.save();
+    }
+    res.status(200).json({ data: populatedData, message: "Maintenance records created for all users" });
   } catch (error) {
-    res.status(500).json({ message: 'Error creating maintenance records', error: error.message });
+    res.status(500).json({ message: "Error creating maintenance records", error: error.message });
   }
 };
 
