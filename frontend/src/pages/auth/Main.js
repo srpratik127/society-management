@@ -8,7 +8,7 @@ const Main = () => {
     switch (location.pathname) {
       case "/":
         return (
-          <div className="hidden md:block">
+          <div className="hidden lg:block">
             <img
               src="/assets/register.JPEG"
               alt="Registration"
@@ -58,22 +58,24 @@ const Main = () => {
   };
 
   return (
-    <div className="flex justify-center relative ">
-      <div className="absolute right-0 h-screen overflow-hidden -z-50 ">
+    <div className="flex w-full justify-center md:w-full relative">
+      <div className="absolute right-0 h-screen overflow-hidden -z-50">
         <img src="/assets/background.png" alt="Background" />
       </div>
-      <div className="w-1/2 h-screen overflow-hidden bg-[#F6F8FB] hidden md:block">
+
+      <div className="w-1/2 h-screen overflow-hidden bg-[#F6F8FB] hidden lg:block">
         <img src="/assets/logo.png" className="w-60 px-9 mt-6" alt="Logo" />
-        <div className="flex flex-col min-h-screen items-center justify-center ">
+        <div className="flex flex-col min-h-screen items-center justify-center">
           {renderContent()}
         </div>
       </div>
-      <div className="w-1/2">
-        <div className="flex justify-center items-center min-h-screen">
+      <div className="flex  md:w-2/2 w-1/2 px-4 sm:px-6 md:px-8 lg:px-12">
+        <div className="w-full min-h-screen flex mx-auto justify-center items-center">
           <Outlet />
         </div>
       </div>
     </div>
+
   );
 };
 
