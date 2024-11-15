@@ -150,7 +150,7 @@ const AddOwnerTenant = ({role, editResident}) => {
                 </div>
             </div>)}
             <div className="bg-white rounded-lg shadow w-full p-4">
-                <div className='flex justify-between gap-4'>
+                <div className='flex flex-col md:flex-row justify-between gap-4 max-w-full'>
                     <div className="flex flex-col mt-3 items-center">
                         <div className="w-28 mb-3 h-28 rounded-full overflow-hidden border-2 border-gray-300 flex items-center justify-center bg-gray-100">
                             <img src={selectedImage ? URL.createObjectURL(selectedImage) : editResident ? editResident.profile_picture : '/assets/empty.png'} alt="Profile" className="w-full h-full object-cover" />
@@ -160,7 +160,7 @@ const AddOwnerTenant = ({role, editResident}) => {
                             Upload Photo
                         </label>
                     </div>
-                    <div className="grid grid-cols-4 gap-3 w-full">
+                    <div className="grid grid-cols-1 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-3 gap-3 w-full">
                         {['Full Name', 'Phone Number', 'Email Address', 'Age', 'Gender', 'Wing', 'Unit', 'Relation'].map((label, index) => {
                             const keys = ['fullName', 'phoneNumber', 'email', 'age', 'gender', 'wing', 'unit', 'relation'];
                             const isSelect = label === 'Gender';
