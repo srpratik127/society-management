@@ -3,7 +3,7 @@ import announcementData from '../../data/userdetails/announcementdata'
 
 const AnnouncementData = () => {
     return (
-        <div className="bg-white p-6 rounded-lg">
+        <div className="bg-white p-4 m-6 rounded-lg">
             <h2 className="text-lg font-semibold mb-4 ">
                 Announcement Details
             </h2>

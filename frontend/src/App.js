@@ -28,6 +28,7 @@ import User from "./pages/user/User";
 import Chat from "./pages/user/Chat";
 import PersonalDetails from "./pages/user/PersonalDetails";
 import ServiceAndComplaint from "./pages/user/ServiceAndComplaint";
+import EventsParticipation from "./pages/user/EventsParticipation";
 
 function App() {
   return (
@@ -64,7 +65,7 @@ function App() {
           <Route path="chat" element={<Chat />} />
           <Route path="personal-detail" element={<PersonalDetails />} />
           <Route path="service-and-complaint" element={<ServiceAndComplaint />} />
-
+          <Route path="events-participation" element={<EventsParticipation />} />
         </Route>
 
         <Route path="*" element={<ErrorPage />} />
