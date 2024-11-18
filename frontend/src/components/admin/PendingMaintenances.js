@@ -49,7 +49,7 @@ const PendingMaintenances = () => {
                   </span>
                 </div>
               </div>
-              <div className="text-red-500 font-semibold text-lg">
+              <div className="text-red-500 font-semibold text-lg text-nowrap">
                 ₹ {PendingMainten.amount}
               </div>
             </div>
