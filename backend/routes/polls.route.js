@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const controller = require('../controllers/polls.controller.js'); 
+const pollController = require('../controllers/polls.controller');
 
-router.post('/',controller.createPolls)
-router.get('/',controller.getPolls)
-router.put('/:id', controller.updatePolls);
-router.delete('/:id', controller.deletePolls);  
+router.post('/create', pollController.createPoll); 
+router.post('/vote', pollController.votePoll); 
+router.get('/:pollId', pollController.getPollResultsById); 
+router.get('/', pollController.getAllPollResults); 
 
 module.exports = router;

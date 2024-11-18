@@ -47,8 +47,8 @@ const requestsRoutes = require('./routes/request.route.js');
 const protocol = require('./routes/protocol.route.js');
 const guard = require('./routes/guard.route.js');
 const visitors = require('./routes/visitors.route.js');
-const polls = require('./routes/polls.route.js');
 const notificationRoutes = require('./routes/notification.routes.js');
+const polls=require('./routes/polls.route.js')
 const chatRoutes = require('./routes/chat.routes.js');
 const Message = require("./models/Message.js");
 
@@ -75,6 +75,7 @@ app.use('/api/guard', guard);
 app.use('/api/visitors', visitors);
 app.use('/api/user/polls', polls);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/polls',polls)
 app.use('/api/chat', chatRoutes);
 
 
