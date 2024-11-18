@@ -61,7 +61,7 @@ function App() {
 
         <Route path="/resident" element={<ProtectedRoute><User /></ProtectedRoute>}>
           <Route path="" element={<Dashboard />} />
-          <Route path="chat" element={<Chat />} />
+          <Route path="access-forums" element={<Chat />} />
           <Route path="personal-detail" element={<PersonalDetails />} />
           <Route path="service-and-complaint" element={<ServiceAndComplaint />} />
 

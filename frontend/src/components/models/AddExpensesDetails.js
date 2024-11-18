@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import axios from "axios";
 import DatePicker from "react-datepicker";
+import toast from "react-hot-toast";
 
 const AddExpensesDetails = ({ onClose, setExpansesData }) => {
   const [formData, setFormData] = useState({
@@ -54,10 +55,11 @@ const AddExpensesDetails = ({ onClose, setExpansesData }) => {
           `${process.env.REACT_APP_BASE_URL}/api/expenses`,
           formDataToSend
         );
+        toast.success("Expenses Create successful!");
         setExpansesData((pre) => [...pre, response.data?.data]);
         onClose();
       } catch (error) {
-        console.error("Error submitting expense:", error);
+        toast.error(error.message);
       }
     }
   };

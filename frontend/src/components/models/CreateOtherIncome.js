@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import DatePicker from "react-datepicker";
+import toast from "react-hot-toast";
 
 const CreateOtherIncome = ({ onClose, setOtherIncomeData }) => {
   const [title, setTitle] = useState("");
@@ -17,7 +18,7 @@ const CreateOtherIncome = ({ onClose, setOtherIncomeData }) => {
     amount: "",
   });
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let formErrors = {};
     if (!title) formErrors.title = "Title is required";
@@ -28,22 +29,24 @@ const CreateOtherIncome = ({ onClose, setOtherIncomeData }) => {
     setErrors(formErrors);
 
     if (Object.keys(formErrors).length === 0) {
-        const incomeData = {
-            title,
-            date: date,
-            dueDate: dueDate,
-            description,
-            amount,
-          };
-          try {
-            const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/api/income`, incomeData);
-            console.log("Income created successfully", response.data);
-            setOtherIncomeData((pre)=>[...pre, response.data?.data])
-            onClose();
-          } catch (error) {
-            console.error("Error creating income:", error);
-          }
-          
+      const incomeData = {
+        title,
+        date: date,
+        dueDate: dueDate,
+        description,
+        amount,
+      };
+      try {
+        const response = await axios.post(
+          `${process.env.REACT_APP_BASE_URL}/api/income`,
+          incomeData
+        );
+        toast.success("Income created successfully!");
+        setOtherIncomeData((pre) => [...pre, response.data?.data]);
+        onClose();
+      } catch (error) {
+        toast.error(error.message);
+      }
       onClose();
     }
   };
@@ -87,7 +90,7 @@ const CreateOtherIncome = ({ onClose, setOtherIncomeData }) => {
             </div>
             <div className="w-1/2">
               <label className="block text-sm font-medium">Due Date</label>
-               <DatePicker
+              <DatePicker
                 selected={dueDate}
                 onChange={(date) => setDueDate(date)}
                 minDate={new Date()}

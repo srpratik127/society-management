@@ -38,7 +38,6 @@ const importantNumRoutes = require("./routes/importantnum.route.js");
 const forgetPassword = require("./routes/forgetPass.route.js");
 const maintenance = require("./routes/maintenance.route.js");
 const announcement = require("./routes/announcement.route.js");
-const activity = require("./routes/activity.route.js");
 const income = require("./routes/income.route.js");
 const expenseDetailsRoutes = require('./routes/expansesdetails.route.js');
 const notesRoutes = require('./routes/note.route.js');
@@ -64,7 +63,6 @@ app.use('/api/numbers', importantNumRoutes);
 app.use('/api/maintenance', maintenance);
 app.use('/api/resident', ownerRoutes);
 app.use('/api/announcement', announcement);  
-app.use('/api/activity', activity);   // no use in frontend (don't remove from here)
 app.use('/api/income', income);  
 app.use('/api/expenses', expenseDetailsRoutes);
 app.use('/api/notes', notesRoutes);
@@ -88,8 +86,8 @@ io.on('connection', (socket) => {
     socket.receiverId = receiverId;
   });
 
-  socket.on('private message', async ({ message, receiverId }) => {
-    const newMessage = new Message({ senderId: socket.userId, receiverId, message });
+  socket.on('private message', async ({ message,senderId, receiverId }) => {
+    const newMessage = new Message({ senderId, receiverId, message });
     await newMessage.save();
     io.to(socket.id).emit('private message', newMessage);
     const receiverSocket = Array.from(io.sockets.sockets.values()).find(s => s.userId === receiverId);
@@ -104,7 +102,7 @@ io.on('connection', (socket) => {
     if (receiverSocket) receiverSocket.emit('media message', newMessage);
   });
 
-  socket.on('disconnect', () => {
+  socket.on('disconnect', () =>{
     console.log(`${socket.userId} disconnected`);
   });
 });

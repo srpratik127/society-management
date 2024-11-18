@@ -1,6 +1,9 @@
 import axios from "axios";
 import React, { useState } from "react";
 import DatePicker from "react-datepicker";
+import { useDispatch } from "react-redux";
+import { AddNotification } from "../../store/NotificationSlice";
+import toast from "react-hot-toast";
 
 const CreateFacilityManagement = ({ onClose, setFacilities }) => {
   const [facilityName, setFacilityName] = useState("");
@@ -8,6 +11,7 @@ const CreateFacilityManagement = ({ onClose, setFacilities }) => {
   const [scheduleDate, setScheduleDate] = useState("");
   const [remindBefore, setRemindBefore] = useState("");
   const [errors, setErrors] = useState({});
+  const dispatch = useDispatch();
 
   const validateField = (name, value) => {
     let error = "";
@@ -40,11 +44,12 @@ const CreateFacilityManagement = ({ onClose, setFacilities }) => {
         `${process.env.REACT_APP_BASE_URL}/api/facilities`,
         facilityData
       );
-      setFacilities((pre) => [...pre, response.data]);
+      setFacilities((pre) => [...pre, response.data?.data]);
+      dispatch(AddNotification(response.data?.notification));
+      toast.success("Facilities Create successful!");
       onClose();
     } catch (error) {
-      console.error("Error creating facility:", error);
-      alert("Failed to create facility. Please try again.");
+      toast.error(error.message);
     }
   };
 

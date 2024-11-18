@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 
 const EditComplaint = ({ closePopup, selectedComplain, setComplainList }) => {
   const [complainerName, setComplainerName] = useState(
@@ -33,9 +34,10 @@ const EditComplaint = ({ closePopup, selectedComplain, setComplainList }) => {
           complaint._id === selectedComplain._id ? response.data.data : complaint
         )
       );
+      toast.success("complaints Update successful!");
       closePopup();
     } catch (error) {
-      console.error("Error saving edited complaint:", error);
+      toast.error(error.message);
     }
   };
 

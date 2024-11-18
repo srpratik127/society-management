@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addToken } from "../../store/authSlice";
+import toast from "react-hot-toast";
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -21,8 +22,8 @@ const Profile = () => {
           );
           const { _id, name } = response?.data?.data;
           setUserSociety({ _id, name });
-        } catch (err) {
-          console.log(err.message);
+        } catch (error) {
+          toast.error(error.message);
         }
       };
       fetchUserSociety();
@@ -77,8 +78,9 @@ const Profile = () => {
       );
       dispatch(addToken(response.data.token));
       setIsEditing(false);
+      toast.success("User Updated successful!");
     } catch (error) {
-      console.error("Error updating user:", error);
+      toast.error(error.message);
     }
   };
 

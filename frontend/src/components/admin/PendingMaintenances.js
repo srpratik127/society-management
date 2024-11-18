@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-
+import toast from "react-hot-toast";
+import { Link, useLocation } from "react-router-dom";
 const PendingMaintenances = () => {
   const [pendingMaintenance, setPendingMaintenance] = useState([]);
 
@@ -11,8 +12,8 @@ const PendingMaintenances = () => {
           `${process.env.REACT_APP_BASE_URL}/api/maintenance?status=pending`
         );
         setPendingMaintenance(response?.data);
-      } catch (err) {
-        console.log(err.message);
+      } catch (error) {
+        toast.error(error.message);
       }
     };
 
@@ -23,9 +24,9 @@ const PendingMaintenances = () => {
     <>
       <div className="flex justify-between items-center font-semibold bg-white pb-1">
         <h2 className="m-0 text-xl">Pending Maintenances</h2>
-        <button className="flex items-center space-x-2 px-3 rounded-md text-[#5678E9]">
+        <Link to="income" className="flex items-center space-x-2 px-3 rounded-md text-[#5678E9]">
           <span>View all</span>
-        </button>
+        </Link>
       </div>
       <div className="max-h-[350px] overflow-y-auto bg-white rounded-lg mt-2">
         {pendingMaintenance?.length > 0 ? (

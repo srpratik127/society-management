@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
+import toast from "react-hot-toast";
 
 const EditProtocol = ({ protocol, onClose, setProtocols }) => {
   const [formData, setFormData] = useState({
@@ -44,13 +45,10 @@ const EditProtocol = ({ protocol, onClose, setProtocols }) => {
       setProtocols((prevProtocols) =>
         prevProtocols.map((p) => (p._id === protocol._id ? updatedProtocol : p))
       );
-  
+      toast.success("Protocol Update successful!");
       onClose();
     } catch (error) {
-      console.error(
-        "Error updating protocol:",
-        error.response?.data || error.message
-      );
+      toast.error(error.message);
     }
   };
 

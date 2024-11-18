@@ -4,6 +4,7 @@ import axios from "axios";
 import ViewExpense from "../../components/models/ViewExpense";
 import EditExpensesDetails from "../../components/models/EditExpensesDetails";
 import DeleteModel from "../../components/models/DeleteModel";
+import toast from "react-hot-toast";
 
 const Expenses = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -20,28 +21,35 @@ const Expenses = () => {
           `${process.env.REACT_APP_BASE_URL}/api/expenses`
         );
         setExpansesData(response?.data);
-      } catch (err) {
-        console.log(err.message);
+      } catch (error) {
+        toast.error(error.message);
       }
     };
     fetchExpensesList();
   }, []);
 
   const handleDelete = async () => {
-    await axios.delete(
-      `${process.env.REACT_APP_BASE_URL}/api/expenses/${selectedItem._id}`
-    );
-    setExpansesData((prev) =>
-      prev.filter((complain) => complain._id !== selectedItem._id)
-    );
-    setIsPopupDelete(false);
+    try {
+      await axios.delete(
+        `${process.env.REACT_APP_BASE_URL}/api/expenses/${selectedItem._id}`
+      );
+      setExpansesData((prev) =>
+        prev.filter((complain) => complain._id !== selectedItem._id)
+      );
+      setIsPopupDelete(false);
+      toast.success("Expenses Deleted successful!");
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   return (
     <>
       <div className="m-5 p-5 max-w-full bg-white rounded-lg">
         <div className="flex justify-between items-center mb-4 flex-wrap">
-          <h2 className="text-2xl font-semibold w-full sm:w-auto">Add Expenses Details</h2>
+          <h2 className="text-2xl font-semibold w-full sm:w-auto">
+            Add Expenses Details
+          </h2>
           <button
             onClick={() => setIsPopupOpen(true)}
             className="bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white py-2 px-4 rounded mt-2 sm:mt-0"
@@ -55,10 +63,18 @@ const Expenses = () => {
               <tr className="bg-blue-100">
                 <th className="p-3 text-gray-600 text-nowrap">Title</th>
                 <th className="p-3 text-gray-600 text-nowrap">Description</th>
-                <th className="p-3 text-gray-600 text-nowrap text-center">Date</th>
-                <th className="p-3 text-gray-600 text-nowrap text-center">Amount</th>
-                <th className="p-3 text-gray-600 text-nowrap text-center">Bill Format</th>
-                <th className="p-3 text-gray-600 text-nowrap text-center">Action</th>
+                <th className="p-3 text-gray-600 text-nowrap text-center">
+                  Date
+                </th>
+                <th className="p-3 text-gray-600 text-nowrap text-center">
+                  Amount
+                </th>
+                <th className="p-3 text-gray-600 text-nowrap text-center">
+                  Bill Format
+                </th>
+                <th className="p-3 text-gray-600 text-nowrap text-center">
+                  Action
+                </th>
               </tr>
             </thead>
             <tbody>

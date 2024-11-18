@@ -4,6 +4,7 @@ import EditProtocol from "../../components/models/EditProtocol";
 import ViewProtocol from "../../components/models/ViewProtocol";
 import axios from "axios";
 import DeleteModel from "../../components/models/DeleteModel";
+import toast from "react-hot-toast";
 
 const SecurityProtocols = () => {
   const [protocols, setProtocols] = useState([]);
@@ -20,31 +21,35 @@ const SecurityProtocols = () => {
           `${process.env.REACT_APP_BASE_URL}/api/protocol`
         );
         setProtocols(response?.data);
-      } catch (err) {
-        console.log(err.message);
+      } catch (error) {
+        toast.error(error.message);
       }
     };
 
     fetchProtocols();
   }, []);
 
-  const openDeleteModal = (protocol) => {};
-
   const handleDelete = async () => {
-    await axios.delete(
-      `${process.env.REACT_APP_BASE_URL}/api/protocol/${selectedProtocol._id}`
-    );
-    setProtocols((prev) =>
-      prev.filter((request) => request._id !== selectedProtocol._id)
-    );
-    setOpenDelete(false);
-    setSelectedProtocol(null);
+    try {
+      await axios.delete(
+        `${process.env.REACT_APP_BASE_URL}/api/protocol/${selectedProtocol._id}`
+      );
+      toast.success("Protocol Deleted successful!");
+  
+      setProtocols((prev) =>
+        prev.filter((request) => request._id !== selectedProtocol._id)
+      );
+      setOpenDelete(false);
+      setSelectedProtocol(null);
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   return (
     <div className="p-6 bg-white m-6 rounded-lg shadow max-w-full">
       <div className="flex flex-col md:flex-row justify-between items-center mb-6">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-4 md:mb-0">
+        <h2 className="text-2xl font-semibold mb-4 md:mb-0">
           Security Protocols
         </h2>
         <button

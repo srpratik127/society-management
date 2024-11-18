@@ -4,6 +4,7 @@ import axios from "axios";
 import ViewResident from "../../components/models/ViewResident";
 import { useNavigate } from "react-router-dom";
 import DeleteModel from "../../components/models/DeleteModel";
+import toast from "react-hot-toast";
 
 const Resident = () => {
   const navigate = useNavigate();
@@ -21,8 +22,8 @@ const Resident = () => {
           `${process.env.REACT_APP_BASE_URL}/api/resident`
         );
         setResidents(response?.data?.data);
-      } catch (err) {
-        console.log(err.message);
+      } catch (error) {
+        toast.error(error.message);
       }
     };
 
@@ -51,9 +52,10 @@ const Resident = () => {
         }
         return resident;
       });
+      toast.success("Vacate Flat successful!");
       setResidents(updatedResidents);
     } catch (error) {
-      console.log(error);
+      toast.error(error.message);
     }
   };
 

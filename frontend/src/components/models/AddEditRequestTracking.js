@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
+import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 
 const AddEditRequestTracking = ({
@@ -75,13 +76,15 @@ const AddEditRequestTracking = ({
                 item._id === response.data.data._id ? response.data.data : item
               )
             );
+            toast.success("Requests Updated successful!");
           } else {
             setRequestProtocols((prev) => [...prev, response.data.data]);
+            toast.success("Requests Create successful!");
           }
           onClose();
         }
       } catch (error) {
-        console.error("Error creating request:", error);
+        toast.error(error.message);
       }
     }
   };

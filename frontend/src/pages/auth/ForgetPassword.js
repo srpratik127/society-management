@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const ForgetPassword = () => {
   const [emailOrPhone, setEmailOrPhone] = useState("");
@@ -35,11 +36,12 @@ const ForgetPassword = () => {
 
         if (response.data) {
           console.log("Forget Password Email", { emailOrPhone });
+          toast.success("Email Sended successful!");
           setEmailOrPhone("");
           navigate("/get-otp", { state: { emailOrPhone } });
         }
       } catch (error) {
-        console.log(error);
+        toast.error(error.message);
       }
     }
   };

@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 
 const CreateProtocol = ({ onClose, setProtocols }) => {
   const [formData, setFormData] = useState({ title: "", description: "" });
@@ -24,13 +25,13 @@ const CreateProtocol = ({ onClose, setProtocols }) => {
     if (isValid) {
       try {
         const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/api/protocol`, formData);
-        
         if (response.status === 200) {
           setProtocols((prev) => [...prev, response.data.data]);
+          toast.success("Protocol Create successful!");
           onClose();
         }
       } catch (error) {
-        console.error("Error creating protocol:", error);
+        toast.error(error.message);
       }
     } else {
       ["title", "description"].forEach((field) => validateField(field, formData[field]));

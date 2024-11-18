@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const VisitorLogs = () => {
   const [visitorData, setVisitorData] = useState([]);
@@ -11,8 +12,8 @@ const VisitorLogs = () => {
           `${process.env.REACT_APP_BASE_URL}/api/visitors`
         );
         setVisitorData(response?.data);
-      } catch (err) {
-        console.log(err.message);
+      } catch (error) {
+        toast.error(error.message);
       }
     };
 

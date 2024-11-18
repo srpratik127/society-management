@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 
 const ConfirmPassword = ({ onClose, setIsAddMaintenance }) => {
@@ -17,11 +18,12 @@ const ConfirmPassword = ({ onClose, setIsAddMaintenance }) => {
         { email: user.email, password }
       );
       if (response.data.success) {
+        toast.success("Verify successful!");
         onClose();
         setIsAddMaintenance(true);
       }
     } catch (error) {
-      console.error("Error updating user:", error);
+      toast.error(error.message);
     }
   };
 

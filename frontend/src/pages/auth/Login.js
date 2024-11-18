@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { addToken } from "../../store/authSlice";
+import toast from "react-hot-toast";
 
 const Login = () => {
   const [emailOrPhone, setEmailOrPhone] = useState("");
@@ -43,10 +44,10 @@ const Login = () => {
         dispatch(addToken(response.data.token));
         const parts = response.data.token.split(".");
         const user = JSON.parse(atob(parts[1])).user;
-        
+        toast.success("Login successful!");
         navigate(user.role ? "/resident" :"/admin");
       } catch (error) {
-        console.log(error);
+        toast.error(error.message);
       }
     }
   };

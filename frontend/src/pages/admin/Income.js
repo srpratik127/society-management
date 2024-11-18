@@ -4,6 +4,7 @@ import OtherIncome from "../../components/admin/OtherIncome";
 import ConfirmPassword from "../../components/models/ConfirmPassword";
 import AddMaintenanceDetail from "../../components/models/AddMaintenanceDetail";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const Income = () => {
   const [view, setView] = useState("maintenance");
@@ -17,8 +18,8 @@ const Income = () => {
         `${process.env.REACT_APP_BASE_URL}/api/maintenance`
       );
       setMaintenance(response?.data);
-    } catch (err) {
-      console.log(err.message);
+    } catch (error) {
+      toast.error(error.message);
     }
   };
 

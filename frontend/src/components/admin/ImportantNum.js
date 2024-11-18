@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import ImportantNumber from "../models/ImportantNumber";
 import DeleteModel from "../models/DeleteModel";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 export const ImportantNum = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,8 +18,8 @@ export const ImportantNum = () => {
           `${process.env.REACT_APP_BASE_URL}/api/numbers`
         );
         setImportantNumbers(response?.data?.data);
-      } catch (err) {
-        console.log(err.message);
+      } catch (error) {
+        toast.error(error.message);
       }
     };
 
@@ -42,8 +43,9 @@ export const ImportantNum = () => {
       setImportantNumbers((prev) =>
         prev.filter((number) => number._id !== numberToDelete)
       );
+      toast.success("Numbers delete successful!");
     } catch (error) {
-      console.log(error);
+      toast.error(error.message);
     }
     setOpenDelete(false);
   };
@@ -65,12 +67,12 @@ export const ImportantNum = () => {
         </button>
       </div>
 
-      <div className="max-h-[350px] overflow-y-auto text-sm">
+      <div className="max-h-[350px] overflow-y-auto">
         {importantNumbers.length > 0 ? (
           importantNumbers.map((importantNumber, index) => (
             <div
               key={index}
-              className="flex justify-between items-center p-4 border rounded-lg mb-2 border-gray-200"
+              className="flex justify-between flex-row lg:flex-col xl:flex-row  xxl:flex-row  items-center p-4 border rounded-lg mb-2 border-gray-200"
             >
               <div className="space-y-1">
                 <span className="block">
@@ -111,7 +113,7 @@ export const ImportantNum = () => {
           ))
         ) : (
           <p className="text-gray-500 text-center leading-[350px] select-none">
-            No Data found.
+            No Numbers found.
           </p>
         )}
       </div>

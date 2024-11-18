@@ -4,6 +4,7 @@ import ViewAnnounce from "../models/ViewAnnouncement";
 import axios from "axios";
 import AddEditAnnouncement from "../models/AddEditAnnouncement";
 import DeleteModel from "../models/DeleteModel";
+import toast from "react-hot-toast";
 
 const Announcement = () => {
   const [selectedItem, setSelectedItem] = useState(null);
@@ -20,7 +21,7 @@ const Announcement = () => {
         );
         setAnnouncements(response?.data);
       } catch (err) {
-        console.log(err.message);
+        toast.error(err.message);
       }
     };
 
@@ -35,9 +36,10 @@ const Announcement = () => {
       setAnnouncements((prev) =>
         prev.filter((complain) => complain._id !== selectedItem._id)
       );
+      toast.success("Announcement Delete successful!");
       setIsDeleteOpen(false);
     } catch (error) {
-      console.log(error);
+      toast.error(error.message);
     }
   };
 

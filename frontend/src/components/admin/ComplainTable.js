@@ -3,6 +3,7 @@ import ViewComplain from "../models/ViewComplain";
 import EditComplaint from "../models/EditComplaint";
 import axios from "axios";
 import DeleteModel from "../models/DeleteModel";
+import toast from "react-hot-toast";
 
 const ComplainTable = () => {
   const [openViewComplain, setOpenViewComplain] = useState(false);
@@ -19,8 +20,8 @@ const ComplainTable = () => {
           `${process.env.REACT_APP_BASE_URL}/api/complaints`
         );
         setComplainList(response?.data?.data);
-      } catch (err) {
-        console.log(err.message);
+      } catch (error) {
+        toast.error(error.message);
       }
     };
 
@@ -38,15 +39,20 @@ const ComplainTable = () => {
   };
 
   const handleDelete = async () => {
-    await axios.delete(
-      `${process.env.REACT_APP_BASE_URL}/api/complaints/${complainToDelete}`
-    );
-    setComplainList((prev) =>
-      prev.filter((complain) => complain._id !== complainToDelete)
-    );
-    setOpenDeleteComplain(false);
+    try {
+      await axios.delete(
+        `${process.env.REACT_APP_BASE_URL}/api/complaints/${complainToDelete}`
+      );
+      setComplainList((prev) =>
+        prev.filter((complain) => complain._id !== complainToDelete)
+      );
+      toast.success("Complaints Delete successful!");
+      setOpenDeleteComplain(false);
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
-  
+
   return (
     <div className="bg-white rounded-lg px-4 pt-2 w-full shadow">
       <div className="flex justify-between items-center mb-2">
@@ -63,8 +69,12 @@ const ComplainTable = () => {
         <table className="min-w-full  bg-white">
           <thead className="sticky top-0 bg-gray-100">
             <tr className="text-left text-sm ">
-              <th className="py-3 text-light px-4 text-nowrap">Complainer Name</th>
-              <th className="py-3 text-light px-4 text-nowrap">Complaint Name</th>
+              <th className="py-3 text-light px-4 text-nowrap">
+                Complainer Name
+              </th>
+              <th className="py-3 text-light px-4 text-nowrap">
+                Complaint Name
+              </th>
               <th className="py-3 text-light px-8">Date</th>
               <th className="py-3 text-light text-center px-5">Priority</th>
               <th className="py-3 text-light text-center px-4">

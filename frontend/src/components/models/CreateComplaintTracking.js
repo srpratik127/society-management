@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 
 const CreateComplaintTracking = ({ onClose, setComplaints }) => {
@@ -17,7 +18,8 @@ const CreateComplaintTracking = ({ onClose, setComplaints }) => {
     e.preventDefault();
 
     const newErrors = {};
-    if (!complainerName) newErrors.complainerName = "Complainer name is required";
+    if (!complainerName)
+      newErrors.complainerName = "Complainer name is required";
     if (!complaintName) newErrors.complaintName = "Complaint name is required";
     if (!description) newErrors.description = "Description is required";
     if (!wing) newErrors.wing = "Wing is required";
@@ -28,33 +30,43 @@ const CreateComplaintTracking = ({ onClose, setComplaints }) => {
     if (Object.keys(newErrors).length > 0) return;
 
     try {
-      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/api/complaints`, {
-        complaintName,
-        complainerName,
-        description,
-        wing,
-        unit,
-        priority,
-        userId:user._id,
-      });
+      const response = await axios.post(
+        `${process.env.REACT_APP_BASE_URL}/api/complaints`,
+        {
+          complaintName,
+          complainerName,
+          description,
+          wing,
+          unit,
+          priority,
+          userId: user._id,
+        }
+      );
 
       if (response.data.success) {
-        setComplaints((prevComplaints) => [...prevComplaints, response.data.data]);
+        toast.success("Complaints Create successful!");
+        setComplaints((prevComplaints) => [
+          ...prevComplaints,
+          response.data.data,
+        ]);
         onClose();
       }
     } catch (error) {
-      console.error("Error creating complaint:", error);
-      alert("Failed to create complaint. Please try again.");
+      toast.error(error.message);
     }
   };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-white rounded-xl p-6 w-96">
-        <h2 className="text-xl font-semibold pb-3 mb-4 border-b">Create Complaint</h2>
+        <h2 className="text-xl font-semibold pb-3 mb-4 border-b">
+          Create Complaint
+        </h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block font-medium text-gray-700">Complainer Name*</label>
+            <label className="block font-medium text-gray-700">
+              Complainer Name*
+            </label>
             <input
               type="text"
               placeholder="Enter Name"
@@ -69,7 +81,9 @@ const CreateComplaintTracking = ({ onClose, setComplaints }) => {
             )}
           </div>
           <div className="mb-4">
-            <label className="block font-medium text-gray-700">Complaint Name*</label>
+            <label className="block font-medium text-gray-700">
+              Complaint Name*
+            </label>
             <input
               type="text"
               placeholder="Enter Name"
@@ -84,9 +98,11 @@ const CreateComplaintTracking = ({ onClose, setComplaints }) => {
             )}
           </div>
           <div className="mb-4">
-            <label className="block font-medium text-gray-700">Description*</label>
+            <label className="block font-medium text-gray-700">
+              Description*
+            </label>
             <textarea
-            placeholder="Enter Description"
+              placeholder="Enter Description"
               className={`w-full border p-2 rounded-lg outline-none ${
                 errors.description ? "border-red-500" : "border-gray-300"
               }`}
@@ -130,7 +146,9 @@ const CreateComplaintTracking = ({ onClose, setComplaints }) => {
             </div>
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-medium text-[#202224]">Priority</label>
+            <label className="block text-sm font-medium text-[#202224]">
+              Priority
+            </label>
             <div className="mt-1 flex space-x-4">
               {["High", "Medium", "Low"].map((level) => (
                 <button
@@ -138,7 +156,9 @@ const CreateComplaintTracking = ({ onClose, setComplaints }) => {
                   type="button"
                   onClick={() => setPriority(level)}
                   className={`px-4 py-2 flex gap-2 border rounded-lg font-medium ${
-                    priority === level ? "border-[#FE512E]" : "border-gray-200 text-[#A7A7A7]"
+                    priority === level
+                      ? "border-[#FE512E]"
+                      : "border-gray-200 text-[#A7A7A7]"
                   }`}
                 >
                   <img
@@ -155,7 +175,9 @@ const CreateComplaintTracking = ({ onClose, setComplaints }) => {
             </div>
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-medium text-[#202224]">Status</label>
+            <label className="block text-sm font-medium text-[#202224]">
+              Status
+            </label>
             <div className="mt-1 flex space-x-4">
               {["Open", "Pending", "Solve"].map((state) => (
                 <button
@@ -163,7 +185,9 @@ const CreateComplaintTracking = ({ onClose, setComplaints }) => {
                   type="button"
                   onClick={() => setStatus(state)}
                   className={`px-4 py-2 flex gap-2 border rounded-lg font-medium ${
-                    status === state ? "border-[#FE512E]" : "border-gray-200 text-[#A7A7A7]"
+                    status === state
+                      ? "border-[#FE512E]"
+                      : "border-gray-200 text-[#A7A7A7]"
                   }`}
                 >
                   <img

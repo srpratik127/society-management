@@ -18,6 +18,7 @@ const addMaintenance = async (req, res) => {
     const populatedData = await Maintenance.find({ _id: { $in: data.map((d) => d._id) } })
       .populate('user', 'fullName profile_picture wing unit phone role')
       .exec();
+      
     for (let record of populatedData) {
       const notification = new Notification({
         title: "New Maintenance Record Created",

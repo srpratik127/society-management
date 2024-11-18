@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 
 export const CreateSociety = ({ closePopup, setOptions }) => {
   const [societyName, setSocietyName] = useState("");
@@ -34,9 +35,10 @@ export const CreateSociety = ({ closePopup, setOptions }) => {
       );
       const { name } = response.data;
       setOptions((prev) => [...prev, { value: name, label: name }]);
+      toast.success("Society Create successful!");
       closePopup();
     } catch (error) {
-      console.error("Error submitting form:", error); 
+      toast.error(error.message);
     }
   };
 

@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useRef, useState } from "react";
 import DatePicker from "react-datepicker";
+import toast from "react-hot-toast";
 
 const EditExpensesDetails = ({ onClose, expense, setExpansesData }) => {
   const [file, setFile] = useState(null); 
@@ -58,10 +59,10 @@ const EditExpensesDetails = ({ onClose, expense, setExpansesData }) => {
             item._id === expense._id ? response.data : item
           )
         );
-
+        toast.success("Expenses Update successful!");
         onClose();
-      } catch (err) {
-        console.log(err.message);
+      } catch (error) {
+        toast.error(error.message);
       }
     }
   };

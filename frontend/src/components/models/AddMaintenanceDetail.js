@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import toast from "react-hot-toast";
 
 const AddMaintenanceDetail = ({ onClose }) => {
   const [maintenanceAmount, setMaintenanceAmount] = useState("");
@@ -46,15 +47,13 @@ const AddMaintenanceDetail = ({ onClose }) => {
           setPenaltyAmount("");
           setDueDate("");
           setPenaltyAfterDays("");
+          toast.success("Maintenance Create successful!");
           onClose();
         } else {
-          console.error(
-            "Error: Response data is not in expected format",
-            response
-          );
+          toast.error(response);
         }
       } catch (error) {
-        console.error("Error submitting maintenance details:", error);
+        toast.error(error.message);
       }
     }
   };
