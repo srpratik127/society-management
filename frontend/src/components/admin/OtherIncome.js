@@ -5,6 +5,7 @@ import CreateOtherIncome from "../models/CreateOtherIncome";
 import axios from "axios";
 import DeleteModel from "../models/DeleteModel";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const OtherIncome = () => {
   const [isCreatePopupOpen, setCreatePopupOpen] = useState(false);
@@ -21,8 +22,8 @@ const OtherIncome = () => {
           `${process.env.REACT_APP_BASE_URL}/api/income`
         );
         setOtherIncomeData(response?.data);
-      } catch (err) {
-        console.log(err.message);
+      } catch (error) {
+        toast.error(error.message);
       }
     };
     viewOtherIncome();
@@ -37,8 +38,9 @@ const OtherIncome = () => {
         prev.filter((number) => number._id !== selectedItem._id)
       );
       setSelectedItem(null);
+      toast.success("Income delete successful!");
     } catch (error) {
-      console.log(error);
+      toast.error(error.message);
     }
     setOpenDeleteIncome(false);
   };

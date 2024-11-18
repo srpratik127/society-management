@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const OtpScreen = () => {
@@ -42,10 +43,10 @@ const OtpScreen = () => {
         }
       );
       if (response.data) {
-        console.log("mail sended in this mail : ", { email });
+        toast.success("Mail sended successful!");
       }
     } catch (error) {
-      console.log(error);
+      toast.error(error.message);
     }
   };
 
@@ -63,18 +64,12 @@ const OtpScreen = () => {
 
       if (response.status === 200) {
         navigate("/reset");
+        toast.success("Verify Otp successful!");
         setErrorMessage("");
         setOtp(["", "", "", "", "", ""]);
       }
     } catch (error) {
-      if (error.response) {
-        setErrorMessage(
-          error.response.data.message ||
-            "An error occurred during verification."
-        );
-      } else {
-        setErrorMessage("Network error. Please try again.");
-      }
+      toast.error(error.message);
     }
   };
 

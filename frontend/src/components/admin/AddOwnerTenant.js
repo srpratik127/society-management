@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { AddOwnerValidateFields } from '../../utils/validation';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 const AddOwnerTenant = ({role, editResident}) => {
     const [OwnerfullName, setOwnerFullName] = useState(editResident?.ownerfullname || '');
@@ -92,20 +93,20 @@ const AddOwnerTenant = ({role, editResident}) => {
                     formData,
                     { headers: { 'Content-Type': 'multipart/form-data' } }
                 );
-                console.log(response.data);
-                navigate("/admin/resident")
+                toast.success("Resident Update Successful!");
+                navigate("/admin/resident");
             }else{
                 const response = await axios.post(
                     `${process.env.REACT_APP_BASE_URL}/api/resident`,
                     formData,
                     { headers: { 'Content-Type': 'multipart/form-data' } }
                 );
-                console.log(response.data);
+                toast.success("Resident Create Successful!");
                 navigate("/admin/resident")
             }
     
         } catch (error) {
-            console.error("Error in handleSubmit:", error);
+            toast.error(error);
         }
     };
 

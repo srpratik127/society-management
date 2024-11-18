@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState, useRef } from "react";
 import DatePicker from "react-datepicker";
+import toast from "react-hot-toast";
 
 const AddSecurity = ({ isOpen, onClose, setGuards }) => {
   const [formData, setFormData] = useState({
@@ -49,10 +50,11 @@ const AddSecurity = ({ isOpen, onClose, setGuards }) => {
       });
       if (response.data?.data) {
         setGuards(prevGuards => [...prevGuards, response.data?.data]);
+        toast.success("Guard Create successful!");
       }
       onClose();
     } catch (error) {
-      console.error("Error adding security:", error);
+      toast.error(error.message);
     }
   };
 

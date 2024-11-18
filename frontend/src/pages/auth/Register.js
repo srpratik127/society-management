@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { CreateSociety } from "../../components/models/CreateSociety";
 import Select from "react-select";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -37,7 +38,7 @@ const Register = () => {
           { value: "create_society", label: "Create Society", isButton: true },
         ]);
       } catch (error) {
-        console.error("Error fetching societies:", error);
+        toast.error(error.message);
       }
     };
 
@@ -90,15 +91,16 @@ const Register = () => {
         const { select_society, ...dataToSubmit } = formData;
         const payload = {
           ...dataToSubmit,
-          select_society: select_society.value,
+          select_society: select_society?.value,
         };
         
         const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/users/register`, payload);
         console.log("Form submitted:", response.data);
         setErrors({});
-
+        toast.success("Register successful!");
         navigate("/login");
       } catch (error) {
+        toast.error(error.message);
         console.error("Error submitting the form:", error);
       }
     }
@@ -120,6 +122,10 @@ const Register = () => {
         {data.label}
       </div>
     );
+
+    const isFormComplete = () =>
+      Object.keys(formData).every((key) => formData[key]) &&
+      formData.password === formData.confirmPassword;
 
   return (
     <div className="min-w-[370px]">
@@ -403,6 +409,7 @@ const Register = () => {
           <div className="flex items-center">
             <input
               type="checkbox"
+              checked
               id="agree"
               className="h-4 w-4 text-yellow-500 focus:ring-yellow-500 border-gray-300 rounded"
             />
@@ -416,7 +423,12 @@ const Register = () => {
 
           <button
             type="submit"
-            className="w-full py-2 px-4 text-[#A7A7A7] font-semibold rounded-md bg-[#F6F8FB] focus:outline-none"
+            className={`w-full py-2 px-4 font-semibold rounded-md focus:outline-none ${
+              isFormComplete()
+                ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white"
+                : "bg-[#F6F8FB] text-[#A7A7A7]"
+            }`}
+            disabled={!isFormComplete()}
           >
             Register
           </button>

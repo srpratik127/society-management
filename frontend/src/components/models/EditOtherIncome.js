@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const EditOtherIncome = ({ onClose, selectedItem, setIncomeData }) => {
   const [amount, setAmount] = useState(selectedItem?.amount);
@@ -27,9 +28,10 @@ const EditOtherIncome = ({ onClose, selectedItem, setIncomeData }) => {
           item.id === selectedItem.id ? { ...item, ...updatedIncome } : item
         )
       );
+      toast.success("Income Update successful!");
       onClose(); 
     } catch (error) {
-      console.error("Error updating income:", error);
+      toast.error(error.message);
     }
   };
 

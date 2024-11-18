@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import toast from "react-hot-toast";
 
 const ResetPassword = () => {
   const [password, setPassword] = useState("");
@@ -33,16 +34,17 @@ const ResetPassword = () => {
           `${process.env.REACT_APP_BASE_URL}/forgetpassword/resetPassword`,
           { password, email: user.email }
         );
-
         if (response.data) {
           console.log(response.data);
+          toast.success("Reset Password successful!");
+          toast.success("Please login again!");
           navigate("/login");
           setPassword("");
           setConfirmPassword("");
           setShowPassword(false);
         }
       } catch (error) {
-        console.log(error);
+        toast.error(error.message);
       }
     }
   };

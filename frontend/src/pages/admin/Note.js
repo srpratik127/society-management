@@ -3,6 +3,7 @@ import CreateNote from "../../components/models/CreateNote.js";
 import EditNote from "../../components/models/EditNote.js";
 import { Popover } from "@headlessui/react";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const Note = () => {
   const [notes, setNotes] = useState([]);
@@ -17,8 +18,8 @@ const Note = () => {
           `${process.env.REACT_APP_BASE_URL}/api/notes`
         );
         setNotes(response.data);
-      } catch (err) {
-        console.log(err.message);
+      } catch (error) {
+        toast.error(error.message);
       }
     };
 

@@ -4,6 +4,7 @@ import axios from "axios";
 import ViewComplain from "../../components/models/ViewComplain";
 import EditComplaint from "../../components/models/EditComplaint";
 import DeleteModel from "../../components/models/DeleteModel";
+import toast from "react-hot-toast";
 
 const CreateComplaint = () => {
   const [complaints, setComplaints] = useState([]);
@@ -20,8 +21,8 @@ const CreateComplaint = () => {
           `${process.env.REACT_APP_BASE_URL}/api/complaints`
         );
         setComplaints(response?.data?.data);
-      } catch (err) {
-        console.log(err.message);
+      } catch (error) {
+        toast.error(error.message);
       }
     };
 
@@ -29,13 +30,18 @@ const CreateComplaint = () => {
   }, []);
 
   const handleDelete = async () => {
-    await axios.delete(
-      `${process.env.REACT_APP_BASE_URL}/api/complaints/${selectedComplain._id}`
-    );
-    setComplaints((prev) =>
-      prev.filter((complain) => complain._id !== selectedComplain._id)
-    );
-    setOpenDeleteComplain(false);
+    try {
+      await axios.delete(
+        `${process.env.REACT_APP_BASE_URL}/api/complaints/${selectedComplain._id}`
+      );
+      setComplaints((prev) =>
+        prev.filter((complain) => complain._id !== selectedComplain._id)
+      );
+      setOpenDeleteComplain(false);
+      toast.success("Complaints Deleted successful!");
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   return (

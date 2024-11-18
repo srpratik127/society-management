@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState, useRef } from "react";
 import DatePicker from "react-datepicker";
+import toast from "react-hot-toast";
 
 const EditSecurity = ({ isOpen, onClose, guardData, setGuards }) => {
   const [fullName, setFullName] = useState(guardData.fullName || "");
@@ -38,10 +39,11 @@ const EditSecurity = ({ isOpen, onClose, guardData, setGuards }) => {
             guard._id === updatedGuard._id ? updatedGuard : guard
           )
         );
+        toast.success("Guard Update successful!");
         onClose();
       }
     } catch (error) {
-      console.error("Error updating guard:", error);
+      toast.error(error.message);
     }
   };
 

@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
+import toast from "react-hot-toast";
 
 const AddEditAnnouncement = ({
   onClose,
@@ -109,7 +110,7 @@ const AddEditAnnouncement = ({
               : announcement
           )
         );
-        console.log("Announcement Updated:", response.data?.data);
+        toast.success("Announcement Updated successful!");
       } else {
         const response = await axios.post(
           `${process.env.REACT_APP_BASE_URL}/api/announcement`,
@@ -121,11 +122,11 @@ const AddEditAnnouncement = ({
           }
         );
         setAnnouncements((prev) => [...prev, response.data?.data]);
-        console.log("Announcement Created:", response.data?.data);
+        toast.success("Announcement Created successful!");
       }
       onClose();
     } catch (error) {
-      console.error("Error creating/updating announcement:", error);
+      toast.error(error.message);
     }
   };
 

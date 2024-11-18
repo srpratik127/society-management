@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const UpcomingActivitys = () => {
   const [upcomingactivities, setUpcomingactivities] = useState([]);
@@ -8,11 +9,11 @@ const UpcomingActivitys = () => {
     const fetchPendingMaintenance = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_BASE_URL}/api/activity`
+          `${process.env.REACT_APP_BASE_URL}/api/announcement`
         );
-        setUpcomingactivities(response?.data?.data);
-      } catch (err) {
-        console.log(err.message);
+        setUpcomingactivities(response?.data);
+      } catch (error) {
+        toast.error(error.message);
       }
     };
 
@@ -57,12 +58,16 @@ const UpcomingActivitys = () => {
                 <div className="space-y-1">
                   <span className="block font-medium">{activity.title}</span>
                   <span className="block text-gray-500 text-sm">
-                    {activity.startTime} To {activity.endTime}
+                    {activity.time}
                   </span>
                 </div>
               </div>
               <div className="text-gray-500 font-semibold text-sm">
-                {activity.date.slice(0, 10)}
+                {new Date(activity.date).toLocaleString("en-GB", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                })}
               </div>
             </div>
           ))

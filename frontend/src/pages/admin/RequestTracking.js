@@ -3,6 +3,7 @@ import ViewRequestTracking from "../../components/models/ViewRequestTracking";
 import axios from "axios";
 import AddEditRequestTracking from "../../components/models/AddEditRequestTracking";
 import DeleteModel from "../../components/models/DeleteModel";
+import toast from "react-hot-toast";
 
 const RequestTracking = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -18,21 +19,26 @@ const RequestTracking = () => {
           `${process.env.REACT_APP_BASE_URL}/api/requests`
         );
         setRequestProtocols(response?.data);
-      } catch (err) {
-        console.log(err.message);
+      } catch (error) {
+        toast.error(error.message);
       }
     };
     fetchComplainList();
   }, []);
 
   const handleDelete = async () => {
-    await axios.delete(
-      `${process.env.REACT_APP_BASE_URL}/api/requests/${selectedRequest._id}`
-    );
-    setRequestProtocols((prev) =>
-      prev.filter((request) => request._id !== selectedRequest._id)
-    );
-    setOpenDeleteComplain(false);
+    try {
+      await axios.delete(
+        `${process.env.REACT_APP_BASE_URL}/api/requests/${selectedRequest._id}`
+      );
+      setRequestProtocols((prev) =>
+        prev.filter((request) => request._id !== selectedRequest._id)
+      );
+      setOpenDeleteComplain(false);
+      toast.success("Requests Deleted successful!");
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   return (

@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const ImportantNumber = ({ closePopup, initialData, setImportantNumbers }) => {
   const [formData, setFormData] = useState({
@@ -50,6 +51,7 @@ const ImportantNumber = ({ closePopup, initialData, setImportantNumbers }) => {
               number._id === initialData._id ? response.data.data : number
             );
           });
+          toast.success("Numbers Update successful!");
         } else {
           const response = await axios.post(
             `${process.env.REACT_APP_BASE_URL}/api/numbers`,
@@ -60,11 +62,11 @@ const ImportantNumber = ({ closePopup, initialData, setImportantNumbers }) => {
             }
           );
           setImportantNumbers((pre) => [response?.data?.data, ...pre]);
-          console.log("Submitted data:", formData);
+          toast.success("Numbers Created successful!");
         }
         closePopup();
       } catch (error) {
-        console.error("Error submitting data:", error);
+        toast.error(error.message);
       }
     }
   };

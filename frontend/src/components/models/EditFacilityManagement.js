@@ -1,8 +1,13 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
+import toast from "react-hot-toast";
 
-const EditFacilityManagement = ({ onClose, selectedFacility, setFacilities }) => {
+const EditFacilityManagement = ({
+  onClose,
+  selectedFacility,
+  setFacilities,
+}) => {
   const [facilityName, setFacilityName] = useState("");
   const [description, setDescription] = useState("");
   const [scheduleDate, setScheduleDate] = useState("");
@@ -72,10 +77,10 @@ const EditFacilityManagement = ({ onClose, selectedFacility, setFacilities }) =>
             : facility
         )
       );
+      toast.success("Facilities Update successful!");
       onClose();
     } catch (error) {
-      console.error("Error updating facility:", error);
-      alert("Failed to update the facility. Please try again.");
+      toast.error(error.message);
     }
   };
 

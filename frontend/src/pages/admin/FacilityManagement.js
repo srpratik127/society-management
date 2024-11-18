@@ -3,6 +3,7 @@ import CreateFacilityManagement from "../../components/models/CreateFacilityMana
 import EditFacilityManagement from "../../components/models/EditFacilityManagement";
 import axios from "axios";
 import { Popover } from "@headlessui/react";
+import toast from "react-hot-toast";
 
 const FacilityManagement = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -17,8 +18,8 @@ const FacilityManagement = () => {
           `${process.env.REACT_APP_BASE_URL}/api/facilities`
         );
         setFacilities(response?.data);
-      } catch (err) {
-        console.log(err.message);
+      } catch (error) {
+        toast.error(error.message);
       }
     };
 

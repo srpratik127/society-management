@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import DatePicker from "react-datepicker";
+import toast from "react-hot-toast";
 
 const CreateNote = ({ onClose, setNotes }) => {
   const [note, setNote] = useState({ title: "", description: "", date: "" });
@@ -40,9 +41,10 @@ const CreateNote = ({ onClose, setNotes }) => {
         });
         setNote({ title: "", description: "", date: "" });
         setNotes((prevNotes) => [...prevNotes, response.data]);
+        toast.success("Notes Create successful!");
         onClose();
       } catch (error) {
-        console.error(error);
+        toast.error(error.message);
       }
     } else {
       ["title", "description", "date"].forEach((field) =>
