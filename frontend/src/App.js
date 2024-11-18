@@ -25,6 +25,9 @@ import SecurityProtocols from "./pages/admin/SecurityProtocols";
 import SecurityGuard from "./pages/admin/SecurityGuard";
 import Announcement from "./components/admin/Announcement";
 import User from "./pages/user/User";
+import Chat from "./pages/user/Chat";
+import PersonalDetails from "./pages/user/PersonalDetails";
+import ServiceAndComplaint from "./pages/user/ServiceAndComplaint";
 
 function App() {
   return (
@@ -58,6 +61,10 @@ function App() {
 
         <Route path="/resident" element={<ProtectedRoute><User /></ProtectedRoute>}>
           <Route path="" element={<Dashboard />} />
+          <Route path="chat" element={<Chat />} />
+          <Route path="personal-detail" element={<PersonalDetails />} />
+          <Route path="service-and-complaint" element={<ServiceAndComplaint />} />
+
         </Route>
 
         <Route path="*" element={<ErrorPage />} />

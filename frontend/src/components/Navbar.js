@@ -33,7 +33,7 @@ const Navbar = () => {
   return (
     <div className="w-full bg-white shadow py-4 px-6 flex items-center justify-between">
       <div className="w-56">
-        {(location.pathname === "/admin" || "/resident") ? (
+        {location.pathname === "/admin" || location.pathname === "/resident" ? (
           <div
             className={`items-center relative w-1/4 xl:ms-0 hidden md:flex ${
               !isOpenMenu && "ms-10"

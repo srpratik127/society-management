@@ -58,7 +58,7 @@ const Main = () => {
   };
 
   return (
-    <div className="flex w-full justify-center md:w-full relative">
+    <div className="flex w-full justify-center relative">
       <div className="absolute right-0 h-screen overflow-hidden -z-50">
         <img src="/assets/background.png" alt="Background" />
       </div>
@@ -69,7 +69,7 @@ const Main = () => {
           {renderContent()}
         </div>
       </div>
-      <div className="flex  md:w-2/2 w-1/2 px-4 sm:px-6 md:px-8 lg:px-12">
+      <div className="flex lg:w-2/2 w-2/4 px-4 sm:px-6 md:px-8 lg:px-12">
         <div className="w-full min-h-screen flex mx-auto justify-center items-center">
           <Outlet />
         </div>
