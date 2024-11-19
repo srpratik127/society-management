@@ -29,6 +29,7 @@ import Chat from "./pages/user/Chat";
 import PersonalDetails from "./pages/user/PersonalDetails";
 import ServiceAndComplaint from "./pages/user/ServiceAndComplaint";
 import EventsParticipation from "./pages/user/EventsParticipation";
+import MaintanceinvoiceTable from "./components/user/MaintanceinvoiceTable";
 
 function App() {
   return (
@@ -66,6 +67,7 @@ function App() {
           <Route path="personal-detail" element={<PersonalDetails />} />
           <Route path="service-and-complaint" element={<ServiceAndComplaint />} />
           <Route path="events-participation" element={<EventsParticipation />} />
+          <Route path="maintenance-invoices" element={<MaintanceinvoiceTable/>} />
         </Route>
 
         <Route path="*" element={<ErrorPage />} />
