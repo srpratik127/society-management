@@ -1,7 +1,22 @@
-import React from "react";
-import maintenanceData from "../../data/userdetails/maintanancedata";
+import React, { useState } from 'react'
+import maintenanceData from '../../data/userdetails/maintanancedata'
+import PaymentPopup from '../../components/models/PaymentPopup';
 
-const MaintenanceData = () => {
+const MaintenanceInvoices = () => {
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const [isDueMaintenance, setIsDueMaintenance] = useState(false);
+    const handlePayNowClick = () => {
+        setIsPopupOpen(true);
+      };
+
+      const hendelDuePay = () => {
+        setIsDueMaintenance(true)
+      }
+    
+      const handleClosePopup = () => {
+        setIsPopupOpen(false);
+        setIsDueMaintenance(false)
+      };
     return (
         <div className="p-4 space-y-6">
             <div className="flex flex-col md:flex-row justify-between bg-white shadow rounded-lg p-6 items-center space-y-4 md:space-y-0">
@@ -28,6 +43,9 @@ const MaintenanceData = () => {
             <div className="bg-white shadow rounded-lg p-6">
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-lg font-semibold">Pending Maintenance</h2>
+                    <button className="bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white px-4 py-2 rounded-md shadow">
+                        View Invoice
+                    </button>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     {maintenanceData.pendingMaintenance.map((item, index) => (
@@ -57,7 +75,10 @@ const MaintenanceData = () => {
                                     <p>Grand Total</p>
                                     <p>₹ {item.grandTotal}</p>
                                 </div>
-                                <button className="w-full py-2 bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white rounded-md font-semibold">
+                                <button
+                                    onClick={handlePayNowClick}
+                                    className="bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white px-4 py-2 rounded-lg shadow m-2"
+                                >
                                     Pay Now
                                 </button>
                             </div>
@@ -88,7 +109,7 @@ const MaintenanceData = () => {
                                     <p>Due Maintenance Amount</p>
                                     <p>₹ {item.duePenaltyAmount}</p>
                                 </div>
-                                <button className="w-full py-2 bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white rounded-md font-semibold">
+                                <button className="w-full py-2 bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white rounded-md font-semibold"   onClick={hendelDuePay}>
                                     Pay Now
                                 </button>
                             </div>
@@ -96,8 +117,10 @@ const MaintenanceData = () => {
                     ))}
                 </div>
             </div>
+            <PaymentPopup isOpen={isPopupOpen} onClose={handleClosePopup} />
+            <PaymentPopup isOpen={isDueMaintenance} onClose={handleClosePopup} />
         </div >
-    );
-};
+    )
+}
 
-export default MaintenanceData;
+export default MaintenanceInvoices
