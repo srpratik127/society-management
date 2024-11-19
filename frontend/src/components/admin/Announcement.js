@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Popover } from "@headlessui/react";
 import ViewAnnounce from "../models/ViewAnnouncement";
 import axios from "axios";
 import AddEditAnnouncement from "../models/AddEditAnnouncement";
+import AnnouncementsCard from "./AnnouncementsCard";
 import DeleteModel from "../models/DeleteModel";
 import toast from "react-hot-toast";
 
@@ -57,72 +57,13 @@ const Announcement = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {announcements.length > 0 ? (
           announcements.map((announcement) => (
-            <div
-              key={announcement._id}
-              className="bg-white shadow rounded-lg relative"
-            >
-              <div className="bg-[#5678E9] text-white p-2 py-3 rounded-t-lg flex justify-between items-center">
-                <h3 className="text-lg font-semibold">{announcement.title}</h3>
-                <Popover className="relative">
-                  <Popover.Button className="text-white outline-none">
-                    <img src="/assets/3dots.svg" alt="options" />
-                  </Popover.Button>
-                  <Popover.Panel className="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 z-50">
-                    <div className="py-2">
-                      <button
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
-                        onClick={() => {
-                          setIsAddEditAnnouncement(true);
-                          setSelectedItem(announcement);
-                        }}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
-                        onClick={() => {
-                          setSelectedItem(announcement);
-                          setIsViewPopupVisible(true);
-                        }}
-                      >
-                        View
-                      </button>
-                      <button
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
-                        onClick={() => {
-                          setIsDeleteOpen(true);
-                          setSelectedItem(announcement);
-                        }}
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </Popover.Panel>
-                </Popover>
-              </div>
-              <div className="p-4">
-                <p className="text-gray-600 flex justify-between p-1">
-                  <span>Announcement Date:</span>{" "}
-                  <span className="text-black">
-                    {new Date(announcement.date).toLocaleString("en-GB", {
-                      day: "2-digit",
-                      month: "2-digit",
-                      year: "numeric",
-                    })}
-                  </span>
-                </p>
-                <p className="text-gray-600 flex justify-between p-1">
-                  <span>Announcement Time:</span>{" "}
-                  <span className="text-black">{announcement.time}</span>
-                </p>
-                <p className="text-gray-600 mt-2 px-1">
-                  <span>Description:</span>{" "}
-                  <span className="text-black block">
-                    {announcement.description}
-                  </span>
-                </p>
-              </div>
-            </div>
+            <AnnouncementsCard
+              announcement={announcement}
+              setIsAddEditAnnouncement={setIsAddEditAnnouncement}
+              setSelectedItem={setSelectedItem}
+              setIsViewPopupVisible={setIsViewPopupVisible}
+              setIsDeleteOpen={setIsDeleteOpen}
+            />
           ))
         ) : (
           <div className="flex justify-center items-center col-span-full h-full">
@@ -132,6 +73,7 @@ const Announcement = () => {
           </div>
         )}
       </div>
+
       {isViewPopupVisible && selectedItem && (
         <ViewAnnounce
           announcement={selectedItem}

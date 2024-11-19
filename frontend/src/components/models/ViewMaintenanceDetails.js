@@ -1,6 +1,12 @@
 import React from "react";
 
 const ViewMaintenanceDetails = ({ onClose, maintenance }) => {
+  console.log(maintenance);
+
+  const currentDate = new Date();
+  const penaltyDate = new Date(maintenance.penaltyDay);
+  const isPenaltyApplied =
+    currentDate >= penaltyDate && maintenance.status === "pending";
   return (
     <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
       <div className="bg-white rounded-lg shadow w-96 p-4">
@@ -25,7 +31,7 @@ const ViewMaintenanceDetails = ({ onClose, maintenance }) => {
               {maintenance?.user?.fullName}
             </h3>
             <p className="text-gray-500">
-              {new Date(maintenance.updatedAt).toLocaleString("en-GB", {
+              {new Date(maintenance.dueDate).toLocaleString("en-GB", {
                 day: "2-digit",
                 month: "2-digit",
                 year: "numeric",
@@ -51,14 +57,18 @@ const ViewMaintenanceDetails = ({ onClose, maintenance }) => {
           </div>
           <div className="flex flex-col text-center">
             <span className="text-gray-500">Amount</span>
-            <span className="font-semibold text-green-600">₹ {maintenance.amount}</span>
+            <span className="font-semibold text-green-600">
+              ₹ {maintenance.amount}
+            </span>
           </div>
         </div>
 
         <div className="flex justify-between">
           <div className="flex flex-col text-center pr-4">
             <span className="text-gray-500">Penalty</span>
-            <span className="font-semibold">{maintenance.penaltyAmount}</span>
+            <span className="font-semibold text-red-600">
+              {isPenaltyApplied ? maintenance.penaltyAmount : "--"}
+            </span>
           </div>
           <div className="flex flex-col text-center pr-4">
             <span className="text-gray-500">Status</span>

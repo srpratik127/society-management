@@ -73,7 +73,7 @@ const AddSecurity = ({ isOpen, onClose, setGuards }) => {
         <div className="flex justify-start mb-4">
           <img className="w-16 h-16 rounded-full" src={photoFileName ? URL.createObjectURL(photoInputRef.current?.files[0]) : "/assets/empty.png"} alt="User" />
           <button className="text-blue-500 ml-4" onClick={() => photoInputRef.current.click()}>Add Photo</button>
-          <input type="file" ref={photoInputRef} className="hidden" onChange={handleFileChange(setPhotoFileName)} accept="image/*" required />
+          <input type="file" ref={photoInputRef} className="hidden" onChange={handleFileChange(setPhotoFileName)} accept=".png,.jpeg,.jpg," required />
           {errors.photoFileName && <p className="text-red-500 text-xs">{errors.photoFileName}</p>}
         </div>
 
@@ -143,7 +143,7 @@ const AddSecurity = ({ isOpen, onClose, setGuards }) => {
             <p className="mt-2 text-sm text-gray-700 font-medium">{aadharCardFileName || "Upload Aadhar Card"}</p>
             <span className="text-[#A7A7A7] text-sm mt-3">PNG, JPG, PDF up to 10MB</span>
           </div>
-          <input type="file" ref={fileInputRef} className="hidden" onChange={handleFileChange(setAadharCardFileName)} required />
+          <input type="file" ref={fileInputRef} accept=".png,.jpeg,.jpg," className="hidden" onChange={handleFileChange(setAadharCardFileName)} required />
           {errors.aadharCardFileName && <p className="text-red-500 text-xs">{errors.aadharCardFileName}</p>}
         </div>
 

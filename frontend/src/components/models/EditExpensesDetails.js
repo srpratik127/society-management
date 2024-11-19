@@ -4,7 +4,7 @@ import DatePicker from "react-datepicker";
 import toast from "react-hot-toast";
 
 const EditExpensesDetails = ({ onClose, expense, setExpansesData }) => {
-  const [file, setFile] = useState(null); 
+  const [file, setFile] = useState(null);
   const [fileName, setFileName] = useState(expense.bill || "");
   const [title, setTitle] = useState(expense?.title || "");
   const [description, setDescription] = useState(expense?.description || "");
@@ -28,7 +28,7 @@ const EditExpensesDetails = ({ onClose, expense, setExpansesData }) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
       setFile(selectedFile);
-      setFileName(selectedFile.name); 
+      setFileName(selectedFile.name);
     }
   };
 
@@ -47,7 +47,8 @@ const EditExpensesDetails = ({ onClose, expense, setExpansesData }) => {
 
         const response = await axios.put(
           `${process.env.REACT_APP_BASE_URL}/api/expenses/${expense._id}`,
-          formData, {
+          formData,
+          {
             headers: {
               "Content-Type": "multipart/form-data",
             },
@@ -66,7 +67,7 @@ const EditExpensesDetails = ({ onClose, expense, setExpansesData }) => {
       }
     }
   };
-  
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <form
@@ -150,6 +151,7 @@ const EditExpensesDetails = ({ onClose, expense, setExpansesData }) => {
             type="file"
             ref={fileInputRef}
             className="hidden"
+            accept=".png,.jpeg,.jpg,"
             onChange={handleFileChange}
           />
           {errors.fileName && (

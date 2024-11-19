@@ -74,7 +74,7 @@ const EditSecurity = ({ isOpen, onClose, guardData, setGuards }) => {
             ref={profileInputRef}
             className="hidden"
             onChange={handleProfileUpload}
-            accept="image/*"
+            accept=".png,.jpeg,.jpg,"
           />
         </div>
         <div className="mb-4 w-full">

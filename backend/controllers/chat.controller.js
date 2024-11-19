@@ -1,11 +1,39 @@
-const Chat = require('../models/Message');
-const Resident = require('../models/resident.model');
+const Message = require('../models/Message');
 const cloudinary = require('../utils/cloudinary');
+
+
+exports.handleMessage = async (req, res) => {
+  const { senderId, receiverId, message } = req.body;
+  const file = req.file;
+
+  try {
+    let mediaUrl = null;
+
+    if (file) {
+      const result = await cloudinary.uploader.upload(file.path, { resource_type: "auto" });
+      mediaUrl = result.secure_url;
+    }
+
+    const newMessage = new Message({
+      senderId,
+      receiverId,
+      message: message || null,
+      mediaUrl,
+    });
+    await newMessage.save();
+
+    res.status(200).json(newMessage);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to handle the message" });
+  }
+};
+
+
 
 exports.getChatHistory = async (req, res) => {
   const { senderId, receiverId } = req.params;
   try {
-    const messages = await Chat.find({
+    const messages = await Message.find({
       $or: [
         { senderId, receiverId },
         { senderId: receiverId, receiverId: senderId }
@@ -17,39 +45,36 @@ exports.getChatHistory = async (req, res) => {
   }
 };
 
-exports.saveMessage = async (senderId, receiverId, message, mediaUrl = null) => {
-  const newMessage = new Chat({ senderId, receiverId, message, mediaUrl });
-  return await newMessage.save();
-};
+// exports.saveMessage = async (senderId, receiverId, message, mediaUrl = null) => {
+//   const newMessage = new Chat({ senderId, receiverId, message, mediaUrl });
+//   return await newMessage.save();
+// };
 
-exports.getAllUsers = async (req, res) => {
-  try {
-    const users = await Resident.find({}, 'fullName profile_picture');
-    if (!users || users.length === 0) {
-      return res.status(404).json({ message: "No users found." });
-    }
-    res.status(200).json(users);
-  } catch (error) {
-    res.status(500).json({ message: "Server error" });
-  }
-};
+// exports.getAllUsers = async (req, res) => {
+//   try {
+//     const users = await Resident.find({}, 'fullName profile_picture');
+//     if (!users || users.length === 0) {
+//       return res.status(404).json({ message: "No users found." });
+//     }
+//     res.status(200).json(users);
+//   } catch (error) {
+//     res.status(500).json({ message: "Server error" });
+//   }
+// };
 
-// New controller for sending media messages
-exports.sendMediaMessage = async (req, res) => {
-  const { senderId, receiverId } = req.body;
-  const file = req.file;
+// exports.sendMediaMessage = async (req, res) => {
+//   const { senderId, receiverId } = req.body;
+//   const file = req.file;
 
-  try {
-    // Upload the file to Cloudinary
-    const result = await cloudinary.uploader.upload(file.path, {
-      resource_type: "auto"
-    });
+//   try {
+//     const result = await cloudinary.uploader.upload(file.path, {
+//       resource_type: "auto"
+//     });
 
-    // Save media message
-    const mediaMessage = await exports.saveMessage(senderId, receiverId, null, result.secure_url);
+//     const mediaMessage = await exports.saveMessage(senderId, receiverId, null, result.secure_url);
 
-    res.status(200).json(mediaMessage);
-  } catch (error) {
-    res.status(500).json({ error: "Failed to send media message" });
-  }
-};
+//     res.status(200).json(mediaMessage);
+//   } catch (error) {
+//     res.status(500).json({ error: "Failed to send media message" });
+//   }
+// };

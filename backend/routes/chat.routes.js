@@ -1,27 +1,22 @@
 const express = require('express');
-const { getChatHistory, getAllUsers, sendMediaMessage } = require('../controllers/chat.controller');
-// const upload = require('../middleware/multer.middleware');
-const router = express.Router();
-
+const { handleMessage, getChatHistory, getAllUsers } = require('../controllers/chat.controller');
 const multer = require('multer');
 
+const router = express.Router();
+
+// Multer setup
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'uploads/');  // Set the directory for storing files temporarily
+    cb(null, 'uploads/');
   },
   filename: function (req, file, cb) {
-    cb(null, Date.now() + '-' + file.originalname);  // Unique filename
+    cb(null, Date.now() + '-' + file.originalname);
   }
 });
+const upload = multer({ storage });
 
-const upload = multer({ storage: storage });
-module.exports = upload;
-
-
+// Routes
+router.post('/message', upload.single('file'), handleMessage);
 router.get('/history/:senderId/:receiverId', getChatHistory);
-router.get('/getAllUsers', getAllUsers);
-
-// New route for sending media messages
-router.post('/sendMedia', upload.single('file'), sendMediaMessage);
 
 module.exports = router;

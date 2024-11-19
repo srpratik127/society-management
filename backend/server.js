@@ -87,31 +87,44 @@ io.on('connection', (socket) => {
     socket.receiverId = receiverId;
   });
 
-  socket.on('private message', async ({ message,senderId, receiverId }) => {
-    const newMessage = new Message({ senderId, receiverId, message });
-    await newMessage.save();
-    io.to(socket.id).emit('private message', newMessage);
-    const receiverSocket = Array.from(io.sockets.sockets.values()).find(s => s.userId === receiverId);
-    if (receiverSocket) receiverSocket.emit('private message', newMessage);
+  // socket.on('private message', async ({ message,senderId, receiverId }) => {
+  //   const newMessage = new Message({ senderId, receiverId, message });
+  //   await newMessage.save();
+  //   io.to(socket.id).emit('private message', newMessage);
+  //   const receiverSocket = Array.from(io.sockets.sockets.values()).find(s => s.userId === receiverId);
+  //   if (receiverSocket) receiverSocket.emit('private message', newMessage);
+  // });
+
+  // socket.on('media message', async ({ senderId, receiverId, mediaUrl }) => {
+  //   const newMessage = new Message({ senderId, receiverId, mediaUrl });
+  //   // await newMessage.save();
+  //   io.to(socket.id).emit('media message', newMessage);
+  //   const receiverSocket = Array.from(io.sockets.sockets.values()).find(s => s.userId === receiverId);
+  //   if (receiverSocket) receiverSocket.emit('media message', newMessage);
+  // });
+
+
+
+
+  socket.on('message', ({ senderId, receiverId, message, mediaUrl }) => {
+    try {
+      const newMessage = { senderId, receiverId, message, mediaUrl };
+      io.to(socket.id).emit('message', newMessage);
+      const receiverSocket = Array.from(io.sockets.sockets.values()).find(s => s.userId === receiverId);
+      if (receiverSocket) {
+        receiverSocket.emit('message', newMessage);
+      }
+    } catch (error) {
+      console.error("Error handling message:", error);
+    }
   });
 
-  socket.on('media message', async ({ senderId, receiverId, mediaUrl }) => {
-    const newMessage = new Message({ senderId, receiverId, mediaUrl });
-    // await newMessage.save();
-    io.to(socket.id).emit('media message', newMessage);
-    const receiverSocket = Array.from(io.sockets.sockets.values()).find(s => s.userId === receiverId);
-    if (receiverSocket) receiverSocket.emit('media message', newMessage);
-  });
+
 
   socket.on('disconnect', () =>{
     console.log(`${socket.userId} disconnected`);
   });
 });
-
-
-
-
-
 
 const port = process.env.PORT || 5000;  
 server.listen(port, () => {
