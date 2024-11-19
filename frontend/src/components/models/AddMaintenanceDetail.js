@@ -3,13 +3,16 @@ import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { AddNotification } from "../../store/NotificationSlice";
 
-const AddMaintenanceDetail = ({ onClose }) => {
+const AddMaintenanceDetail = ({ onClose,setMaintenance }) => {
   const [maintenanceAmount, setMaintenanceAmount] = useState("");
   const [penaltyAmount, setPenaltyAmount] = useState("");
   const [dueDate, setDueDate] = useState("");
   const [penaltyAfterDays, setPenaltyAfterDays] = useState("");
   const [errors, setErrors] = useState({});
+  const dispatch = useDispatch();
 
   const isFormComplete =
     maintenanceAmount && penaltyAmount && dueDate && penaltyAfterDays;
@@ -43,14 +46,12 @@ const AddMaintenanceDetail = ({ onClose }) => {
           payload
         );
         if (response?.data) {
-          setMaintenanceAmount("");
-          setPenaltyAmount("");
-          setDueDate("");
-          setPenaltyAfterDays("");
+          setMaintenance((pre)=>[...pre, response.data?.data])
+          dispatch(AddNotification(response.data?.notification));
           toast.success("Maintenance Create successful!");
           onClose();
         } else {
-          toast.error(response);
+          toast.error(response.data);
         }
       } catch (error) {
         toast.error(error.message);

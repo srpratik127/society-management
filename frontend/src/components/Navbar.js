@@ -63,12 +63,10 @@ const Navbar = () => {
       .split("-")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
-  
+
     return (
       <span key={index} className="flex items-center">
-        {index > 0 && (
-          <span className="mx-2 text-xl">{">"}</span>
-        )}
+        {index > 0 && <span className="mx-2 text-xl">{">"}</span>}
         {index === pathSegments.length - 1 ? (
           <span className="text-gray-500 w-48 block">{formattedSegment}</span>
         ) : (
@@ -166,12 +164,17 @@ const Navbar = () => {
                                 })}
                               </span>
                             </p>
+                            <p className="text-[#4F4F4F] my-2">
+                              Message: <span className="">{item.message}</span>
+                            </p>
                             <div className="flex items-end justify-between gap-3">
                               <div>
                                 <button
                                   className="bg-white border border-gray-300 font-semibold text-gray-700 py-1 px-4 rounded-lg me-3"
                                   onClick={() => {
-                                    navigate(user.role ? "" : "/admin/facility");
+                                    navigate(
+                                      user.role ? "" : "/admin/facility"
+                                    );
                                     close();
                                   }}
                                 >

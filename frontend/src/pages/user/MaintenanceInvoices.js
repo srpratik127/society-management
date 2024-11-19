@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import maintenanceData from '../../data/userdetails/maintanancedata'
+// import maintenanceData from '../../data/userdetails/maintanancedata'
 import PaymentPopup from '../../components/models/PaymentPopup';
 
 const MaintenanceInvoices = () => {
@@ -48,7 +48,7 @@ const MaintenanceInvoices = () => {
                     </button>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    {maintenanceData.pendingMaintenance.map((item, index) => (
+                    {/* {maintenanceData.pendingMaintenance.map((item, index) => (
                         <div key={index} className="bg-white shadow rounded-lg">
                             <div className="bg-blue-500 text-white rounded-t-lg p-3 flex justify-between items-center">
                                 <span>Maintenance</span>
@@ -83,14 +83,14 @@ const MaintenanceInvoices = () => {
                                 </button>
                             </div>
                         </div>
-                    ))}
+                    ))} */}
                 </div>
             </div>
 
             <div className="bg-white shadow rounded-lg p-6">
                 <h2 className="text-lg font-semibold mb-4">Due Maintenance</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    {maintenanceData.dueMaintenance.map((item, index) => (
+                    {/* {maintenanceData.dueMaintenance.map((item, index) => (
                         <div key={index} className="bg-white shadow rounded-lg">
                             <div className="bg-blue-500 text-white rounded-t-lg p-3 flex justify-between items-center">
                                 <span>Maintenance</span>
@@ -114,7 +114,7 @@ const MaintenanceInvoices = () => {
                                 </button>
                             </div>
                         </div>
-                    ))}
+                    ))} */}
                 </div>
             </div>
             <PaymentPopup isOpen={isPopupOpen} onClose={handleClosePopup} />

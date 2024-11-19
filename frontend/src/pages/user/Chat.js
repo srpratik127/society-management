@@ -11,13 +11,11 @@ const socket = io(`${process.env.REACT_APP_BASE_URL}`, {
 
 const ChatComponent = () => {
   const userId = useSelector((store) => store.auth.user._id);
-  // const [receiverId, setReceiverId] = useState("");
   const [receiver, setReceiver] = useState(null);
   const [messages, setMessages] = useState([]);
   const [allResident, setAllResident] = useState([]);
   const [message, setMessage] = useState("");
   const [media, setMedia] = useState(null);
-  const [connected, setConnected] = useState(false);
 
   useEffect(() => {
     const fetchResidents = async () => {
@@ -33,33 +31,62 @@ const ChatComponent = () => {
     fetchResidents();
   }, []);
 
+  // const joinChat = (item) => {
+  //   setReceiver(item);
+  //   socket.on("connect", () => {
+  //     const receiverId = item._id;
+  //     socket.emit("join", { userId, receiverId });
+  //   });
+  // };
   const joinChat = (item) => {
     setReceiver(item);
-    socket.on("connect", () => {
-      setConnected(true);
-      const receiverId = item._id;
-      socket.emit("join", { userId, receiverId });
-    });
+    socket.emit("join", { userId, receiverId: item._id });
   };
 
-  useEffect(() => {
-    // setReceiverId("673624cf53e66858dca625af");
-    if (receiver) {
-      socket.on("private message", (messageData) => {
-        setMessages((prevMessages) => [...prevMessages, messageData]);
-      });
+  // useEffect(() => {
+  //   if (receiver) {
+  //     socket.on("private message", (messageData) => {
+  //       setMessages((prevMessages) => [...prevMessages, messageData]);
+  //     });
 
-      socket.on("media message", (messageData) => {
+  //     socket.on("media message", (messageData) => {
+  //       setMessages((prevMessages) => [...prevMessages, messageData]);
+  //     });
+  //   }
+
+  //   return () => {
+  //     socket.off("connect");
+  //     socket.off("private message");
+  //     socket.off("media message");
+  //   };
+  // }, [userId, receiver]);
+  useEffect(() => {
+    if (receiver) {
+      socket.on("message", (messageData) => {
         setMessages((prevMessages) => [...prevMessages, messageData]);
       });
     }
 
     return () => {
-      socket.off("connect");
-      socket.off("private message");
-      socket.off("media message");
+      socket.off("message");
     };
-  }, [userId, receiver]);
+  }, [receiver]);
+
+  // useEffect(() => {
+  //   const fetchChatHistory = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         `${process.env.REACT_APP_BASE_URL}/api/chat/history/${userId}/${receiver._id}`
+  //       );
+  //       setMessages(response.data);
+  //     } catch (error) {
+  //       toast.error(error.message);
+  //     }
+  //   };
+  //   if (receiver) {
+  //     fetchChatHistory();
+  //   }
+  // }, [userId, receiver]);
 
   useEffect(() => {
     const fetchChatHistory = async () => {
@@ -77,33 +104,28 @@ const ChatComponent = () => {
     }
   }, [userId, receiver]);
 
-  const handleSendMessage = () => {
-    if (message.trim() === "") return;
-    const receiverId = receiver._id;
-    socket.emit("private message", { message, senderId: userId, receiverId });
-    setMessage("");
-  };
-
-  const handleSendMediaMessage = async (event) => {
+  const handleSendMessageOrMedia = async (event) => {
     event.preventDefault();
-    if (!media) return;
-
-    const formData = new FormData();
-    formData.append("file", media);
-    formData.append("senderId", userId);
-    formData.append("receiverId", receiver._id);
 
     try {
+      const formData = new FormData();
+      formData.append("senderId", userId);
+      formData.append("receiverId", receiver._id);
+
+      if (message.trim()) {
+        formData.append("message", message);
+      }
+      if (media) {
+        formData.append("file", media);
+      }
       const response = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/api/chat/sendMedia`,
+        `${process.env.REACT_APP_BASE_URL}/api/chat/message`,
         formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
+        { headers: { "Content-Type": "multipart/form-data" } }
       );
-      socket.emit("media message", response.data);
+      socket.emit("message", response.data);
+      setMessages((pre) => [response.data, ...pre]);
+      setMessage("");
       setMedia(null);
     } catch (error) {
       toast.error(error.message);
@@ -111,7 +133,7 @@ const ChatComponent = () => {
   };
 
   return (
-    <div className="flex bg-white m-6 rounded-lg">
+    <div className="flex bg-white m-4 rounded-lg">
       <div className="w-[300px] p-4 ">
         <h2 className="text-xl font-semibold mb-3">Chat</h2>
         <div
@@ -157,31 +179,33 @@ const ChatComponent = () => {
                   className="w-10 h-10 rounded-full"
                 />
                 <div>
-                  <h4 className="font-semibold text-lg capitalize leading-none">{receiver.fullName}</h4>
+                  <h4 className="font-semibold text-lg capitalize leading-none">
+                    {receiver.fullName}
+                  </h4>
                   <p className="text-[#A7A7A7]">{receiver.email}</p>
                 </div>
               </div>
               <div className="flex gap-3">
-              <img
-                  src='/assets/video.svg'
+                <img
+                  src="/assets/video.svg"
                   className="w-10 h-10 rounded-full cursor-pointer"
                 />
-              <img
-                  src='/assets/call.svg'
+                <img
+                  src="/assets/call.svg"
                   className="w-10 h-10 rounded-full cursor-pointer"
                 />
-              <img
-                  src='/assets/info.svg'
+                <img
+                  src="/assets/info.svg"
                   className="w-10 h-10 rounded-full cursor-pointer"
                 />
               </div>
             </div>
 
-            <div className="flex-1 p-4 overflow-y-auto min-h-[64vh] bg-[#F4F4F4] space-y-4 flex flex-col">
+            <div className="flex-1 p-4 overflow-auto h-[73vh] bg-[#F4F4F4] space-y-4 flex flex-col">
               {messages.map((msg, index) => (
                 <div
                   key={index}
-                  className={`max-w-[75%] ${
+                  className={`max-w-[60%] ${
                     msg.senderId === userId
                       ? "text-right self-end"
                       : "text-left self-start"
@@ -190,65 +214,56 @@ const ChatComponent = () => {
                   <div
                     className={`p-2 rounded-lg  ${
                       msg.senderId === userId
-                        ? "bg-[#5678E9] text-white text-right self-end"
+                        ? "bg-[#5678E9] text-white text-left"
                         : "bg-[#5678e917] text-left self-start"
                     }`}
                   >
-                    {msg.message ? (
-                      <p>{msg.message}</p>
-                    ) : (
+                    {msg.mediaUrl && (
                       <img
                         src={msg.mediaUrl}
                         alt="media"
-                        className="w-[470px] h-[278px] object-cover rounded-lg"
+                        className="min-w-[470px] h-[278px] object-cover rounded-lg"
                       />
                     )}
+                    {msg.message && <p>{msg.message}</p>}
                   </div>
-                  <p className="text-sm text-[#A7A7A7]">
-                    {new Date(msg.createdAt).toTimeString().slice(0, 5)}
+                  <p className="text-[12px] text-[#A7A7A7]">
+                    {new Date(msg.createdAt).toLocaleString("en-GB", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: true,
+                    })}
                   </p>
                 </div>
               ))}
             </div>
 
             <div className="sticky bottom-0 bg-white">
-              <div className="p-4 border-t border-gray-200 flex items-center space-x-2">
+              <form
+                onSubmit={handleSendMessageOrMedia}
+                className="p-4 border-t border-gray-200 flex items-center space-x-2"
+              >
                 <input
                   type="text"
-                  className="flex-1 p-2 rounded-lg border border-gray-300"
+                  className="flex-1 p-2 rounded-lg border border-gray-300 outline-none"
                   placeholder="Type a message..."
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                 />
+                <input
+                  type="file"
+                  accept=".png,.jpeg,.jpg,"
+                  onChange={(e) => setMedia(e.target.files[0])}
+                  className="file-input"
+                />
                 <button
-                  onClick={handleSendMessage}
+                  type="submit"
                   className="px-4 py-2 bg-[#FE512E] text-white rounded-lg disabled:opacity-50"
-                  disabled={!message.trim()}
+                  disabled={!message.trim() && !media}
                 >
                   Send
                 </button>
-              </div>
-
-              <div className="p-4 border-t border-gray-200">
-                <form
-                  onSubmit={handleSendMediaMessage}
-                  className="flex items-center space-x-2"
-                >
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => setMedia(e.target.files[0])}
-                    className="file-input"
-                  />
-                  <button
-                    type="submit"
-                    className="px-4 py-2 bg-[#F09619] text-white rounded-lg disabled:opacity-50"
-                    disabled={!media}
-                  >
-                    Send Media
-                  </button>
-                </form>
-              </div>
+              </form>
             </div>
           </>
         ) : (

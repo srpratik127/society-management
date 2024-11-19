@@ -2,11 +2,6 @@ const mongoose = require("mongoose");
 
 const maintenance = new mongoose.Schema(
   {
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Resident",
-      required: true,
-    },
     amount: {
       type: Number,
     },
@@ -21,16 +16,25 @@ const maintenance = new mongoose.Schema(
     penaltyDay: {
       type: Date,
     },
-    status: {
-      type: String,
-      enum: ["pending", "done"],
-      default: "pending",
-    },
-    paymentMethod: {
-      type: String,
-      enum: ["online", "cash"],
-      default: "cash",
-    },
+    member: [
+      {
+        user: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Resident",
+          required: true,
+        },
+        status: {
+          type: String,
+          enum: ["pending", "done"],
+          default: "pending",
+        },
+        paymentMethod: {
+          type: String,
+          enum: ["online", "cash"],
+          default: "cash",
+        },
+      },
+    ],
   },
   { timestamps: true }
 );

@@ -10,7 +10,7 @@ const notificationSlice = createSlice({
       state.notification = action.payload;
     },
     AddNotification: (state, action) => {
-      state.notification = [...state.notification, action.payload];
+      state.notification = [action.payload, ...state.notification];
     },
     // removeNotification: (state, action) => {
     //   state.notification = state.notification.filter(

@@ -36,13 +36,13 @@ const Income = () => {
               <div className="bg-white shadow rounded-lg p-4 w-full sm:w-[230px] flex flex-col justify-center">
                 <div className="text-gray-500">Maintenance Amount</div>
                 <div className="text-green-500 font-bold text-xl">
-                  ₹ {maintenance[0]?.amount || "00"}
+                  ₹ {maintenance[maintenance.length -1]?.amount || "00"}
                 </div>
               </div>
               <div className="bg-white shadow rounded-lg p-4 w-full sm:w-[230px] flex flex-col justify-center">
                 <div className="text-gray-500">Penalty Amount</div>
                 <div className="text-red-500 font-bold text-xl">
-                  ₹ {maintenance[0]?.penaltyAmount || "00"}
+                  ₹ {maintenance[maintenance.length -1]?.penaltyAmount || "00"}
                 </div>
               </div>
             </div>
@@ -101,7 +101,7 @@ const Income = () => {
         />
       )}
       {isAddMaintenance && (
-        <AddMaintenanceDetail onClose={() => setIsAddMaintenance(false)} />
+        <AddMaintenanceDetail onClose={() => setIsAddMaintenance(false)} setMaintenance={setMaintenance}/>
       )}
     </>
   );

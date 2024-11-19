@@ -162,6 +162,7 @@ const AddExpensesDetails = ({ onClose, setExpansesData }) => {
           <input
             type="file"
             ref={fileInputRef}
+            accept=".png,.jpeg,.jpg,"
             className="hidden"
             onChange={handleFileChange}
           />
