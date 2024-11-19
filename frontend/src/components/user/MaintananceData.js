@@ -118,10 +118,10 @@ const MaintenanceData = () => {
                         <div key={index} className=" bg-white rounded-lg shadow-md">
                             <div className="bg-blue-500 text-white rounded-t-lg p-2 font-semibold flex justify-between">
                                 <span>Maintenance</span>
-                                <span className="bg-[#FFFFFF1A] px-3 rounded-full py-1">Pending</span>
+                                <span className="bg-white bg-opacity-10 px-3 py-1 rounded-full">Pending</span>
                             </div>
-                            <div className="p-3 space-y-2 text-gray-700">
-                                <div className="flex justify-between border-b pb-2">
+                            <div className="p-4 space-y-4">
+                                <div className="flex justify-between text-gray-700 border-b pb-2">
                                     <p>Date</p>
                                     <p>{item.date}</p>
                                 </div>
@@ -131,9 +131,9 @@ const MaintenanceData = () => {
                                 </div>
                                 <div className="flex justify-between text-red-600 border-b pb-2">
                                     <p>Due Maintenance Amount</p>
-                                    <p className="text-nowrap">₹ {item.duePenaltyAmount}</p>
+                                    <p>₹ {item.duePenaltyAmount}</p>
                                 </div>
-                                <button className="mt-3 w-full py-2 bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white rounded-md font-semibold">
+                                <button className="w-full py-2 bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white rounded-md font-semibold">
                                     Pay Now
                                 </button>
                             </div>
