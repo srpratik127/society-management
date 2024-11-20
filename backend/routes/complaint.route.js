@@ -4,7 +4,7 @@ const complaintController = require('../controllers/complaint.controller');
 
 router.post('/', complaintController.createComplaint); 
 router.get('/', complaintController.getComplaints);
-router.get('/:id', complaintController.getComplaintById); 
+router.get('/:userId', complaintController.getComplaintsByUserId); 
 router.put('/:id', complaintController.updateComplaint);
 router.delete('/:id', complaintController.deleteComplaint); 
 

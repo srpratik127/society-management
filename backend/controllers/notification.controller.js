@@ -5,7 +5,7 @@ const getNotifications = async (req, res) => {
         const userId = req.params.userId;
         const notifications = await Notification.find({
             users: { $elemMatch: { _id: userId } },
-        });
+        }).sort({ createdAt: -1 });
 
         const filteredNotifications = notifications.map((notification) => ({
             ...notification._doc,

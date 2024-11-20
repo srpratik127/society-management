@@ -20,9 +20,9 @@ exports.handleMessage = async (req, res) => {
       message: message || null,
       mediaUrl,
     });
-    await newMessage.save();
+    const savedMessage = await newMessage.save();
 
-    res.status(200).json(newMessage);
+    res.status(200).json(savedMessage);
   } catch (error) {
     res.status(500).json({ error: "Failed to handle the message" });
   }

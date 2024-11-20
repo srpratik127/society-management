@@ -9,18 +9,18 @@ const EventsParticipation = () => {
         <div>
             <div className="flex border-b m-6 mb-0">
                 <button
-                    className={`px-4 py-2 font-semibold text-sm rounded-t-md ${activeTab === "events"
+                    className={`px-4 py-2 font-semibold rounded-t-md ${activeTab === "events"
                             ? "text-white bg-gradient-to-r from-[#FE512E] to-[#F09619]"
-                            : "text-gray-600"
+                            : "text-gray-600 bg-white"
                         }`}
                     onClick={() => setActiveTab("events")}
                 >
                     Events Participate
                 </button>
                 <button
-                    className={`px-4 py-2 font-semibold text-sm rounded-t-md ${activeTab === "activity"
+                    className={`px-4 py-2 font-semibold rounded-t-md ${activeTab === "activity"
                             ? "text-white bg-gradient-to-r from-[#FE512E] to-[#F09619]"
-                            : "text-gray-600"
+                            : "text-gray-600 bg-white"
                         }`}
                     onClick={() => setActiveTab("activity")}
                 >
@@ -29,7 +29,7 @@ const EventsParticipation = () => {
             </div>
 
             {activeTab === "events" && (
-                <div className="p-4 m-6 mt-0 bg-gray-50 rounded-lg shadow-lg">
+                <div className="p-4 m-6 mt-0 bg-gray-50 rounded-lg shadow">
                     <h2 className="text-lg sm:text-xl font-semibold mb-4">
                         Events Participation
                     </h2>
@@ -80,7 +80,7 @@ const EventsParticipation = () => {
             )}
 
             {activeTab === "activity" && (
-                <div className="p-4 m-6 mt-0 bg-gray-50 rounded-lg shadow-lg">
+                <div className="p-4 m-6 mt-0 bg-gray-50 rounded-lg shadow">
                     <h2 className="text-lg sm:text-xl font-semibold mb-4">
                         Activity Participation
                     </h2>
