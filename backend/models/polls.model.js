@@ -1,48 +1,57 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const pollOptionSchema = new mongoose.Schema({
-    optionText: {
+  optionText: {
+    type: String,
+    required: true,
+  },
+  votes: {
+    type: Number,
+    default: 0,
+  },
+  voters: [
+    {
+      _id: { type: mongoose.Schema.Types.ObjectId },
+      model: {
         type: String,
-        required: true
+        enum: ["Resident", "User"],
+      },
     },
-    votes: {
-        type: Number,
-        default: 0
-    },
-    voters: [{ 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Resident' 
-    }]
+  ],
 });
 
 const pollSchema = new mongoose.Schema({
-    question: {
+  question: {
+    type: String,
+    required: true,
+  },
+  options: [pollOptionSchema],
+  multipleChoice: {
+    type: Boolean,
+    default: false,
+  },
+  createdBy: [
+    {
+      _id: { type: mongoose.Schema.Types.ObjectId },
+      model: {
         type: String,
-        required: true
+        enum: ["Resident", "User"],
+      },
     },
-    options: [pollOptionSchema], 
-    multipleChoice: {
-        type: Boolean,  
-        default: false
-    },
-    createdBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Resident',  
-        required: true
-    },
-    totalVotes: {
-        type: Number,
-        default: 0
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
-    endDate: {
-        type: Date,
-    }
+  ],
+  totalVotes: {
+    type: Number,
+    default: 0,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  endDate: {
+    type: Date,
+  },
 });
 
-const Poll = mongoose.model('Poll', pollSchema);
+const Poll = mongoose.model("Poll", pollSchema);
 
 module.exports = Poll;
