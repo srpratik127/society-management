@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { otherIncomeInvoiceData } from "../../data/otherIncomeInvoiceData";
-import PaymentPopup from "../../components/models/PaymentPopup";
+import DetailPopup from "../../components/models/DetailPopup";
+import MaintanceInvoiceTable from "../../components/user/MaintanceinvoiceTable";
 
 const OtherIncomeInvoice = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  
 
   const handlePayNowClick = () => {
     setIsPopupOpen(true);
@@ -17,10 +19,13 @@ const OtherIncomeInvoice = () => {
     <div className="p-4 m-6 bg-white shadow rounded-lg">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold">Due Event Payment</h2>
-        <button className="bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white px-4 py-2 rounded-lg shadow">
+        <button
+          className="bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white px-4 py-2 rounded-lg shadow"
+        >
           View Invoice
         </button>
       </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {otherIncomeInvoiceData.map((item, index) => (
           <div
@@ -56,8 +61,8 @@ const OtherIncomeInvoice = () => {
           </div>
         ))}
       </div>
+      {isPopupOpen && <DetailPopup onClose={handleClosePopup} />}
 
-      <PaymentPopup isOpen={isPopupOpen} onClose={handleClosePopup} />
     </div>
   );
 };
