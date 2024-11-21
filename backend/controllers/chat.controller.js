@@ -1,17 +1,25 @@
-const Message = require('../models/Message');
-const cloudinary = require('../utils/cloudinary');
-
+const Message = require("../models/Message");
+const cloudinary = require("../utils/cloudinary");
+const fs = require("fs");
 
 exports.handleMessage = async (req, res) => {
   const { senderId, receiverId, message } = req.body;
   const file = req.file;
-
   try {
     let mediaUrl = null;
 
     if (file) {
-      const result = await cloudinary.uploader.upload(file.path, { resource_type: "auto" });
+      const result = await cloudinary.uploader.upload(file.path, {
+        resource_type: "auto",
+      });
       mediaUrl = result.secure_url;
+      fs.unlink(file.path, (err) => {
+        if (err) {
+          console.error("Failed to delete local file:", err);
+        } else {
+          console.log("Local file deleted successfully:", file.path);
+        }
+      });
     }
 
     const newMessage = new Message({
@@ -28,16 +36,14 @@ exports.handleMessage = async (req, res) => {
   }
 };
 
-
-
 exports.getChatHistory = async (req, res) => {
   const { senderId, receiverId } = req.params;
   try {
     const messages = await Message.find({
       $or: [
         { senderId, receiverId },
-        { senderId: receiverId, receiverId: senderId }
-      ]
+        { senderId: receiverId, receiverId: senderId },
+      ],
     }).sort({ createdAt: 1 });
     res.status(200).json(messages);
   } catch (error) {

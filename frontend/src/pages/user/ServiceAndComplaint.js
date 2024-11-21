@@ -120,8 +120,8 @@ const ServiceAndComplaint = () => {
           </div>
           {complainList?.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {complainList.map((complaint, index) => (
-                <div className="bg-white shadow rounded-lg">
+              {complainList.map((complaint) => (
+                <div className="bg-white shadow rounded-lg" key={complaint._id}>
                   <div className="flex justify-between rounded-t-lg items-center mb-2 px-3 py-2 bg-[#5678E9]">
                     <h3 className="font-semibold text-base text-white capitalize">
                       {complaint.complaintName}
@@ -201,8 +201,8 @@ const ServiceAndComplaint = () => {
           </div>
           {requestsList?.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {requestsList.map((requests, index) => (
-                <div className="bg-white shadow rounded-lg">
+              {requestsList.map((requests) => (
+                <div className="bg-white shadow rounded-lg" key={requests._id}>
                   <div className="flex justify-between rounded-t-lg items-center mb-2 px-3 py-2 bg-[#5678E9]">
                     <h3 className="font-semibold text-base text-white">
                       {requests.requestName}

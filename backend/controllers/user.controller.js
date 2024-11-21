@@ -60,10 +60,10 @@ const Register = async (req, res) => {
 const Login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    let user = await User.findOne({ email }); //ADMIN
+    let user = await User.findOne({ email });
 
     if (!user) {
-      user = await Resident.findOne({ email }); // USER
+      user = await Resident.findOne({ email });
     }
     if (!user) {
       return res.status(400).json({ msg: "email not exists" });

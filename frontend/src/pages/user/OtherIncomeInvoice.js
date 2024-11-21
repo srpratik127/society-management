@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { otherIncomeInvoiceData } from "../../data/otherIncomeInvoiceData";
 import DetailPopup from "../../components/models/DetailPopup";
-import MaintanceInvoiceTable from "../../components/user/MaintanceinvoiceTable";
+import MaintanceInvoiceTable from "../../components/user/ViewInvoice";
 
 const OtherIncomeInvoice = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);

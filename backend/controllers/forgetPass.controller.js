@@ -1,7 +1,8 @@
 const nodemailer = require("nodemailer");
 const bcrypt = require("bcrypt");
 const User = require("../models/user.model");
-const cookieParser = require("cookie-parser");
+// const cookieParser = require("cookie-parser");
+const Resident = require("../models/resident.model");
 
 const generateOTP = () =>
   Math.floor(100000 + Math.random() * 900000).toString();
@@ -18,7 +19,12 @@ const transporter = nodemailer.createTransport({
 const otpmail = async (req, res) => {
   try {
     const { email } = req.body;
-    const user = await User.findOne({ email });
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      user = await Resident.findOne({ email });
+    }
+
     if (!user) {
       return res.status(404).json({ message: "Email not found" });
     }
@@ -67,11 +73,19 @@ const resetPassword = async (req, res) => {
         .json({ message: "Email and password are required." });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await User.findOneAndUpdate(
+    let user = await User.findOneAndUpdate(
       { email },
       { password: hashedPassword },
       { new: true }
     );
+
+    if (!user) {
+      user = await Resident.findOneAndUpdate(
+        { email },
+        { password: hashedPassword },
+        { new: true }
+      );
+    }
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }

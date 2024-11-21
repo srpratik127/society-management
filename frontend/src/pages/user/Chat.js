@@ -20,6 +20,8 @@ const ChatComponent = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [audioBlob, setAudioBlob] = useState(null);
   const mediaRecorderRef = useRef(null);
+  const [recordingSeconds, setRecordingSeconds] = useState(0);
+  const timerRef = useRef(null);
 
   useEffect(() => {
     const fetchResidents = async () => {
@@ -96,31 +98,48 @@ const ChatComponent = () => {
   };
 
   const startRecording = async () => {
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      return alert("Your browser doesn't support audio recording.");
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRecorderRef.current = new MediaRecorder(stream);
+      const chunks = [];
+
+      mediaRecorderRef.current.ondataavailable = (e) => {
+        chunks.push(e.data);
+      };
+
+      mediaRecorderRef.current.onstop = () => {
+        const blob = new Blob(chunks, { type: "audio/wav" });
+        setAudioBlob(blob);
+        // setRecordingSeconds(0);
+      };
+
+      mediaRecorderRef.current.start();
+      setIsRecording(true);
+
+      timerRef.current = setInterval(() => {
+        setRecordingSeconds((prev) => prev + 1);
+      }, 1000);
+    } catch (error) {
+      if (
+        error.name === "NotAllowedError" ||
+        error.name === "PermissionDeniedError"
+      ) {
+        toast.error(
+          "Microphone access was denied. Please allow access to record audio."
+        );
+      } else {
+        toast.error("An error occurred while accessing the microphone.");
+      }
+      console.error("Error accessing microphone:", error);
     }
-
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    mediaRecorderRef.current = new MediaRecorder(stream);
-    const chunks = [];
-
-    mediaRecorderRef.current.ondataavailable = (e) => {
-      chunks.push(e.data);
-    };
-
-    mediaRecorderRef.current.onstop = () => {
-      const blob = new Blob(chunks, { type: "audio/wav" });
-      setAudioBlob(blob);
-    };
-
-    mediaRecorderRef.current.start();
-    setIsRecording(true);
   };
 
   const stopRecording = () => {
     if (mediaRecorderRef.current) {
       mediaRecorderRef.current.stop();
       setIsRecording(false);
+
+      clearInterval(timerRef.current);
     }
   };
 
@@ -140,17 +159,19 @@ const ChatComponent = () => {
       );
       socket.emit("message", response.data);
       setAudioBlob(null);
+
+      setRecordingSeconds(0);
     } catch (error) {
       toast.error(error.message);
     }
   };
 
-  const handleCameraCapture = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setMedia(file); // Set the media state with the captured file
-      toast.success("Photo captured successfully!");
-    }
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${String(minutes).padStart(2, "0")}:${String(
+      remainingSeconds
+    ).padStart(2, "0")}`;
   };
 
   return (
@@ -193,11 +214,11 @@ const ChatComponent = () => {
       <div className="w-full bg-[#F4F4F4] min-h-[86vh] overflow-auto relative">
         {receiver ? (
           <>
-            <div className="bg-white flex justify-between p-4 py-3 sticky top-0 shadow">
+            <div className="bg-white flex justify-between p-4 py-2 sticky top-0 shadow">
               <div className="flex gap-3 items-center">
                 <img
                   src={receiver.profile_picture}
-                  className="w-10 h-10 rounded-full border-2"
+                  className="w-12 h-12 rounded-full border-2"
                 />
                 <div>
                   <h4 className="font-semibold text-lg capitalize leading-none">
@@ -276,7 +297,7 @@ const ChatComponent = () => {
               >
                 <div className={`items-center relative w-full flex`}>
                   {media && (
-                    <div className="w-11 mb-3 h-11 top-[-1px] rounded-full absolute overflow-hidden border border-transparent">
+                    <div className="w-14 mb-3 h-14 rounded-lg top-[-68px] ms-4 absolute overflow-hidden border">
                       <img
                         src={URL.createObjectURL(media)}
                         alt="IMG"
@@ -287,9 +308,7 @@ const ChatComponent = () => {
                   {/* type text */}
                   <input
                     type="text"
-                    className={`pr-10 pl-4 py-2 w-full ${
-                      media && "pl-12"
-                    } shadow border rounded-3xl focus:outline-none focus:ring-2 focus:ring-orange-500`}
+                    className={`pr-10 pl-4 py-2 w-full shadow border rounded-3xl focus:outline-none focus:ring-2 focus:ring-orange-500`}
                     placeholder="Type a message..."
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
@@ -308,37 +327,12 @@ const ChatComponent = () => {
                       className="hidden"
                     />
                   </span>
-
-                  <label htmlFor="cameraInput" className="cursor-pointer absolute left-[-20px]">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-6 w-6 text-gray-600"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M3 10h11M9 21l3-3-3-3M16 13l3-3-3-3"
-                      />
-                    </svg>
-                    <input
-                      type="file"
-                      capture="environment"
-                      id="cameraInput"
-                      accept="image/*"
-                      onChange={handleCameraCapture}
-                      className="hidden"
-                    />
-                  </label>
                 </div>
 
                 {/* for audio */}
                 <div
                   onClick={isRecording ? stopRecording : startRecording}
-                  className={`w-10 h-10 cursor-pointer py-2 ${
+                  className={`p-2 cursor-pointer flex items-center overflow-visible ${
                     isRecording ? "bg-red-500" : "bg-[#5678E9]"
                   } text-white rounded-full`}
                 >
@@ -347,14 +341,22 @@ const ChatComponent = () => {
                     className="m-auto"
                     alt="microphone"
                   />
+
+                  {isRecording && (
+                    <div className="text-md text-white text-nowrap">
+                      {formatTime(recordingSeconds)} &nbsp;&nbsp;&nbsp;
+                    </div>
+                  )}
                 </div>
 
                 {audioBlob && (
                   <div
                     onClick={sendVoiceMessage}
-                    className="px-4 py-2 bg-[#FE512E] text-white rounded-lg cursor-pointer"
+                    className="px-4 py-2 flex items-center bg-[#FE512E] text-white rounded-full cursor-pointer"
                   >
-                    Send
+                    {formatTime(recordingSeconds)}
+                    <img src="/assets/send-2.svg" alt="" />
+                    &nbsp;&nbsp;&nbsp;
                   </div>
                 )}
               </form>

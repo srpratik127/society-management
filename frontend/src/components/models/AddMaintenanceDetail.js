@@ -9,7 +9,7 @@ import { AddNotification } from "../../store/NotificationSlice";
 const AddMaintenanceDetail = ({ onClose,setMaintenance }) => {
   const [maintenanceAmount, setMaintenanceAmount] = useState("");
   const [penaltyAmount, setPenaltyAmount] = useState("");
-  const [dueDate, setDueDate] = useState("");
+  const [dueDate, setDueDate] = useState(null); 
   const [penaltyAfterDays, setPenaltyAfterDays] = useState("");
   const [errors, setErrors] = useState({});
   const dispatch = useDispatch();
@@ -31,13 +31,15 @@ const AddMaintenanceDetail = ({ onClose,setMaintenance }) => {
     setErrors(newErrors);
     if (!Object.values(newErrors).some((error) => error)) {
       const penaltyDate = new Date();
+      const formattedDueDate = new Date(dueDate.getFullYear(), dueDate.getMonth(), 1);
       penaltyDate.setDate(
         penaltyDate.getDate() + parseInt(penaltyAfterDays, 10)
       );
+
       const payload = {
         amount: maintenanceAmount,
         penaltyAmount: penaltyAmount,
-        dueDate: dueDate,
+        dueDate: formattedDueDate.toISOString(),
         penaltyDay: penaltyDate.toISOString(),
       };
       try {
@@ -111,7 +113,7 @@ const AddMaintenanceDetail = ({ onClose,setMaintenance }) => {
             selected={dueDate}
             minDate={new Date()}
             onChange={(date) => setDueDate(date)}
-            dateFormat="dd-MM-yyyy"
+            dateFormat="MM-yyyy"
             placeholderText="Select a month"
             className={`w-full border rounded-md outline-none p-2 ${
               errors.dueDate ? "border-red-500" : "border-gray-300"
@@ -127,7 +129,7 @@ const AddMaintenanceDetail = ({ onClose,setMaintenance }) => {
             Penalty Applied After Day Selection
           </label>
           <select
-            className={`w-full border text-xs rounded-md p-2 ${
+            className={`w-full border text-xs rounded-md p-2 outline-none ${
               errors.penaltyAfterDays ? "border-red-500" : "border-gray-300"
             }`}
             value={penaltyAfterDays}

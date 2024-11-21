@@ -118,9 +118,9 @@ const getPendingMaintenanceByUser = async (req, res) => {
       return member ? { ...record.toObject(), member: [member] } : null;
     }).filter(Boolean);
 
-    if (!filteredRecords.length) {
-      return res.status(404).json({ message: 'No pending maintenance records found for this user' });
-    }
+    // if (!filteredRecords.length) {
+    //   return res.status(404).json({ message: 'No pending maintenance records found for this user' });
+    // }
 
     res.status(200).json(filteredRecords);
   } catch (error) {

@@ -11,7 +11,6 @@ const maintenance = new mongoose.Schema(
     },
     dueDate: {
       type: Date,
-      default: Date.now,
     },
     penaltyDay: {
       type: Date,
