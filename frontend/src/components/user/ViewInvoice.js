@@ -1,6 +1,6 @@
 import React from 'react';
 
-const MaintanceInvoiceTable = () => {
+const ViewInvoice = () => {
   const data = [
     {
       invoiceId: 152563,
@@ -132,4 +132,4 @@ const MaintanceInvoiceTable = () => {
   );
 };
 
-export default MaintanceInvoiceTable;
+export default ViewInvoice;

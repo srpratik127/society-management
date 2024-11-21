@@ -39,13 +39,11 @@ const createRequest = async (req, res) => {
       userType,
       user: user._id,
     });
-
     const populatedRequest = await Request.findById(newRequest._id).populate({
       path: "user",
       select: "name profile_picture",
       model: userType,
     });
-
     res.status(201).json({ success: true, data: populatedRequest });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -55,7 +53,6 @@ const createRequest = async (req, res) => {
 const getRequests = async (req, res) => {
   try {
     const requests = await Request.find();
-
     for (let request of requests) {
       if (request.userType === "User") {
         request.user = await User.findById(request.user).select(
@@ -73,12 +70,11 @@ const getRequests = async (req, res) => {
   }
 };
 
-const getRequestById = async (req, res) => {
+const getRequestByUserId = async (req, res) => {
   try {
-    const request = await Request.findById(req.params.id);
-    if (!request) {
-      return res.status(404).json({ message: "Request not found" });
-    }
+    const request = await Request.find({ user: req.params.userId })
+      .populate("user", "profile_picture")
+      .sort({ createdAt: -1 });
     res.status(200).json(request);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -127,7 +123,7 @@ const deleteRequest = async (req, res) => {
 module.exports = {
   createRequest,
   getRequests,
-  getRequestById,
+  getRequestByUserId,
   updateRequest,
   deleteRequest,
 };

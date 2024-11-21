@@ -23,7 +23,7 @@ const getIncome = async (req, res) => {
   try {
     const data = await Income.find().populate(
       "members.user",
-      "fullName wing unit role phone"
+      "fullName profile_picture wing unit role phone"
     );
     res.status(200).json(data);
   } catch (error) {

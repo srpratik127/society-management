@@ -13,7 +13,7 @@ const RequestTracking = () => {
   const [requestProtocols, setRequestProtocols] = useState([]);
 
   useEffect(() => {
-    const fetchComplainList = async () => {
+    const fetchRequestList = async () => {
       try {
         const response = await axios.get(
           `${process.env.REACT_APP_BASE_URL}/api/requests`
@@ -23,7 +23,7 @@ const RequestTracking = () => {
         toast.error(error.message);
       }
     };
-    fetchComplainList();
+    fetchRequestList();
   }, []);
 
   const handleDelete = async () => {

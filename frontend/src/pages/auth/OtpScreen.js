@@ -63,7 +63,7 @@ const OtpScreen = () => {
       );
 
       if (response.status === 200) {
-        navigate("/reset");
+        navigate("/reset", { state: { email } });
         toast.success("Verify Otp successful!");
         setErrorMessage("");
         setOtp(["", "", "", "", "", ""]);

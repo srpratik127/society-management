@@ -133,7 +133,7 @@ const CreateComplaintTracking = ({ onClose, setComplaints }) => {
               <label className="block font-medium text-gray-700">Unit*</label>
               <input
                 type="text"
-                placeholder=""
+                placeholder="Enter Unit"
                 className={`w-full border p-2 rounded-lg outline-none ${
                   errors.unit ? "border-red-500" : "border-gray-300"
                 }`}

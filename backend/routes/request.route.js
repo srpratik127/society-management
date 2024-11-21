@@ -4,7 +4,7 @@ const requestsController = require('../controllers/request.controller');
 
 router.post('/', requestsController.createRequest);
 router.get('/', requestsController.getRequests);
-router.get('/:id', requestsController.getRequestById);
+router.get('/:userId', requestsController.getRequestByUserId);
 router.put('/:id', requestsController.updateRequest);
 router.delete('/:id', requestsController.deleteRequest);
 
