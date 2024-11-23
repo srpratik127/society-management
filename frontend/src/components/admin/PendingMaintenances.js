@@ -1,9 +1,11 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 const PendingMaintenances = () => {
   const [pendingMaintenance, setPendingMaintenance] = useState([]);
+  const user = useSelector((store) => store.auth.user);
 
   useEffect(() => {
     const fetchPendingMaintenance = async () => {
@@ -24,7 +26,7 @@ const PendingMaintenances = () => {
     <>
       <div className="flex justify-between items-center font-semibold bg-white pb-1">
         <h2 className="m-0 text-xl">Pending Maintenances</h2>
-        <Link to="income" className="flex items-center space-x-2 px-3 rounded-md text-[#5678E9]">
+        <Link to={user.role ? "" :"income"} className="flex items-center space-x-2 px-3 rounded-md text-[#5678E9]">
           <span>View all</span>
         </Link>
       </div>
