@@ -30,15 +30,14 @@ const pollSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  createdBy: [
-    {
-      _id: { type: mongoose.Schema.Types.ObjectId },
-      model: {
-        type: String,
-        enum: ["Resident", "User"],
-      },
+  createdBy: {
+    _id: { type: mongoose.Schema.Types.ObjectId },
+    model: {
+      type: String,
+      enum: ["Resident", "User"],
     },
-  ],
+  },
+
   totalVotes: {
     type: Number,
     default: 0,

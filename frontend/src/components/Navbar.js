@@ -23,7 +23,7 @@ const Navbar = () => {
     const fetchNotification = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_BASE_URL}/api/notifications/${user._id}`
+          `${process.env.REACT_APP_BASE_URL}/api/notifications/${user?._id}`
         );
         dispatch(initialNotification(response.data));
       } catch (err) {
