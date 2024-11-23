@@ -54,7 +54,7 @@ const OtherIncome = () => {
   return (
     <div className="bg-[#ffffff] border rounded-b-xl p-3 max-w-full mx-auto">
       <div className="mt-3 flex flex-col sm:flex-row justify-between align-center px-3">
-        <h2 className="text-2xl font-bold">Other Income</h2>
+        <h2 className="text-2xl font-semibold">Other Income</h2>
         <button
           className="bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white px-4 py-2 rounded-lg hover:bg-orange-600 focus:outline-none mt-2 sm:mt-0"
           onClick={() => setCreatePopupOpen(true)}
@@ -62,6 +62,7 @@ const OtherIncome = () => {
           Create Other Income
         </button>
       </div>
+      {otherIncomeData.length > 0 ? (
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4 rounded-lg">
         {otherIncomeData.map((item, index) => (
           <div key={index} className="border-2 border-[#5678E9] rounded-xl">
@@ -139,6 +140,9 @@ const OtherIncome = () => {
           </div>
         ))}
       </div>
+      ) : (
+        <p className="text-center text-gray-400 select-none">No Other Income Found!</p>
+      )}
       {isCreatePopupOpen && (
         <CreateOtherIncome
           onClose={handleClosePopup}

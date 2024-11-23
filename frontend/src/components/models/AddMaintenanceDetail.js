@@ -6,10 +6,10 @@ import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { AddNotification } from "../../store/NotificationSlice";
 
-const AddMaintenanceDetail = ({ onClose,setMaintenance }) => {
+const AddMaintenanceDetail = ({ onClose, setMaintenance }) => {
   const [maintenanceAmount, setMaintenanceAmount] = useState("");
   const [penaltyAmount, setPenaltyAmount] = useState("");
-  const [dueDate, setDueDate] = useState(null); 
+  const [dueDate, setDueDate] = useState(null);
   const [penaltyAfterDays, setPenaltyAfterDays] = useState("");
   const [errors, setErrors] = useState({});
   const dispatch = useDispatch();
@@ -31,7 +31,11 @@ const AddMaintenanceDetail = ({ onClose,setMaintenance }) => {
     setErrors(newErrors);
     if (!Object.values(newErrors).some((error) => error)) {
       const penaltyDate = new Date();
-      const formattedDueDate = new Date(dueDate.getFullYear(), dueDate.getMonth(), 1);
+      const formattedDueDate = new Date(
+        dueDate.getFullYear(),
+        dueDate.getMonth(),
+        1
+      );
       penaltyDate.setDate(
         penaltyDate.getDate() + parseInt(penaltyAfterDays, 10)
       );
@@ -48,7 +52,7 @@ const AddMaintenanceDetail = ({ onClose,setMaintenance }) => {
           payload
         );
         if (response?.data) {
-          setMaintenance((pre)=>[...pre, response.data?.data])
+          setMaintenance((pre) => [...pre, response.data?.data]);
           dispatch(AddNotification(response.data?.notification));
           toast.success("Maintenance Create successful!");
           onClose();
@@ -114,6 +118,7 @@ const AddMaintenanceDetail = ({ onClose,setMaintenance }) => {
             minDate={new Date()}
             onChange={(date) => setDueDate(date)}
             dateFormat="MM-yyyy"
+            showMonthYearPicker
             placeholderText="Select a month"
             className={`w-full border rounded-md outline-none p-2 ${
               errors.dueDate ? "border-red-500" : "border-gray-300"

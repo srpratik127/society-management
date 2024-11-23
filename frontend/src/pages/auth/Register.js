@@ -100,8 +100,7 @@ const Register = () => {
         toast.success("Register successful!");
         navigate("/login");
       } catch (error) {
-        toast.error(error.message);
-        console.error("Error submitting the form:", error);
+        toast.error(error.response?.data?.msg || error.message);
       }
     }
   };

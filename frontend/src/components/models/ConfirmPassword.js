@@ -23,7 +23,7 @@ const ConfirmPassword = ({ onClose, setIsAddMaintenance }) => {
         setIsAddMaintenance(true);
       }
     } catch (error) {
-      toast.error(error.message);
+      toast.error("Incorrect password");
     }
   };
 

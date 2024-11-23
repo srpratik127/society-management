@@ -5,7 +5,8 @@ const controller = require('../controllers/income.controller.js');
 router.post('/', controller.createIncome);
 router.get('/',controller.getIncome)
 router.put('/:id', controller.updateIncome);
-router.delete('/:id', controller.deleteIncome);  
+router.delete('/:id', controller.deleteIncome);
 router.put('/add-member/:id', controller.addMemberToIncome);
+router.get('/:userId', controller.getIncomeExcludingMembers);
 
 module.exports = router;
