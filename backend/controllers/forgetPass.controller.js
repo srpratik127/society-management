@@ -1,6 +1,6 @@
 const nodemailer = require("nodemailer");
 const bcrypt = require("bcrypt");
-const User = require("../models/user.model");
+const Admin = require("../models/admin.model");
 // const cookieParser = require("cookie-parser");
 const Resident = require("../models/resident.model");
 
@@ -19,7 +19,7 @@ const transporter = nodemailer.createTransport({
 const otpmail = async (req, res) => {
   try {
     const { email } = req.body;
-    let user = await User.findOne({ email });
+    let user = await Admin.findOne({ email });
 
     if (!user) {
       user = await Resident.findOne({ email });
@@ -73,7 +73,7 @@ const resetPassword = async (req, res) => {
         .json({ message: "Email and password are required." });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
-    let user = await User.findOneAndUpdate(
+    let user = await Admin.findOneAndUpdate(
       { email },
       { password: hashedPassword },
       { new: true }
@@ -87,7 +87,7 @@ const resetPassword = async (req, res) => {
       );
     }
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "Admin not found" });
     }
     res.status(200).json({ message: "Password reset successfully!" });
   } catch (error) {

@@ -1,13 +1,13 @@
 const Complaint = require("../models/complaint.model.js");
 const Resident = require("../models/resident.model.js");
-const User = require("../models/user.model.js");
+const Admin = require("../models/admin.model.js");
 
 const createComplaint = async (req, res) => {
   try {
     const { complaintName, complainerName, description, wing, unit, priority, userId } = req.body;
 
-    const user = await User.findById(userId) || await Resident.findById(userId);
-    const userType = user instanceof User ? "User" : user instanceof Resident ? "Resident" : null;
+    const user = await Admin.findById(userId) || await Resident.findById(userId);
+    const userType = user instanceof Admin ? "Admin" : user instanceof Resident ? "Resident" : null;
 
     if (!userType) return res.status(404).json({ success: false, message: "Admin or Resident not found" });
 
@@ -38,8 +38,8 @@ const getComplaints = async (req, res) => {
   try {
     const complaints = await Complaint.find();
     for (let complaint of complaints) {
-      if (complaint.userType === "User") {
-        complaint.user = await User.findById(complaint.user).select(
+      if (complaint.userType === "Admin") {
+        complaint.user = await Admin.findById(complaint.user).select(
           "name profile_picture"
         );
       } else if (complaint.userType === "Resident") {
@@ -98,7 +98,7 @@ const updateComplaint = async (req, res) => {
       });
     }
 
-    if (complaint.userType === "User") {
+    if (complaint.userType === "Admin") {
       complaint.user = await User.findById(complaint.user).select(
         "name profile_picture"
       );

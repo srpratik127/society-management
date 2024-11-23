@@ -51,9 +51,13 @@ const SecurityProtocols = () => {
       return "Invalid time";
     }
     let time;
-    if (typeof timeString === "string" && !isNaN(new Date(timeString))) {
-      time = new Date(timeString);
-    } else if (typeof timeString === "number") {
+    if (typeof timeString === "string" && !isNaN(Number(timeString))) {
+      timeString = Number(timeString);
+    }
+    if (typeof timeString === "number") {
+      if (timeString.toString().length === 10) {
+        timeString *= 1000; 
+      }
       time = new Date(timeString);
     } else if (typeof timeString === "string" && /^[0-9]{2}:[0-9]{2}$/.test(timeString)) {
       const [hours, minutes] = timeString.split(":");
@@ -69,8 +73,6 @@ const SecurityProtocols = () => {
     });
     return formattedTime;
   };
-  
-
   return (
     <div className="p-6 bg-white m-6 rounded-lg shadow max-w-full">
       <div className="flex flex-col md:flex-row justify-between items-center mb-6">
