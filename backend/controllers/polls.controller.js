@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Polls = require("../models/polls.model");
 const Resident = require("../models/resident.model");
-const User = require("../models/user.model");
+const Admin = require("../models/admin.model");
 
 const createPoll = async (req, res) => {
   try {
@@ -14,11 +14,11 @@ const createPoll = async (req, res) => {
     let creator = await Resident.findById(userId);
     let model = "Resident";
     if (!creator) {
-      creator = await User.findById(userId);
-      model = "User";
+      creator = await Admin.findById(userId);
+      model = "Admin";
     }
     if (!creator) {
-      return res.status(404).json({ message: "Resident or User not found" });
+      return res.status(404).json({ message: "Resident or Admin not found" });
     }
     const poll = new Polls({
       question,
@@ -38,11 +38,11 @@ const createPoll = async (req, res) => {
         select: "fullName",
         model: "Resident",
       });
-    } else if (model === "User") {
+    } else if (model === "Admin") {
       populatedPoll = await Polls.findById(savedPoll._id).populate({
         path: "createdBy._id",
         select: "firstname lastname", 
-        model: "User",
+        model: "Admin",
       });
     }
     res.status(201).json({
@@ -73,9 +73,9 @@ const votePoll = async (req, res) => {
     }
     let voter = await Resident.findById(residentId);
     if (!voter) {
-      voter = await User.findById(residentId);
+      voter = await Admin.findById(residentId);
       if (!voter) {
-        return res.status(404).json({ message: "User/Resident not found" });
+        return res.status(404).json({ message: "Admin/Resident not found" });
       }
     }
     let previousVotes = 0;
@@ -148,17 +148,17 @@ const getAllPollResults = async (req, res) => {
               model: "Resident",
             })
             .populate("options.voters", "fullName email");
-        } else if (poll.createdBy.model === "User") {
+        } else if (poll.createdBy.model === "Admin") {
           return await Polls.findById(poll._id)
             .populate({
               path: "createdBy._id",
               select: "firstname lastname email",
-              model: "User",
+              model: "Admin",
             })
             .populate({
               path: "options.voters",
               select: "firstname lastname email",
-              model: "User", 
+              model: "Admin", 
             });
         }
         return poll;

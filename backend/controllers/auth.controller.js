@@ -1,4 +1,4 @@
-const User = require("../models/user.model");
+const Admin = require("../models/admin.model");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const Resident = require("../models/resident.model");
@@ -29,15 +29,15 @@ const Register = async (req, res) => {
       return res.status(400).json({ msg: "Passwords is mendetory" });
     }
 
-    let user = await User.findOne({ email });
+    let user = await Admin.findOne({ email });
     if (user) {
-      return res.status(400).json({ msg: "User already exists" });
+      return res.status(400).json({ msg: "Admin already exists" });
     }
 
     const salt = await bcrypt.genSalt(10);
     const hashpassword = await bcrypt.hash(password, salt);
 
-    const newUser = new User({
+    const newUser = new Admin({
       firstname,
       lastname,
       email,
@@ -50,7 +50,7 @@ const Register = async (req, res) => {
     });
 
     await newUser.save();
-    res.status(201).json({ msg: "User registered successfully" });
+    res.status(201).json({ msg: "Admin registered successfully" });
   } catch (error) {
     console.error("Error during registration:", error.message);
     res.status(500).json({ msg: "Server error" });
@@ -60,7 +60,7 @@ const Register = async (req, res) => {
 const Login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    let user = await User.findOne({ email });
+    let user = await Admin.findOne({ email });
 
     if (!user) {
       user = await Resident.findOne({ email });
@@ -100,7 +100,7 @@ const updateUser = async (req, res) => {
       select_society,
       profile_picture,
     } = req.body;
-    const user = await User.findById(id);
+    const user = await Admin.findById(id);
     if (!user) {
       return res.status(404).json({ msg: "User not found" });
     }
@@ -143,7 +143,7 @@ const updateUser = async (req, res) => {
       });
     }
 
-    const updatedUser = await User.findByIdAndUpdate(
+    const updatedUser = await Admin.findByIdAndUpdate(
       id,
       {
         firstname,
@@ -184,7 +184,7 @@ const updateUser = async (req, res) => {
 const verifyPassword = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
+    const user = await Admin.findOne({ email });
     if (!user) {
       return res.status(400).json({
         success: false,

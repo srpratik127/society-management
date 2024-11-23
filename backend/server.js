@@ -29,7 +29,7 @@ const io = socketIo(server, {
   transports: ["websocket", "polling"],
 });
 
-const userRouter = require("./routes/user.route.js");
+const authRouter = require("./routes/auth.route.js");
 const SocietyRouter = require("./routes/society.route.js");
 const ownerRoutes = require("./routes/resident.route.js");
 const complaintRoutes = require("./routes/complaint.route.js");
@@ -51,13 +51,13 @@ const chatRoutes = require("./routes/chat.routes.js");
 const Message = require("./models/Message.js");
 const GroupChat = require('./models/groupMessage.model.js');
 const Resident = require("./models/resident.model.js");
-const User = require("./models/user.model.js");
+const User = require("./models/admin.model.js");
 
 app.get("/", (req, res) => {
   res.send("Welcome...!!");
 });
 
-app.use("/v1/api/auth", userRouter);
+app.use("/v1/api/auth", authRouter);
 app.use("/v1/api/society", SocietyRouter);
 app.use("/v1/api/forget-password", forgetPassword);
 app.use("/v1/api/complaints", complaintRoutes);

@@ -2,7 +2,7 @@ const Message = require('../models/Message');
 const cloudinary = require('../utils/cloudinary');
 const GroupChat = require('../models/groupMessage.model');
 const Resident = require('../models/resident.model');
-const User = require('../models/user.model');
+const User = require('../models/admin.model');
 const fs = require('fs');
 
 exports.handleMessage = async (req, res) => {

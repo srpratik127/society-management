@@ -154,16 +154,16 @@ const AddMaintenanceDetail = ({ onClose, setMaintenance }) => {
           )}
         </div>
 
-        <div className="flex justify-between">
+        <div className="flex justify-between w-full gap-3">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-gray-700 bg-white rounded-md border"
+            className="px-4 py-2 w-full gap-3 text-gray-700 bg-white rounded-md border"
           >
             Cancel
           </button>
           <button
             onClick={handleApply}
-            className={`px-6 py-2  font-semibold rounded-md ${
+            className={`px-6 py-2 w-full gap-3 font-semibold rounded-md ${
               isFormComplete
                 ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white"
                 : "bg-[#F6F8FB] text-[#202224]"
