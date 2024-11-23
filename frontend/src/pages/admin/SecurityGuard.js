@@ -93,7 +93,7 @@ const SecurityGuard = () => {
             {guards.length > 0 ? (
               guards.map((guard) => (
                 <tr key={guard._id} className="border-b hover:bg-gray-50">
-                  <td className="py-4 px-2 sm:px-6 flex items-center text-nowrap">
+                  <td className="py-4 px-2 sm:px-6 flex items-center text-nowrap capitalize">
                     <img
                       className="w-8 h-8 sm:w-10 sm:h-10 rounded-full mr-2 sm:mr-3"
                       src={guard.profile_photo}

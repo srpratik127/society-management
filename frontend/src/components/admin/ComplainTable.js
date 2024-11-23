@@ -86,7 +86,7 @@ const ComplainTable = () => {
           <tbody className="text-gray-700 text-sm">
             {complainList.length > 0 ? (
               complainList.map((complaint, index) => (
-                <tr key={index} className="border-b">
+                <tr key={index} className="border-b capitalize">
                   <td className="py-1 px-4 flex items-center space-x-3 text-nowrap">
                     <img
                       src={complaint.user?.profile_picture}

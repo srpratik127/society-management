@@ -84,7 +84,7 @@ const SecurityProtocols = () => {
             {protocols.length > 0 ? (
               protocols.map((protocol) => (
                 <tr key={protocol._id} className="border-b border-gray-200">
-                  <td className="py-3 px-4 text-gray-700 text-nowrap">
+                  <td className="py-3 px-4 text-gray-700 text-nowrap capitalize">
                     {protocol.title}
                   </td>
                   <td className="py-3 px-4 text-gray-700 text-nowrap">

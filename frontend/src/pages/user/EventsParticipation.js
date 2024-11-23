@@ -64,42 +64,53 @@ const EventsParticipation = () => {
                 </tr>
               </thead>
               <tbody>
-                {eventsParticipation.map((participant) =>
-                  participant.members.map((member, index) => (
-                    <tr
-                      key={index}
-                      className={`border-b ${
-                        index % 2 === 0 ? "bg-white" : "bg-gray-50"
-                      }`}
+                {eventsParticipation.length > 0 ? (
+                  eventsParticipation.map((participant) =>
+                    participant.members.map((member, index) => (
+                      <tr
+                        key={index}
+                        className={`border-b ${
+                          index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                        }`}
+                      >
+                        <td className="px-4 py-2 flex items-center space-x-3">
+                          <img
+                            src={member.user?.profile_picture}
+                            alt={member.user.fullName}
+                            className="w-10 h-10 sm:w-12 sm:h-12 rounded-full"
+                          />
+                          <span className="font-medium capitalize">
+                            {member.user.fullName}
+                          </span>
+                        </td>
+                        <td className="px-4 py-2 text-gray-600 max-w-80 min-w-96">
+                          {participant.description}
+                        </td>
+                        <td className="px-4 py-2 text-center text-gray-600 text-nowrap">
+                          +91 {member.user.phone}
+                        </td>
+                        <td className="px-4 py-2 text-gray-600">
+                          {new Date(participant.date).toLocaleString("en-GB", {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "numeric",
+                          })}
+                        </td>
+                        <td className="px-4 py-2 text-gray-600 text-nowrap">
+                          {participant.title}
+                        </td>
+                      </tr>
+                    ))
+                  )
+                ) : (
+                  <tr className="text-gray-400 select-none">
+                    <td
+                      className="text-center py-4 leading-[149px]"
+                      colSpan="100%"
                     >
-                      <td className="px-4 py-2 flex items-center space-x-3">
-                        <img
-                          src={member.user?.profile_picture}
-                          alt={member.user.fullName}
-                          className="w-10 h-10 sm:w-12 sm:h-12 rounded-full"
-                        />
-                        <span className="font-medium capitalize">
-                          {member.user.fullName}
-                        </span>
-                      </td>
-                      <td className="px-4 py-2 text-gray-600 max-w-96 min-w-80">
-                        {participant.description}
-                      </td>
-                      <td className="px-4 py-2 text-center text-gray-600 text-nowrap">
-                        +91 {member.user.phone}
-                      </td>
-                      <td className="px-4 py-2 text-gray-600">
-                        {new Date(participant.date).toLocaleString("en-GB", {
-                          day: "2-digit",
-                          month: "2-digit",
-                          year: "numeric",
-                        })}
-                      </td>
-                      <td className="px-4 py-2 text-gray-600 text-nowrap">
-                        {participant.title}
-                      </td>
-                    </tr>
-                  ))
+                      No Events Participation Members Found!
+                    </td>
+                  </tr>
                 )}
               </tbody>
             </table>
@@ -126,42 +137,53 @@ const EventsParticipation = () => {
                 </tr>
               </thead>
               <tbody>
-                {eventsParticipation.map((participant) =>
-                  participant.members.map((member, index) => (
-                    <tr
-                      key={index}
-                      className={`border-b ${
-                        index % 2 === 0 ? "bg-white" : "bg-gray-50"
-                      }`}
+                {eventsParticipation.length > 0 ? (
+                  eventsParticipation.map((participant) =>
+                    participant.members.map((member, index) => (
+                      <tr
+                        key={index}
+                        className={`border-b ${
+                          index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                        }`}
+                      >
+                        <td className="px-4 py-2 flex items-center space-x-3">
+                          <img
+                            src={member.user?.profile_picture}
+                            alt={member.user.fullName}
+                            className="w-10 h-10 sm:w-12 sm:h-12 rounded-full"
+                          />
+                          <span className="font-medium capitalize">
+                            {member.user.fullName}
+                          </span>
+                        </td>
+                        <td className="px-4 py-2 text-gray-600 max-w-80 min-w-80">
+                          {participant.description}
+                        </td>
+                        <td className="px-4 py-2 text-center text-gray-600 text-nowrap">
+                          +91 {member.user.phone}
+                        </td>
+                        <td className="px-4 py-2 text-gray-600">
+                          {new Date(participant.date).toLocaleString("en-GB", {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "numeric",
+                          })}
+                        </td>
+                        <td className="px-4 py-2 text-gray-600 text-nowrap">
+                          {participant.title}
+                        </td>
+                      </tr>
+                    ))
+                  )
+                ) : (
+                  <tr className="text-gray-400 select-none">
+                    <td
+                      className="text-center py-4 leading-[149px]"
+                      colSpan="100%"
                     >
-                      <td className="px-4 py-2 flex items-center space-x-3">
-                        <img
-                          src={member.user?.profile_picture}
-                          alt={member.user.fullName}
-                          className="w-10 h-10 sm:w-12 sm:h-12 rounded-full"
-                        />
-                        <span className="font-medium capitalize">
-                          {member.user.fullName}
-                        </span>
-                      </td>
-                      <td className="px-4 py-2 text-gray-600 max-w-80 min-w-80">
-                        {participant.description}
-                      </td>
-                      <td className="px-4 py-2 text-center text-gray-600 text-nowrap">
-                        +91 {member.user.phone}
-                      </td>
-                      <td className="px-4 py-2 text-gray-600">
-                        {new Date(participant.date).toLocaleString("en-GB", {
-                          day: "2-digit",
-                          month: "2-digit",
-                          year: "numeric",
-                        })}
-                      </td>
-                      <td className="px-4 py-2 text-gray-600 text-nowrap">
-                        {participant.title}
-                      </td>
-                    </tr>
-                  ))
+                      No Activity Participation Members Found!
+                    </td>
+                  </tr>
                 )}
               </tbody>
             </table>

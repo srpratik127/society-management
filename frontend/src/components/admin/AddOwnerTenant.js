@@ -3,6 +3,7 @@ import { AddOwnerValidateFields } from '../../utils/validation';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { useSelector } from 'react-redux';
 
 const AddOwnerTenant = ({role, editResident}) => {
     const [OwnerfullName, setOwnerFullName] = useState(editResident?.ownerfullname || '');
@@ -25,6 +26,7 @@ const AddOwnerTenant = ({role, editResident}) => {
         relation: editResident?.relation || ''
     });
     const [errors, setErrors] = useState({});
+    const user = useSelector((store) => store.auth.user);
     const navigate = useNavigate();
     
     const handleFileChange = (event, key) => {
@@ -74,6 +76,7 @@ const AddOwnerTenant = ({role, editResident}) => {
             formData.append("addressProof", files["Address Proof (Vera Bill OR Light Bill)"]);
             formData.append("rentAgreement", files["Rent Agreement"]);
             formData.append("residenceStatus", "Occupied");
+            formData.append("select_society", user.select_society);
             memberDetails.forEach((member, index) => {
                 formData.append(`members[${index}][fullName]`, member.name);
                 formData.append(`members[${index}][phone]`, member.phone);

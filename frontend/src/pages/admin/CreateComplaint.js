@@ -87,7 +87,7 @@ const CreateComplaint = () => {
           <tbody>
             {complaints.length > 0 ? (
               complaints.map((entry, index) => (
-                <tr key={index} className="border-b border-gray-200 ">
+                <tr key={index} className="border-b border-gray-200 capitalize">
                   <td className="py-3 px-4 text-gray-700 flex text-nowrap gap-3 items-center mr-6">
                     <img
                       src={entry.user?.profile_picture}

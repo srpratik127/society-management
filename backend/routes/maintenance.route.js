@@ -5,6 +5,7 @@ const controller = require("../controllers/maintenance.controller.js");
 router.post("/", controller.addMaintenance);
 router.get("/:status", controller.getStatus);
 router.get("/", controller.getAllStatus);
+router.put("/:maintenanceId", controller.paymentForMaintenance);
 router.get('/pending/:userId', controller.getPendingMaintenanceByUser);
 
 module.exports = router;
