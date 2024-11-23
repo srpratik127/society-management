@@ -46,6 +46,31 @@ const SecurityProtocols = () => {
     }
   };
 
+  const formatTime = (timeString) => {
+    if (!timeString) {
+      return "Invalid time";
+    }
+    let time;
+    if (typeof timeString === "string" && !isNaN(new Date(timeString))) {
+      time = new Date(timeString);
+    } else if (typeof timeString === "number") {
+      time = new Date(timeString);
+    } else if (typeof timeString === "string" && /^[0-9]{2}:[0-9]{2}$/.test(timeString)) {
+      const [hours, minutes] = timeString.split(":");
+      time = new Date();
+      time.setHours(hours, minutes, 0, 0);
+    } else {
+      return "Invalid time";
+    }
+    const formattedTime = time.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+    });
+    return formattedTime;
+  };
+  
+
   return (
     <div className="p-6 bg-white m-6 rounded-lg shadow max-w-full">
       <div className="flex flex-col md:flex-row justify-between items-center mb-6">
@@ -98,7 +123,7 @@ const SecurityProtocols = () => {
                     })}
                   </td>
                   <td className="py-3 px-4 text-gray-700 text-center text-nowrap">
-                    {protocol.time}
+                  {formatTime(protocol.time)}
                   </td>
                   <td className="py-3 px-4 flex justify-center space-x-3">
                     <button
