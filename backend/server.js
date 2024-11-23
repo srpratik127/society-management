@@ -49,6 +49,9 @@ const notificationRoutes = require("./routes/notification.routes.js");
 const polls = require("./routes/polls.route.js");
 const chatRoutes = require("./routes/chat.routes.js");
 const Message = require("./models/Message.js");
+const GroupChat = require('./models/groupMessage.model.js');
+const Resident = require("./models/resident.model.js");
+const User = require("./models/user.model.js");
 
 app.get("/", (req, res) => {
   res.send("Welcome...!!");
@@ -99,7 +102,57 @@ io.on("connection", (socket) => {
       console.error("Error handling message:", error);
     }
   });
-  socket.on("disconnect", () => {
+
+  socket.on('joinGroup', async ({ userId, groupId }) => {
+    try {
+      const groupChat = await GroupChat.findById(groupId);
+      if (!groupChat) {
+        socket.emit('error', { message: 'Group not found' });
+        return;
+      }
+
+      const isResident = await Resident.findById(userId);
+      const isUser = await User.findById(userId);
+
+      if (!isResident && !isUser) {
+        socket.emit('error', { message: 'User not found in either Residents or Users' });
+        return;
+      }
+
+      socket.userId = userId;
+      socket.groupId = groupId;
+
+      socket.join(groupId);
+      console.log(`User ${userId} joined group ${groupId}`);
+
+      socket.emit('groupMembers', groupChat.groupMembers);
+    } catch (error) {
+      console.error("Error while user joining the group:", error);
+      socket.emit('error', { message: 'Error joining group' });
+    }
+  });
+
+  socket.on('sendGroupMessage', async ({ senderId, groupId, message, mediaUrl }) => {
+    try {
+      const groupChat = await GroupChat.findById(groupId);
+      if (!groupChat) {
+        socket.emit('error', { message: 'Group not found' });
+        return;
+      }
+
+      const newMessage = { senderId, message, mediaUrl, createdAt: new Date() };
+
+      groupChat.messages.push(newMessage);
+      await groupChat.save();
+
+      io.to(groupId).emit('groupMessage', newMessage);
+    } catch (error) {
+      console.error("Error sending group message:", error);
+      socket.emit('error', { message: 'Error sending message' });
+    }
+  });
+
+  socket.on('disconnect', () => {
     console.log(`${socket.userId} disconnected`);
   });
 });
