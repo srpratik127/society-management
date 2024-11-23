@@ -32,6 +32,8 @@ import EventsParticipation from "./pages/user/EventsParticipation";
 import ResidentSecurityProtocols from "./pages/user/ResidentSecurityProtocols";
 import OtherIncomeInvoice from "./pages/user/OtherIncomeInvoice";
 import MaintenanceInvoices from "./pages/user/MaintenanceInvoices";
+import Poll from "./pages/user/Polls";
+import ViewInvoice from "./components/user/ViewInvoice";
 
 function App() {
   return (
@@ -65,13 +67,16 @@ function App() {
 
         <Route path="/resident" element={<ProtectedRoute><User /></ProtectedRoute>}>
           <Route path="" element={<Dashboard />} />
+          <Route path="profile" element={<Profile />} />
           <Route path="access-forums" element={<Chat />} />
           <Route path="personal-detail" element={<PersonalDetails />} />
           <Route path="service-and-complaint" element={<ServiceAndComplaint />} />
           <Route path="events-participation" element={<EventsParticipation />} />
           <Route path="maintenance-invoices" element={<MaintenanceInvoices />} />
+          <Route path="view-invoice" exact element={<ViewInvoice />} />
           <Route path="other-invoice" element={<OtherIncomeInvoice />} />
-          <Route path="resident-security-protocols" element={<ResidentSecurityProtocols />} />
+          <Route path="security-protocols" element={<ResidentSecurityProtocols />} />
+          <Route path="polls" element={<Poll />} />
         </Route>
 
         <Route path="*" element={<ErrorPage />} />

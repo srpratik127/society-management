@@ -13,23 +13,23 @@ const RequestTracking = () => {
   const [requestProtocols, setRequestProtocols] = useState([]);
 
   useEffect(() => {
-    const fetchComplainList = async () => {
+    const fetchRequestList = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_BASE_URL}/api/requests`
+          `${process.env.REACT_APP_BASE_URL}/v1/api/requests`
         );
         setRequestProtocols(response?.data);
       } catch (error) {
         toast.error(error.message);
       }
     };
-    fetchComplainList();
+    fetchRequestList();
   }, []);
 
   const handleDelete = async () => {
     try {
       await axios.delete(
-        `${process.env.REACT_APP_BASE_URL}/api/requests/${selectedRequest._id}`
+        `${process.env.REACT_APP_BASE_URL}/v1/api/requests/${selectedRequest._id}`
       );
       setRequestProtocols((prev) =>
         prev.filter((request) => request._id !== selectedRequest._id)
@@ -83,10 +83,10 @@ const RequestTracking = () => {
             {requestProtocols.length > 0 ? (
               requestProtocols?.map((entry, index) => (
                 <tr key={index} className="border-b border-gray-200 ">
-                  <td className="py-3 px-2 sm:px-4 text-gray-700 flex items-center text-nowrap mx-3 ">
+                  <td className="p-2 sm:px-4 text-gray-700 flex items-center text-nowrap mx-3 capitalize">
                     <img
                       src={entry?.user?.profile_picture}
-                      className="w-6 h-6 sm:w-8 sm:h-8 mr-2 rounded-full"
+                      className="w-6 h-6 sm:w-10 sm:h-10 mr-2 rounded-full"
                       alt="avatar"
                     />
                     {entry.requesterName}

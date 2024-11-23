@@ -18,7 +18,7 @@ const Profile = () => {
       const fetchUserSociety = async () => {
         try {
           const response = await axios.get(
-            `${process.env.REACT_APP_BASE_URL}/society/${user?.select_society}`
+            `${process.env.REACT_APP_BASE_URL}/v1/api/society/${user?.select_society}`
           );
           const { _id, name } = response?.data?.data;
           setUserSociety({ _id, name });
@@ -64,7 +64,7 @@ const Profile = () => {
     const updatedData = new FormData();
     Object.keys(formData).forEach((key) => {
       if (key === "select_society") {
-        updatedData.append("select_society", JSON.stringify(userSociety)); 
+        updatedData.append("select_society", JSON.stringify(userSociety));
       } else {
         updatedData.append(key, formData[key]);
       }
@@ -72,7 +72,7 @@ const Profile = () => {
     if (profilePicture) updatedData.append("profile_picture", profilePicture);
     try {
       const response = await axios.put(
-        `${process.env.REACT_APP_BASE_URL}/users/update/${user._id}`,
+        `${process.env.REACT_APP_BASE_URL}/v1/api/auth/update/${user._id}`,
         updatedData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
@@ -96,7 +96,7 @@ const Profile = () => {
             <h1 className="text-2xl font-semibold text-gray-700">
               {isEditing ? "Edit Profile" : "Profile"}
             </h1>
-            {!isEditing && (
+            {!isEditing && !user.role && (
               <button
                 onClick={() => setIsEditing(true)}
                 className="flex items-center bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white font-medium px-4 py-2 rounded-lg"
@@ -125,7 +125,7 @@ const Profile = () => {
                     <>
                       <input
                         type="file"
-                        className="hidden"
+                        className="hidden outline-none"
                         accept=".png,.jpeg,.jpg,"
                         onChange={handleFileChange}
                         id="profile_picture"
@@ -140,36 +140,56 @@ const Profile = () => {
                     </>
                   )}
                 </div>
-                <h2 className="mt-4 text-xl font-medium">
-                  {user?.firstname} {user?.lastname}
+                <h2 className="mt-4 text-xl font-medium capitalize">
+                  {user.role
+                    ? `${user?.fullName}`
+                    : `${user?.firstname} ${user?.lastname}`}
                 </h2>
               </div>
               <div className="col-span-2 grid grid-cols-2 gap-4 ">
                 <div className="col-span-2 md:col-span-1">
                   <label className="block font-medium mb-1" htmlFor="firstname">
-                    First Name*
+                    {user.role ? "Full Name*" : "First Name*"}
                   </label>
-                  <input
-                    type="text"
-                    id="firstname"
-                    disabled={!isEditing}
-                    value={formData.firstname || ""}
-                    onChange={handleChange}
-                    className={`w-full bg-white border p-2 rounded-md`}
-                  />
+                  {user.role ? (
+                    <input
+                      type="text"
+                      disabled
+                      value={user.fullName}
+                      className={`w-full bg-white border p-2 rounded-md outline-none`}
+                    />
+                  ) : (
+                    <input
+                      type="text"
+                      id="firstname"
+                      disabled={!isEditing}
+                      value={formData.firstname || ""}
+                      onChange={handleChange}
+                      className={`w-full bg-white border p-2 rounded-md outline-none`}
+                    />
+                  )}
                 </div>
                 <div className="col-span-2 md:col-span-1">
                   <label className="block font-medium mb-1" htmlFor="lastname">
-                    Last Name*
+                    {user.role ? "Role*" : "Last Name*"}
                   </label>
-                  <input
-                    type="text"
-                    id="lastname"
-                    disabled={!isEditing}
-                    value={formData.lastname || ""}
-                    onChange={handleChange}
-                    className={`w-full bg-white border p-2 rounded-md`}
-                  />
+                  {user.role ? (
+                    <input
+                      type="text"
+                      disabled
+                      value={user.role}
+                      className={`w-full bg-white border p-2 rounded-md outline-none`}
+                    />
+                  ) : (
+                    <input
+                      type="text"
+                      id="lastname"
+                      disabled={!isEditing}
+                      value={formData.lastname || ""}
+                      onChange={handleChange}
+                      className={`w-full bg-white border p-2 rounded-md outline-none`}
+                    />
+                  )}
                 </div>
                 <div className="col-span-2 md:col-span-1">
                   <label className="block font-medium mb-1" htmlFor="phone">
@@ -181,7 +201,7 @@ const Profile = () => {
                     disabled={!isEditing}
                     value={formData.phone || ""}
                     onChange={handleChange}
-                    className={`w-full bg-white border p-2 rounded-md`}
+                    className={`w-full bg-white border p-2 rounded-md outline-none`}
                   />
                 </div>
                 <div className="col-span-2 md:col-span-1">
@@ -194,7 +214,7 @@ const Profile = () => {
                     disabled={!isEditing}
                     value={formData.email || ""}
                     onChange={handleChange}
-                    className={`w-full bg-white border p-2 rounded-md`}
+                    className={`w-full bg-white border p-2 rounded-md outline-none`}
                   />
                 </div>
                 <div className="col-span-2 md:col-span-1">
@@ -210,47 +230,74 @@ const Profile = () => {
                     disabled={!isEditing}
                     value={userSociety.name || ""}
                     onChange={handleChange}
-                    className={`w-full bg-white border p-2 rounded-md`}
+                    className={`w-full bg-white border p-2 rounded-md outline-none`}
                   />
                 </div>
                 <div className="col-span-2 md:col-span-1">
                   <label className="block font-medium mb-1" htmlFor="country">
-                    Country*
+                    {user.role ? "Gender*" : "Country*"}
                   </label>
-                  <input
-                    type="text"
-                    id="country"
-                    disabled={!isEditing}
-                    value={formData.country || ""}
-                    onChange={handleChange}
-                    className={`w-full bg-white border p-2 rounded-md`}
-                  />
+                  {user.role ? (
+                    <input
+                      type="text"
+                      disabled
+                      value={user.gender}
+                      className={`w-full bg-white border p-2 rounded-md outline-none`}
+                    />
+                  ) : (
+                    <input
+                      type="text"
+                      id="country"
+                      disabled={!isEditing}
+                      value={formData.country || ""}
+                      onChange={handleChange}
+                      className={`w-full bg-white border p-2 rounded-md outline-none`}
+                    />
+                  )}
                 </div>
                 <div className="col-span-2 md:col-span-1">
                   <label className="block font-medium mb-1" htmlFor="state">
-                    State*
+                    {user.role ? "Wing*" : "State*"}
                   </label>
-                  <input
-                    type="text"
-                    id="state"
-                    disabled={!isEditing}
-                    value={formData.state || ""}
-                    onChange={handleChange}
-                    className={`w-full bg-white border p-2 rounded-md`}
-                  />
+                  {user.role ? (
+                    <input
+                      type="text"
+                      disabled
+                      value={user.wing}
+                      className={`w-full bg-white border p-2 rounded-md outline-none`}
+                    />
+                  ) : (
+                    <input
+                      type="text"
+                      id="state"
+                      disabled={!isEditing}
+                      value={formData.state || ""}
+                      onChange={handleChange}
+                      className={`w-full bg-white border p-2 rounded-md outline-none`}
+                    />
+                  )}
                 </div>
                 <div className="col-span-2 md:col-span-1">
                   <label className="block font-medium mb-1" htmlFor="city">
-                    City*
+                    {user.role ? "Unit*" : "City*"}
                   </label>
-                  <input
-                    type="text"
-                    id="city"
-                    disabled={!isEditing}
-                    value={formData.city || ""}
-                    onChange={handleChange}
-                    className={`w-full bg-white border p-2 rounded-md`}
-                  />
+                  {user.role ? (
+                    <input
+                      type="text"
+                      disabled
+                      value={user.unit}
+                      className={`w-full bg-white border p-2 rounded-md outline-none`}
+                    />
+                  ) : (
+                    <input
+                      type="text"
+                      id="city"
+                      disabled={!isEditing}
+                      value={formData.city || ""}
+                      onChange={handleChange}
+                      className={`w-full bg-white border p-2 rounded-md outline-none`}
+                    />
+                  )}
                 </div>
                 {isEditing && (
                   <div className="col-span-2 flex justify-end mt-4">

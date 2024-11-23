@@ -4,11 +4,11 @@ const cron = require("node-cron");
 const mongoose = require("./database/db.js");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
-const socketIo = require('socket.io');
+const socketIo = require("socket.io");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const controller = require("./controllers/maintenance.controller.js");
-const http = require('http');
+const http = require("http");
 
 dotenv.config();
 
@@ -29,7 +29,6 @@ const io = socketIo(server, {
   transports: ["websocket", "polling"],
 });
 
-
 const userRouter = require("./routes/user.route.js");
 const SocietyRouter = require("./routes/society.route.js");
 const ownerRoutes = require("./routes/resident.route.js");
@@ -39,16 +38,16 @@ const forgetPassword = require("./routes/forgetPass.route.js");
 const maintenance = require("./routes/maintenance.route.js");
 const announcement = require("./routes/announcement.route.js");
 const income = require("./routes/income.route.js");
-const expenseDetailsRoutes = require('./routes/expansesdetails.route.js');
-const notesRoutes = require('./routes/note.route.js');
-const facilitiesRoutes = require('./routes/facility.route.js');
-const requestsRoutes = require('./routes/request.route.js');
-const protocol = require('./routes/protocol.route.js');
-const guard = require('./routes/guard.route.js');
-const visitors = require('./routes/visitors.route.js');
-const notificationRoutes = require('./routes/notification.routes.js');
-const polls = require('./routes/polls.route.js')
-const chatRoutes = require('./routes/chat.routes.js');
+const expenseDetailsRoutes = require("./routes/expansesdetails.route.js");
+const notesRoutes = require("./routes/note.route.js");
+const facilitiesRoutes = require("./routes/facility.route.js");
+const requestsRoutes = require("./routes/request.route.js");
+const protocol = require("./routes/protocol.route.js");
+const guard = require("./routes/guard.route.js");
+const visitors = require("./routes/visitors.route.js");
+const notificationRoutes = require("./routes/notification.routes.js");
+const polls = require("./routes/polls.route.js");
+const chatRoutes = require("./routes/chat.routes.js");
 const Message = require("./models/Message.js");
 const GroupChat = require('./models/groupMessage.model.js');
 const Resident = require("./models/resident.model.js");
@@ -58,65 +57,51 @@ app.get("/", (req, res) => {
   res.send("Welcome...!!");
 });
 
-app.use('/users', userRouter);
-app.use('/society', SocietyRouter);
-app.use('/forgetpassword', forgetPassword);
-app.use('/api/complaints', complaintRoutes);
-app.use('/api/numbers', importantNumRoutes);
-app.use('/api/maintenance', maintenance);
-app.use('/api/resident', ownerRoutes);
-app.use('/api/announcement', announcement);
-app.use('/api/income', income);
-app.use('/api/expenses', expenseDetailsRoutes);
-app.use('/api/notes', notesRoutes);
-app.use('/api/facilities', facilitiesRoutes);
-app.use('/api/requests', requestsRoutes);
-app.use('/api/protocol', protocol);
-app.use('/api/guard', guard);
-app.use('/api/visitors', visitors);
-app.use('/api/user/polls', polls);
-app.use('/api/notifications', notificationRoutes);
-app.use('/api/polls', polls)
-app.use('/api/chat', chatRoutes);
+app.use("/v1/api/auth", userRouter);
+app.use("/v1/api/society", SocietyRouter);
+app.use("/v1/api/forget-password", forgetPassword);
+app.use("/v1/api/complaints", complaintRoutes);
+app.use("/v1/api/numbers", importantNumRoutes);
+app.use("/v1/api/maintenance", maintenance);
+app.use("/v1/api/resident", ownerRoutes);
+app.use("/v1/api/announcement", announcement);
+app.use("/v1/api/income", income);
+app.use("/v1/api/expenses", expenseDetailsRoutes);
+app.use("/v1/api/notes", notesRoutes);
+app.use("/v1/api/facilities", facilitiesRoutes);
+app.use("/v1/api/requests", requestsRoutes);
+app.use("/v1/api/protocol", protocol);
+app.use("/v1/api/guard", guard);
+app.use("/v1/api/visitors", visitors);
+// app.use("/v1/api/user/polls", polls);
+app.use("/v1/api/notifications", notificationRoutes);
+app.use("/v1/api/polls", polls);
+app.use("/v1/api/chat", chatRoutes);
 
-
-io.on('connection', (socket) => {
-  console.log('New user connected');
-
-  socket.on('join', ({ userId, receiverId }) => {
+io.on("connection", (socket) => {
+  console.log("New user connected");
+  socket.on("join", ({ userId, receiverId }) => {
     socket.userId = userId;
     socket.receiverId = receiverId;
   });
-
-  // socket.on('private message', async ({ message,senderId, receiverId }) => {
-  //   const newMessage = new Message({ senderId, receiverId, message });
-  //   await newMessage.save();
-  //   io.to(socket.id).emit('private message', newMessage);
-  //   const receiverSocket = Array.from(io.sockets.sockets.values()).find(s => s.userId === receiverId);
-  //   if (receiverSocket) receiverSocket.emit('private message', newMessage);
-  // });
-
-  // socket.on('media message', async ({ senderId, receiverId, mediaUrl }) => {
-  //   const newMessage = new Message({ senderId, receiverId, mediaUrl });
-  //   // await newMessage.save();
-  //   io.to(socket.id).emit('media message', newMessage);
-  //   const receiverSocket = Array.from(io.sockets.sockets.values()).find(s => s.userId === receiverId);
-  //   if (receiverSocket) receiverSocket.emit('media message', newMessage);
-  // });
-
-  socket.on('message', ({ senderId, receiverId, message, mediaUrl }) => {
+  socket.on("message", ({ senderId, receiverId, message, mediaUrl }) => {
     try {
       const newMessage = { senderId, receiverId, message, mediaUrl };
-      io.to(socket.id).emit('message', newMessage);
-      const receiverSocket = Array.from(io.sockets.sockets.values()).find(s => s.userId === receiverId);
-      if (receiverSocket) {
-        receiverSocket.emit('message', newMessage);
+      if (senderId === receiverId) {
+        io.to(socket.id).emit("message", newMessage);
+      } else {
+        io.to(socket.id).emit("message", newMessage);
+        const receiverSocket = Array.from(io.sockets.sockets.values()).find(
+          (s) => s.userId === receiverId
+        );
+        if (receiverSocket) {
+          receiverSocket.emit("message", newMessage);
+        }
       }
     } catch (error) {
       console.error("Error handling message:", error);
     }
   });
-
 
   socket.on('joinGroup', async ({ userId, groupId }) => {
     try {
@@ -171,7 +156,6 @@ io.on('connection', (socket) => {
     console.log(`${socket.userId} disconnected`);
   });
 });
-
 
 const port = process.env.PORT || 5000;
 server.listen(port, () => {

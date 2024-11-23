@@ -15,7 +15,7 @@ const Income = () => {
   const viewMaintenanceFn = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/api/maintenance`
+        `${process.env.REACT_APP_BASE_URL}/v1/api/maintenance`
       );
       setMaintenance(response?.data);
     } catch (error) {

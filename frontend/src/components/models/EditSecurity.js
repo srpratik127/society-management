@@ -31,7 +31,7 @@ const EditSecurity = ({ isOpen, onClose, guardData, setGuards }) => {
     }
 
     try {
-      const response = await axios.put(`http://localhost:5000/api/guard/${guardData._id}`, formData);
+      const response = await axios.put(`http://localhost:5000/v1/api/guard/${guardData._id}`, formData);
       if (response.status === 200) {
         const updatedGuard = response.data.data;
         setGuards((prevGuards) =>

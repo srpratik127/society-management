@@ -61,22 +61,16 @@ const getComplaints = async (req, res) => {
   }
 };
 
-const getComplaintById = async (req, res) => {
+const getComplaintsByUserId = async (req, res) => {
   try {
-    const complaint = await Complaint.findById(req.params.id).populate(
-      "userId",
-      "firstname lastname profile_picture"
-    );
+   const userId = req.params.userId;
 
-    if (!complaint) {
-      return res.status(404).json({
-        success: false,
-        message: "Complaint not found",
-      });
-    }
+    const complaints = await Complaint.find({ user: userId })
+      .populate("user", "profile_picture").sort({ createdAt: -1 });
+
     res.status(200).json({
       success: true,
-      data: complaint,
+      data: complaints,
     });
   } catch (error) {
     res.status(500).json({
@@ -152,7 +146,7 @@ const deleteComplaint = async (req, res) => {
 module.exports = {
   createComplaint,
   getComplaints,
-  getComplaintById,
+  getComplaintsByUserId,
   updateComplaint,
   deleteComplaint,
 };

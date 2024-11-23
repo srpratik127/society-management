@@ -1,7 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 const ResetPassword = () => {
@@ -10,7 +9,8 @@ const ResetPassword = () => {
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  const user = useSelector((store) => store.auth.user);
+  const location = useLocation();
+  const email = location.state?.email;
 
   const validate = () => {
     const newErrors = {};
@@ -31,13 +31,12 @@ const ResetPassword = () => {
     if (validate()) {
       try {
         const response = await axios.post(
-          `${process.env.REACT_APP_BASE_URL}/forgetpassword/resetPassword`,
-          { password, email: user.email }
+          `${process.env.REACT_APP_BASE_URL}/v1/api/forget-password/resetPassword`,
+          { password, email: email }
         );
         if (response.data) {
           console.log(response.data);
-          toast.success("Reset Password successful!");
-          toast.success("Please login again!");
+          toast.success("Reset Password successful! Please login again!");
           navigate("/login");
           setPassword("");
           setConfirmPassword("");

@@ -24,7 +24,7 @@ const CreateProtocol = ({ onClose, setProtocols }) => {
     const isValid = formData.title && formData.description;
     if (isValid) {
       try {
-        const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/api/protocol`, formData);
+        const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/v1/api/protocol`, formData);
         if (response.status === 200) {
           setProtocols((prev) => [...prev, response.data.data]);
           toast.success("Protocol Create successful!");
@@ -46,7 +46,7 @@ const CreateProtocol = ({ onClose, setProtocols }) => {
           {["title", "description"].map((field) => (
             <div key={field} className="mb-4">
               <label className="block font-semibold text-gray-700">
-                {field.charAt(0).toUpperCase() + field.slice(1)}*
+                {field.charAt(0).toUpperCase() + field.slice(1)}<span className="text-red-500">*</span>
               </label>
               {field === "description" ? (
                 <textarea

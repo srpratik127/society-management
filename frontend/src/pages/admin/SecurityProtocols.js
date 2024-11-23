@@ -18,7 +18,7 @@ const SecurityProtocols = () => {
     const fetchProtocols = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_BASE_URL}/api/protocol`
+          `${process.env.REACT_APP_BASE_URL}/v1/api/protocol`
         );
         setProtocols(response?.data);
       } catch (error) {
@@ -32,7 +32,7 @@ const SecurityProtocols = () => {
   const handleDelete = async () => {
     try {
       await axios.delete(
-        `${process.env.REACT_APP_BASE_URL}/api/protocol/${selectedProtocol._id}`
+        `${process.env.REACT_APP_BASE_URL}/v1/api/protocol/${selectedProtocol._id}`
       );
       toast.success("Protocol Deleted successful!");
   
@@ -45,6 +45,31 @@ const SecurityProtocols = () => {
       toast.error(error.message);
     }
   };
+
+  const formatTime = (timeString) => {
+    if (!timeString) {
+      return "Invalid time";
+    }
+    let time;
+    if (typeof timeString === "string" && !isNaN(new Date(timeString))) {
+      time = new Date(timeString);
+    } else if (typeof timeString === "number") {
+      time = new Date(timeString);
+    } else if (typeof timeString === "string" && /^[0-9]{2}:[0-9]{2}$/.test(timeString)) {
+      const [hours, minutes] = timeString.split(":");
+      time = new Date();
+      time.setHours(hours, minutes, 0, 0);
+    } else {
+      return "Invalid time";
+    }
+    const formattedTime = time.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+    });
+    return formattedTime;
+  };
+  
 
   return (
     <div className="p-6 bg-white m-6 rounded-lg shadow max-w-full">
@@ -84,7 +109,7 @@ const SecurityProtocols = () => {
             {protocols.length > 0 ? (
               protocols.map((protocol) => (
                 <tr key={protocol._id} className="border-b border-gray-200">
-                  <td className="py-3 px-4 text-gray-700 text-nowrap">
+                  <td className="py-3 px-4 text-gray-700 text-nowrap capitalize">
                     {protocol.title}
                   </td>
                   <td className="py-3 px-4 text-gray-700 text-nowrap">
@@ -98,7 +123,7 @@ const SecurityProtocols = () => {
                     })}
                   </td>
                   <td className="py-3 px-4 text-gray-700 text-center text-nowrap">
-                    {protocol.time}
+                  {formatTime(protocol.time)}
                   </td>
                   <td className="py-3 px-4 flex justify-center space-x-3">
                     <button

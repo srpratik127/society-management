@@ -53,6 +53,11 @@ const residentSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    select_society: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "societies",
+      required: true
+    },
     profile_picture: {
       type: String,
       default:

@@ -49,7 +49,8 @@ const addMaintenance = async (req, res) => {
     }).save();
 
     res.status(200).json({
-      data: populatedMaintenance, notification: newNotification,
+      data: populatedMaintenance,
+      notification: newNotification,
       message: "Maintenance record created successfully",
     });
   } catch (error) {
@@ -113,19 +114,28 @@ const getPendingMaintenanceByUser = async (req, res) => {
       "member.status": "pending",
     });
 
-    const filteredRecords = maintenanceRecords.map(record => {
-      const member = record.member.find(m => m.user.toString() === userId && m.status === "pending");
-      return member ? { ...record.toObject(), member: [member] } : null;
-    }).filter(Boolean);
+    const filteredRecords = maintenanceRecords
+      .map((record) => {
+        const member = record.member.find(
+          (m) => m.user.toString() === userId && m.status === "pending"
+        );
+        return member ? { ...record.toObject(), member: [member] } : null;
+      })
+      .filter(Boolean);
 
-    if (!filteredRecords.length) {
-      return res.status(404).json({ message: 'No pending maintenance records found for this user' });
-    }
+    // if (!filteredRecords.length) {
+    //   return res.status(404).json({ message: 'No pending maintenance records found for this user' });
+    // }
 
     res.status(200).json(filteredRecords);
   } catch (error) {
     console.error("Error fetching pending maintenance for user:", error);
-    res.status(500).json({ message: 'Error fetching pending maintenance records', error: error.message });
+    res
+      .status(500)
+      .json({
+        message: "Error fetching pending maintenance records",
+        error: error.message,
+      });
   }
 };
 
@@ -136,7 +146,6 @@ const applyPenalties = async () => {
   //     "member.status": "pending",
   //     penaltyDay: { $lte: today },
   //   });
-
   //   const updatePromises = maintenanceRecords.map(async (record) => {
   //     const updatedMembers = record.member.map((member) => {
   //       if (member.status === "pending") {
@@ -148,14 +157,12 @@ const applyPenalties = async () => {
   //       }
   //       return member;
   //     });
-
   //     return Maintenance.findByIdAndUpdate(
   //       record._id,
   //       { $set: { amount: record.amount, member: updatedMembers } },
   //       { new: true }
   //     );
   //   });
-
   //   await Promise.all(updatePromises);
   //   console.log("Penalties applied to overdue maintenance records.");
   // } catch (error) {
@@ -163,10 +170,52 @@ const applyPenalties = async () => {
   // }
 };
 
+const paymentForMaintenance = async (req, res) => {
+  try {
+    const { maintenanceId } = req.params;
+    const { userId, paymentMethod } = req.body;
+
+    if (!userId || !maintenanceId || !paymentMethod) {
+      return res.status(400).json({ message: "All fields are required." });
+    }
+
+    const maintenance = await Maintenance.findById(maintenanceId);
+
+    if (!maintenance) {
+      return res.status(404).json({ message: "Maintenance record not found." });
+    }
+
+    const member = maintenance.member.find((m) => m.user.toString() === userId);
+
+    if (!member) {
+      return res
+        .status(404)
+        .json({ message: "User not found in maintenance record." });
+    }
+
+    member.status = "done";
+    member.paymentMethod = paymentMethod;
+
+    await maintenance.save();
+
+    res.status(200).json({
+      message: "Payment status updated successfully.",
+      data: maintenance,
+    });
+  } catch (error) {
+    console.error("Error updating payment status:", error);
+    res.status(500).json({
+      message: "Error updating payment status.",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   addMaintenance,
   getStatus,
   getAllStatus,
   getPendingMaintenanceByUser,
+  paymentForMaintenance,
   applyPenalties,
 };

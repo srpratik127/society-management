@@ -38,7 +38,7 @@ const Login = () => {
     if (validate()) {
       try {
         const response = await axios.post(
-          `${process.env.REACT_APP_BASE_URL}/users/login`,
+          `${process.env.REACT_APP_BASE_URL}/v1/api/auth/login`,
           { email: emailOrPhone, password }
         );
         dispatch(addToken(response.data.token));

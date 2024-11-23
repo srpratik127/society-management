@@ -2,6 +2,8 @@ import axios from "axios";
 import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import toast from "react-hot-toast";
+import { AddNotification } from "../../store/NotificationSlice";
+import { useDispatch } from "react-redux";
 
 const CreateOtherIncome = ({ onClose, setOtherIncomeData }) => {
   const [title, setTitle] = useState("");
@@ -9,6 +11,7 @@ const CreateOtherIncome = ({ onClose, setOtherIncomeData }) => {
   const [dueDate, setDueDate] = useState("");
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
+  const dispatch = useDispatch();
 
   const [errors, setErrors] = useState({
     title: "",
@@ -38,11 +41,12 @@ const CreateOtherIncome = ({ onClose, setOtherIncomeData }) => {
       };
       try {
         const response = await axios.post(
-          `${process.env.REACT_APP_BASE_URL}/api/income`,
+          `${process.env.REACT_APP_BASE_URL}/v1/api/income`,
           incomeData
         );
         toast.success("Income created successfully!");
         setOtherIncomeData((pre) => [...pre, response.data?.data]);
+        dispatch(AddNotification(response.data?.notification));
         onClose();
       } catch (error) {
         toast.error(error.message);

@@ -18,7 +18,7 @@ const Expenses = () => {
     const fetchExpensesList = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_BASE_URL}/api/expenses`
+          `${process.env.REACT_APP_BASE_URL}/v1/api/expenses`
         );
         setExpansesData(response?.data);
       } catch (error) {
@@ -31,7 +31,7 @@ const Expenses = () => {
   const handleDelete = async () => {
     try {
       await axios.delete(
-        `${process.env.REACT_APP_BASE_URL}/api/expenses/${selectedItem._id}`
+        `${process.env.REACT_APP_BASE_URL}/v1/api/expenses/${selectedItem._id}`
       );
       setExpansesData((prev) =>
         prev.filter((complain) => complain._id !== selectedItem._id)
