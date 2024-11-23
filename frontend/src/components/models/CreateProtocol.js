@@ -46,7 +46,7 @@ const CreateProtocol = ({ onClose, setProtocols }) => {
           {["title", "description"].map((field) => (
             <div key={field} className="mb-4">
               <label className="block font-semibold text-gray-700">
-                {field.charAt(0).toUpperCase() + field.slice(1)}*
+                {field.charAt(0).toUpperCase() + field.slice(1)}<span className="text-red-500">*</span>
               </label>
               {field === "description" ? (
                 <textarea

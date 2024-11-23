@@ -13,7 +13,7 @@ const protocolSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
- time: { type: String, required: true },
+ time: { type: String, default: Date.now, },
 });
 
 const protocol = mongoose.model("Security-protocol", protocolSchema);
