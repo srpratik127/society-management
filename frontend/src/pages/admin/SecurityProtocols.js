@@ -18,7 +18,7 @@ const SecurityProtocols = () => {
     const fetchProtocols = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_BASE_URL}/api/protocol`
+          `${process.env.REACT_APP_BASE_URL}/v1/api/protocol`
         );
         setProtocols(response?.data);
       } catch (error) {
@@ -32,7 +32,7 @@ const SecurityProtocols = () => {
   const handleDelete = async () => {
     try {
       await axios.delete(
-        `${process.env.REACT_APP_BASE_URL}/api/protocol/${selectedProtocol._id}`
+        `${process.env.REACT_APP_BASE_URL}/v1/api/protocol/${selectedProtocol._id}`
       );
       toast.success("Protocol Deleted successful!");
   

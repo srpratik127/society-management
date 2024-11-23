@@ -45,7 +45,7 @@ const AddSecurity = ({ isOpen, onClose, setGuards }) => {
       if (fileInputRef.current.files[0]) formDataToSend.append("aadhar_card", fileInputRef.current.files[0]);
       if (photoInputRef.current.files[0]) formDataToSend.append("profile_photo", photoInputRef.current.files[0]);
 
-      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/api/guard`, formDataToSend, {
+      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/v1/api/guard`, formDataToSend, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       if (response.data?.data) {

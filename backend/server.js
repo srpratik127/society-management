@@ -54,26 +54,26 @@ app.get("/", (req, res) => {
   res.send("Welcome...!!");
 });
 
-app.use("/users", userRouter);
-app.use("/society", SocietyRouter);
-app.use("/forgetpassword", forgetPassword);
-app.use("/api/complaints", complaintRoutes);
-app.use("/api/numbers", importantNumRoutes);
-app.use("/api/maintenance", maintenance);
-app.use("/api/resident", ownerRoutes);
-app.use("/api/announcement", announcement);
-app.use("/api/income", income);
-app.use("/api/expenses", expenseDetailsRoutes);
-app.use("/api/notes", notesRoutes);
-app.use("/api/facilities", facilitiesRoutes);
-app.use("/api/requests", requestsRoutes);
-app.use("/api/protocol", protocol);
-app.use("/api/guard", guard);
-app.use("/api/visitors", visitors);
-app.use("/api/user/polls", polls);
-app.use("/api/notifications", notificationRoutes);
-app.use("/api/polls", polls);
-app.use("/api/chat", chatRoutes);
+app.use("/v1/api/auth", userRouter);
+app.use("/v1/api/society", SocietyRouter);
+app.use("/v1/api/forget-password", forgetPassword);
+app.use("/v1/api/complaints", complaintRoutes);
+app.use("/v1/api/numbers", importantNumRoutes);
+app.use("/v1/api/maintenance", maintenance);
+app.use("/v1/api/resident", ownerRoutes);
+app.use("/v1/api/announcement", announcement);
+app.use("/v1/api/income", income);
+app.use("/v1/api/expenses", expenseDetailsRoutes);
+app.use("/v1/api/notes", notesRoutes);
+app.use("/v1/api/facilities", facilitiesRoutes);
+app.use("/v1/api/requests", requestsRoutes);
+app.use("/v1/api/protocol", protocol);
+app.use("/v1/api/guard", guard);
+app.use("/v1/api/visitors", visitors);
+// app.use("/v1/api/user/polls", polls);
+app.use("/v1/api/notifications", notificationRoutes);
+app.use("/v1/api/polls", polls);
+app.use("/v1/api/chat", chatRoutes);
 
 io.on("connection", (socket) => {
   console.log("New user connected");

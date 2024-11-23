@@ -133,12 +133,11 @@ const getPollResultsById = async (req, res) => {
       .json({ message: "Error fetching poll", error: error.message });
   }
 };
+
+
 const getAllPollResults = async (req, res) => {
   try {
     const polls = await Polls.find();
-    if (!polls || polls.length === 0) {
-      return res.status(404).json({ message: "No polls found." });
-    }
     const populatedPolls = await Promise.all(
       polls.map(async (poll) => {
         if (poll.createdBy.model === "Resident") {

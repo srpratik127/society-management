@@ -37,7 +37,7 @@ const OtpScreen = () => {
   const handleResendOtp = async () => {
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/forgetpassword/otpmail`,
+        `${process.env.REACT_APP_BASE_URL}/v1/api/forget-password/otpmail`,
         {
           email: email,
         }
@@ -58,7 +58,7 @@ const OtpScreen = () => {
     }
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/forgetpassword/verify`,
+        `${process.env.REACT_APP_BASE_URL}/v1/api/forget-password/verify`,
         { otp: otpValue, email: email }
       );
 

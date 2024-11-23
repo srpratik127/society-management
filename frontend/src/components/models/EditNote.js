@@ -29,7 +29,7 @@ const EditNote = ({ note, onClose, setNotes }) => {
     if (title && description && date) {
       try {
         const response = await axios.put(
-          `${process.env.REACT_APP_BASE_URL}/api/notes/${note._id}`,
+          `${process.env.REACT_APP_BASE_URL}/v1/api/notes/${note._id}`,
           { title, description, date }
         );
         setNotes((prev) =>

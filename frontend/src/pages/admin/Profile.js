@@ -18,7 +18,7 @@ const Profile = () => {
       const fetchUserSociety = async () => {
         try {
           const response = await axios.get(
-            `${process.env.REACT_APP_BASE_URL}/society/${user?.select_society}`
+            `${process.env.REACT_APP_BASE_URL}/v1/api/society/${user?.select_society}`
           );
           const { _id, name } = response?.data?.data;
           setUserSociety({ _id, name });
@@ -72,7 +72,7 @@ const Profile = () => {
     if (profilePicture) updatedData.append("profile_picture", profilePicture);
     try {
       const response = await axios.put(
-        `${process.env.REACT_APP_BASE_URL}/users/update/${user._id}`,
+        `${process.env.REACT_APP_BASE_URL}/v1/api/auth/update/${user._id}`,
         updatedData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );

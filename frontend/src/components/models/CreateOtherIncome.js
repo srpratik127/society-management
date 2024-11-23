@@ -41,7 +41,7 @@ const CreateOtherIncome = ({ onClose, setOtherIncomeData }) => {
       };
       try {
         const response = await axios.post(
-          `${process.env.REACT_APP_BASE_URL}/api/income`,
+          `${process.env.REACT_APP_BASE_URL}/v1/api/income`,
           incomeData
         );
         toast.success("Income created successfully!");

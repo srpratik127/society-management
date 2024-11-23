@@ -23,7 +23,7 @@ export const CreateSociety = ({ closePopup, setOptions }) => {
         zipCode,
       });
       const response = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/society`,
+        `${process.env.REACT_APP_BASE_URL}/v1/api/society`,
         {
           name: societyName,
           address: societyAddress,

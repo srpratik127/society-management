@@ -17,7 +17,7 @@ const Announcement = () => {
     const fetchComplainList = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_BASE_URL}/api/announcement`
+          `${process.env.REACT_APP_BASE_URL}/v1/api/announcement`
         );
         setAnnouncements(response?.data);
       } catch (err) {
@@ -31,7 +31,7 @@ const Announcement = () => {
   const handleDelete = async () => {
     try {
       await axios.delete(
-        `${process.env.REACT_APP_BASE_URL}/api/announcement/${selectedItem._id}`
+        `${process.env.REACT_APP_BASE_URL}/v1/api/announcement/${selectedItem._id}`
       );
       setAnnouncements((prev) =>
         prev.filter((complain) => complain._id !== selectedItem._id)

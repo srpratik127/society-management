@@ -92,7 +92,7 @@ const AddOwnerTenant = ({role, editResident}) => {
             });
             if(editResident){
                 const response = await axios.put(
-                    `${process.env.REACT_APP_BASE_URL}/api/resident/${editResident._id}`,
+                    `${process.env.REACT_APP_BASE_URL}/v1/api/resident/${editResident._id}`,
                     formData,
                     { headers: { 'Content-Type': 'multipart/form-data' } }
                 );
@@ -100,7 +100,7 @@ const AddOwnerTenant = ({role, editResident}) => {
                 navigate("/admin/resident");
             }else{
                 const response = await axios.post(
-                    `${process.env.REACT_APP_BASE_URL}/api/resident`,
+                    `${process.env.REACT_APP_BASE_URL}/v1/api/resident`,
                     formData,
                     { headers: { 'Content-Type': 'multipart/form-data' } }
                 );

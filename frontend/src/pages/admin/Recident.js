@@ -19,7 +19,7 @@ const Resident = () => {
     const fetchResidents = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_BASE_URL}/api/resident`
+          `${process.env.REACT_APP_BASE_URL}/v1/api/resident`
         );
         setResidents(response?.data?.data);
       } catch (error) {
@@ -42,7 +42,7 @@ const Resident = () => {
   const handleVacate = async () => {
     try {
       const response = await axios.put(
-        `${process.env.REACT_APP_BASE_URL}/api/resident/vacate-flat/${selectedResident._id}`
+        `${process.env.REACT_APP_BASE_URL}/v1/api/resident/vacate-flat/${selectedResident._id}`
       );
       setSelectedResident(null);
       setOpenConform(false);
@@ -120,7 +120,7 @@ const Resident = () => {
                       </td>
                       <td className="py-2 text-center min-w-[170px]">
                         <span
-                          className={`flex items-center mx-4 ${
+                          className={`flex items-center mx-4 justify-center ${
                             resident.residenceStatus === "Occupied"
                               ? "text-[#14B8A6] font-semibold py-2 px-3 rounded-full bg-[#ECFFFF]"
                               : "text-[#9333EA] font-semibold py-2 px-3 rounded-full bg-[#FFF6FF]"

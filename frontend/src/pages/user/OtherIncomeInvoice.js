@@ -15,7 +15,7 @@ const OtherIncomeInvoice = () => {
     const viewOtherIncome = async () => {
       try {
         const { data } = await axios.get(
-          `${process.env.REACT_APP_BASE_URL}/api/income/${user?._id}`
+          `${process.env.REACT_APP_BASE_URL}/v1/api/income/${user?._id}`
         );
         setOtherIncomeData(data?.data);
       } catch (error) {

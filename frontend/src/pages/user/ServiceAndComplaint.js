@@ -25,7 +25,7 @@ const ServiceAndComplaint = () => {
     const fetchComplainList = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_BASE_URL}/api/complaints/${userId}`
+          `${process.env.REACT_APP_BASE_URL}/v1/api/complaints/${userId}`
         );
         setComplainList(response?.data?.data);
       } catch (error) {
@@ -40,7 +40,7 @@ const ServiceAndComplaint = () => {
     const fetchRequestsList = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_BASE_URL}/api/requests/${userId}`
+          `${process.env.REACT_APP_BASE_URL}/v1/api/requests/${userId}`
         );
         setRequestsList(response?.data);
       } catch (error) {
@@ -53,7 +53,7 @@ const ServiceAndComplaint = () => {
   const handleDeleteComplain = async () => {
     try {
       await axios.delete(
-        `${process.env.REACT_APP_BASE_URL}/api/complaints/${selectedComplain._id}`
+        `${process.env.REACT_APP_BASE_URL}/v1/api/complaints/${selectedComplain._id}`
       );
       setComplainList((prev) =>
         prev.filter((complain) => complain._id !== selectedComplain._id)
@@ -68,7 +68,7 @@ const ServiceAndComplaint = () => {
   const handleDeleteRequest = async () => {
     try {
       await axios.delete(
-        `${process.env.REACT_APP_BASE_URL}/api/requests/${selectedRequest._id}`
+        `${process.env.REACT_APP_BASE_URL}/v1/api/requests/${selectedRequest._id}`
       );
       setRequestsList((prev) =>
         prev.filter((request) => request._id !== selectedRequest._id)

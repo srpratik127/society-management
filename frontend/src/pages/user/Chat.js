@@ -27,7 +27,7 @@ const ChatComponent = () => {
     const fetchResidents = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_BASE_URL}/api/resident`
+          `${process.env.REACT_APP_BASE_URL}/v1/api/resident`
         );
         setAllResident(response?.data?.data);
       } catch (error) {
@@ -58,7 +58,7 @@ const ChatComponent = () => {
     const fetchChatHistory = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_BASE_URL}/api/chat/history/${userId}/${receiver._id}`
+          `${process.env.REACT_APP_BASE_URL}/v1/api/chat/history/${userId}/${receiver._id}`
         );
         setMessages(response.data);
       } catch (error) {
@@ -84,7 +84,7 @@ const ChatComponent = () => {
         formData.append("file", media);
       }
       const response = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/api/chat/message`,
+        `${process.env.REACT_APP_BASE_URL}/v1/api/chat/message`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
@@ -153,7 +153,7 @@ const ChatComponent = () => {
 
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/api/chat/message`,
+        `${process.env.REACT_APP_BASE_URL}/v1/api/chat/message`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
