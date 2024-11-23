@@ -22,7 +22,7 @@ const authSlice = createSlice({
         }
       } catch (error) {
         console.error("Error decoding token:", error.message);
-        state.user = {};
+        // state.user = {};
       }
     },
     removeToken: (state, action) => {

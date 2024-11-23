@@ -22,7 +22,7 @@ const notificationSchema = new mongoose.Schema(
         _id: { type: mongoose.Schema.Types.ObjectId },
         model: {
           type: String,
-          enum: ["Resident", "User"],
+          enum: ["Resident", "Admin"],
         },
       },
     ],

@@ -1,7 +1,7 @@
 const Maintenance = require("../models/maintenance.model");
 const Resident = require("../models/resident.model");
 const Notification = require("../models/notification.model");
-const User = require("../models/user.model");
+const Admin = require("../models/admin.model");
 
 const addMaintenance = async (req, res) => {
   try {
@@ -36,9 +36,9 @@ const addMaintenance = async (req, res) => {
         _id,
         model: "Resident",
       })),
-      ...(await User.find().select("_id")).map(({ _id }) => ({
+      ...(await Admin.find().select("_id")).map(({ _id }) => ({
         _id,
-        model: "User",
+        model: "Admin",
       })),
     ];
     const newNotification = await new Notification({
@@ -190,7 +190,7 @@ const paymentForMaintenance = async (req, res) => {
     if (!member) {
       return res
         .status(404)
-        .json({ message: "User not found in maintenance record." });
+        .json({ message: "Admin not found in maintenance record." });
     }
 
     member.status = "done";

@@ -1,6 +1,6 @@
 const Request = require("../models/request.models");
 const Resident = require("../models/resident.model");
-const User = require("../models/user.model");
+const Admin = require("../models/admin.model");
 
 const createRequest = async (req, res) => {
   try {
@@ -16,10 +16,10 @@ const createRequest = async (req, res) => {
     } = req.body;
 
     const user =
-      (await User.findById(userId)) || (await Resident.findById(userId));
+      (await Admin.findById(userId)) || (await Resident.findById(userId));
     const userType =
-      user instanceof User
-        ? "User"
+      user instanceof Admin
+        ? "Admin"
         : user instanceof Resident
         ? "Resident"
         : null;
@@ -54,7 +54,7 @@ const getRequests = async (req, res) => {
   try {
     const requests = await Request.find();
     for (let request of requests) {
-      if (request.userType === "User") {
+      if (request.userType === "Admin") {
         request.user = await User.findById(request.user).select(
           "name profile_picture"
         );
@@ -92,7 +92,7 @@ const updateRequest = async (req, res) => {
       return res.status(404).json({ message: "Request not found" });
     }
 
-    if (updatedRequest.userType === "User") {
+    if (updatedRequest.userType === "Admin") {
       updatedRequest.user = await User.findById(updatedRequest.user).select(
         "name profile_picture"
       );
