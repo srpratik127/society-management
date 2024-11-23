@@ -48,7 +48,7 @@ const AddMaintenanceDetail = ({ onClose, setMaintenance }) => {
       };
       try {
         const response = await axios.post(
-          `${process.env.REACT_APP_BASE_URL}/api/maintenance`,
+          `${process.env.REACT_APP_BASE_URL}/v1/api/maintenance`,
           payload
         );
         if (response?.data) {

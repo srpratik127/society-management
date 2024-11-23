@@ -31,7 +31,7 @@ const ResetPassword = () => {
     if (validate()) {
       try {
         const response = await axios.post(
-          `${process.env.REACT_APP_BASE_URL}/forgetpassword/resetPassword`,
+          `${process.env.REACT_APP_BASE_URL}/v1/api/forget-password/resetPassword`,
           { password, email: email }
         );
         if (response.data) {

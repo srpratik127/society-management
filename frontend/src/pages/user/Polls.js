@@ -10,8 +10,8 @@ const Poll = () => {
     const fetchPolls = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_BASE_URL}/api/polls`
-        ); // Fetch all polls
+          `${process.env.REACT_APP_BASE_URL}/v1/api/polls`
+        );
         setPollsData(response.data);
       } catch (error) {
         console.error("Error fetching polls:", error);
@@ -26,7 +26,7 @@ const Poll = () => {
   const handleVote = async (pollId, selectedOptions, residentId) => {
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/api/polls/vote`,
+        `${process.env.REACT_APP_BASE_URL}/v1/api/polls/vote`,
         {
           pollId,
           selectedOptions,
@@ -67,6 +67,7 @@ const Poll = () => {
           </button>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
           {pollsData.map((poll) => (
             <div
               key={poll._id}
@@ -146,6 +147,7 @@ const Poll = () => {
               </p>
             </div>
           ))}
+          
         </div>
       </div>
     </>

@@ -9,7 +9,7 @@ const PendingMaintenances = () => {
     const fetchPendingMaintenance = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_BASE_URL}/api/maintenance?status=pending`
+          `${process.env.REACT_APP_BASE_URL}/v1/api/maintenance?status=pending`
         );
         setPendingMaintenance(response?.data);
       } catch (error) {

@@ -41,7 +41,7 @@ const CreateFacilityManagement = ({ onClose, setFacilities }) => {
     };
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/api/facilities`,
+        `${process.env.REACT_APP_BASE_URL}/v1/api/facilities`,
         facilityData
       );
       setFacilities((pre) => [...pre, response.data?.data]);

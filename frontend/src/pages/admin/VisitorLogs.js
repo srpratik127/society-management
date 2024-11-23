@@ -9,7 +9,7 @@ const VisitorLogs = () => {
     const fetchComplainList = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_BASE_URL}/api/visitors`
+          `${process.env.REACT_APP_BASE_URL}/v1/api/visitors`
         );
         setVisitorData(response?.data);
       } catch (error) {

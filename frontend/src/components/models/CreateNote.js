@@ -34,7 +34,7 @@ const CreateNote = ({ onClose, setNotes }) => {
 
     if (isFormValid) {
       try {
-        const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/api/notes`, {
+        const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/v1/api/notes`, {
           title,
           description,
           date,

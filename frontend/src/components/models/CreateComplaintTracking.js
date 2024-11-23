@@ -31,7 +31,7 @@ const CreateComplaintTracking = ({ onClose, setComplaints }) => {
 
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/api/complaints`,
+        `${process.env.REACT_APP_BASE_URL}/v1/api/complaints`,
         {
           complaintName,
           complainerName,

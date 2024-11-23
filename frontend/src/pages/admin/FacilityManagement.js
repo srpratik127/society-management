@@ -15,7 +15,7 @@ const FacilityManagement = () => {
     const fetchComplainList = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_BASE_URL}/api/facilities`
+          `${process.env.REACT_APP_BASE_URL}/v1/api/facilities`
         );
         setFacilities(response?.data);
       } catch (error) {

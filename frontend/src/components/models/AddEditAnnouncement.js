@@ -93,7 +93,7 @@ const AddEditAnnouncement = ({
       if (editAnnouncement) {
         // If editing, update the announcement
         const response = await axios.put(
-          `${process.env.REACT_APP_BASE_URL}/api/announcement/${editAnnouncement._id}`,
+          `${process.env.REACT_APP_BASE_URL}/v1/api/announcement/${editAnnouncement._id}`,
           {
             title: formData.title,
             description: formData.description,
@@ -111,7 +111,7 @@ const AddEditAnnouncement = ({
         toast.success("Announcement Updated successful!");
       } else {
         const response = await axios.post(
-          `${process.env.REACT_APP_BASE_URL}/api/announcement`,
+          `${process.env.REACT_APP_BASE_URL}/v1/api/announcement`,
           {
             title: formData.title,
             description: formData.description,

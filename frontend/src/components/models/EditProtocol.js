@@ -49,7 +49,7 @@ const EditProtocol = ({ protocol, onClose, setProtocols }) => {
   const updateProtocol = async () => {
     try {
       const response = await axios.put(
-        `${process.env.REACT_APP_BASE_URL}/api/protocol/${protocol._id}`,
+        `${process.env.REACT_APP_BASE_URL}/v1/api/protocol/${protocol._id}`,
         formData
       );
       const updatedProtocol = response.data.data;

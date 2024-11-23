@@ -16,7 +16,7 @@ const RequestTracking = () => {
     const fetchRequestList = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_BASE_URL}/api/requests`
+          `${process.env.REACT_APP_BASE_URL}/v1/api/requests`
         );
         setRequestProtocols(response?.data);
       } catch (error) {
@@ -29,7 +29,7 @@ const RequestTracking = () => {
   const handleDelete = async () => {
     try {
       await axios.delete(
-        `${process.env.REACT_APP_BASE_URL}/api/requests/${selectedRequest._id}`
+        `${process.env.REACT_APP_BASE_URL}/v1/api/requests/${selectedRequest._id}`
       );
       setRequestProtocols((prev) =>
         prev.filter((request) => request._id !== selectedRequest._id)

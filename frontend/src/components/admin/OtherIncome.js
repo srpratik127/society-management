@@ -19,7 +19,7 @@ const OtherIncome = () => {
     const viewOtherIncome = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_BASE_URL}/api/income`
+          `${process.env.REACT_APP_BASE_URL}/v1/api/income`
         );
         setOtherIncomeData(response?.data);
       } catch (error) {
@@ -32,7 +32,7 @@ const OtherIncome = () => {
   const handleDelete = async () => {
     try {
       await axios.delete(
-        `${process.env.REACT_APP_BASE_URL}/api/income/${selectedItem._id}`
+        `${process.env.REACT_APP_BASE_URL}/v1/api/income/${selectedItem._id}`
       );
       setOtherIncomeData((prev) =>
         prev.filter((number) => number._id !== selectedItem._id)

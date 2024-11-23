@@ -44,7 +44,7 @@ const PaymentPopup = ({
       try {
         if (selectOtherIncome) {
           const response = await axios.put(
-            `${process.env.REACT_APP_BASE_URL}/api/income/add-member/${selectOtherIncome._id}`,
+            `${process.env.REACT_APP_BASE_URL}/v1/api/income/add-member/${selectOtherIncome._id}`,
             {
               user: userId,
               paymentMethod: "cash",
@@ -59,7 +59,7 @@ const PaymentPopup = ({
         }
         if (selectMaintenance) {
           const response = await axios.put(
-            `${process.env.REACT_APP_BASE_URL}/api/maintenance/${selectMaintenance._id}`,
+            `${process.env.REACT_APP_BASE_URL}/v1/api/maintenance/${selectMaintenance._id}`,
             { userId, paymentMethod: "cash" }
           );
           setMaintenance((prev) =>
@@ -88,7 +88,7 @@ const PaymentPopup = ({
           try {
             if (selectOtherIncome) {
               const response = await axios.put(
-                `${process.env.REACT_APP_BASE_URL}/api/income/add-member/${selectOtherIncome._id}`,
+                `${process.env.REACT_APP_BASE_URL}/v1/api/income/add-member/${selectOtherIncome._id}`,
                 {
                   user: userId,
                   paymentMethod: paymentType,
@@ -103,7 +103,7 @@ const PaymentPopup = ({
             }
             if (selectMaintenance) {
               const response = await axios.put(
-                `${process.env.REACT_APP_BASE_URL}/api/maintenance/${selectMaintenance._id}`,
+                `${process.env.REACT_APP_BASE_URL}/v1/api/maintenance/${selectMaintenance._id}`,
                 { userId, paymentMethod: paymentType }
               );
               setMaintenance((prev) =>

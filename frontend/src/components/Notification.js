@@ -17,7 +17,7 @@ const Notification = () => {
     const fetchNotification = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_BASE_URL}/api/notifications/${user?._id}`
+          `${process.env.REACT_APP_BASE_URL}/v1/api/notifications/${user?._id}`
         );
         dispatch(initialNotification(response.data));
       } catch (err) {
@@ -30,7 +30,7 @@ const Notification = () => {
   const handleClearSingleNotification = async (notificationId) => {
     try {
       await axios.delete(
-        `${process.env.REACT_APP_BASE_URL}/api/notifications/clear/${user._id}/${notificationId}`
+        `${process.env.REACT_APP_BASE_URL}/v1/api/notifications/clear/${user._id}/${notificationId}`
       );
       const updatedNotifications = notification.filter(
         (item) => item._id !== notificationId
@@ -44,7 +44,7 @@ const Notification = () => {
   const handleClearNotifications = async () => {
     try {
       await axios.delete(
-        `${process.env.REACT_APP_BASE_URL}/api/notifications/${user._id}`
+        `${process.env.REACT_APP_BASE_URL}/v1/api/notifications/${user._id}`
       );
       dispatch(initialNotification([]));
     } catch (err) {

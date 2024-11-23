@@ -15,7 +15,7 @@ const MaintenanceData = ({ isViewInvoice }) => {
     const fetchMaintenance = async () => {
       try {
         const { data } = await axios.get(
-          `${process.env.REACT_APP_BASE_URL}/api/maintenance/pending/${user._id}`
+          `${process.env.REACT_APP_BASE_URL}/v1/api/maintenance/pending/${user._id}`
         );
         setMaintenance(data);
       } catch (error) {

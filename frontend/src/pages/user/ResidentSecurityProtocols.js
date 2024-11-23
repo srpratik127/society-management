@@ -8,7 +8,7 @@ const ResidentSecurityProtocols = () => {
   useEffect(() => {
     const fetchProtocols = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/api/protocol`);
+        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/v1/api/protocol`);
         setProtocols(response.data);
       } catch (error) {
         toast.error("Failed to load security protocols");

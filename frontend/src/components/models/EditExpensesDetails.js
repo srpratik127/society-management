@@ -46,7 +46,7 @@ const EditExpensesDetails = ({ onClose, expense, setExpansesData }) => {
         }
 
         const response = await axios.put(
-          `${process.env.REACT_APP_BASE_URL}/api/expenses/${expense._id}`,
+          `${process.env.REACT_APP_BASE_URL}/v1/api/expenses/${expense._id}`,
           formData,
           {
             headers: {
