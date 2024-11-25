@@ -21,7 +21,9 @@ const Navbar = () => {
       <span key={index} className="flex items-center">
         {index > 0 && <span className="mx-2 text-xl">{">"}</span>}
         {index === pathSegments.length - 1 ? (
-          <span className="text-gray-500 text-nowrap block">{formattedSegment}</span>
+          <span className="text-gray-500 text-nowrap block">
+            {formattedSegment}
+          </span>
         ) : (
           <Link
             to={`/${pathSegments.slice(0, index + 1).join("/")}`}
@@ -37,7 +39,9 @@ const Navbar = () => {
   return (
     <div className="w-full bg-white shadow py-4 px-6 flex items-center justify-between">
       <div className="w-56">
-        {location.pathname === "/admin" || location.pathname === "/resident" ? (
+        {location.pathname === "/admin" ||
+        location.pathname === "/resident" ||
+        location.pathname === "/security" ? (
           <div
             className={`items-center relative w-1/4 xl:ms-0 hidden md:flex ${
               !isOpenMenu && "ms-10"
@@ -64,9 +68,7 @@ const Navbar = () => {
       <div className="flex items-center space-x-6">
         <Notification />
         <Link
-          to={`/${user.role ? "resident" : "admin"}/profile`}
-          className="flex items-center space-x-2"
-        >
+          to={`/${user?.user_role === "admin" ? "admin" : user?.user_role === "resident" ? "resident" : "security"}/profile`} className="flex items-center space-x-2">
           <img
             src={user?.profile_picture}
             alt="Profile"
@@ -74,12 +76,18 @@ const Navbar = () => {
           />
           <div className="flex-col text-left leading-5 hidden sm:flex">
             <span className="font-medium text-gray-700 capitalize">
-              {user.role
+              {user?.user_role === "admin"
+                ? `${user?.firstname || ""} ${user?.lastname || ""}`
+                : user?.user_role === "resident"
                 ? user.fullName
-                : `${user?.firstname || ""} ${user?.lastname || ""}`}
+                : user.fullName}
             </span>
             <span className="text-sm text-left text-gray-400">
-              {user.role ? "Resident" : "Admin"}
+              {user?.user_role === "admin"
+                ? "Admin"
+                : user?.user_role === "resident"
+                ? "Resident"
+                : "Security"}
             </span>
           </div>
         </Link>

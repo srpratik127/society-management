@@ -84,6 +84,10 @@ const residentSchema = new mongoose.Schema(
       enum: ["Occupied", "Vacate"],
       required: true,
     },
+    user_role: {
+      type: String,
+      default: "resident",
+    },
     members: [
       {
         fullName: {

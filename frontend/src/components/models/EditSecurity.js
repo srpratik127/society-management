@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 
 const EditSecurity = ({ isOpen, onClose, guardData, setGuards }) => {
   const [fullName, setFullName] = useState(guardData.fullName || "");
-  const [phoneNumber, setPhoneNumber] = useState(guardData.phoneNumber || "");
+  const [phoneNumber, setPhoneNumber] = useState(guardData.phone || "");
   const [gender, setGender] = useState(guardData.gender || "");
   const [shift, setShift] = useState(guardData.shift || "");
   const [shiftDate, setShiftDate] = useState(new Date(guardData.shiftDate) || new Date());
@@ -20,7 +20,7 @@ const EditSecurity = ({ isOpen, onClose, guardData, setGuards }) => {
   const handleSubmit = async () => {
     const formData = new FormData();
     formData.append("fullName", fullName);
-    formData.append("phoneNumber", phoneNumber);
+    formData.append("phone", phoneNumber);
     formData.append("gender", gender);
     formData.append("shift", shift);
     formData.append("shiftDate", shiftDate.toISOString());
@@ -59,7 +59,7 @@ const EditSecurity = ({ isOpen, onClose, guardData, setGuards }) => {
             src={
               profilePhoto instanceof File
                 ? URL.createObjectURL(profilePhoto)
-                : profilePhoto || guardData.profile_photo
+                : profilePhoto || guardData.profile_picture
             }
             alt="User"
           />

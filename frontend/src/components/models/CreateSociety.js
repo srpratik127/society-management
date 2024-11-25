@@ -33,8 +33,8 @@ export const CreateSociety = ({ closePopup, setOptions }) => {
           zipCode,
         }
       );
-      const { name } = response.data;
-      setOptions((prev) => [...prev, { value: name, label: name }]);
+      const { name, _id } = response.data;
+      setOptions((prev) => [{ value: _id, label: name }, ...prev]);
       toast.success("Society Create successful!");
       closePopup();
     } catch (error) {

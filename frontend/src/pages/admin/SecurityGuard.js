@@ -96,13 +96,13 @@ const SecurityGuard = () => {
                   <td className="py-2 px-2 sm:px-6 flex items-center text-nowrap capitalize">
                     <img
                       className="w-8 h-8 sm:w-10 sm:h-10 rounded-full mr-2 sm:mr-3"
-                      src={guard.profile_photo}
+                      src={guard.profile_picture}
                       alt={guard.fullName}
                     />
                     {guard.fullName}
                   </td>
                   <td className="py-2 px-2 sm:px-6 text-nowrap">
-                    {guard.phoneNumber}
+                    + 91 {guard.phone}
                   </td>
                   <td className="py-2 px-2 sm:px-6 text-nowrap text-center">
                     {guard.shift === "Day" ? (

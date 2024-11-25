@@ -93,7 +93,7 @@ const Register = () => {
           ...dataToSubmit,
           select_society: select_society?.value,
         };
-        
+
         const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/v1/api/auth/register`, payload);
         console.log("Form submitted:", response.data);
         setErrors({});

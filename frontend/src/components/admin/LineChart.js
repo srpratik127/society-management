@@ -10,6 +10,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { Popover } from "@headlessui/react";
 
 ChartJS.register(
   LineElement,
@@ -22,23 +23,23 @@ ChartJS.register(
 );
 
 const LineChart = () => {
-  const [filter, setFilter] = useState("Last Month");
+  const [filter, setFilter] = useState("Last Week");
 
   const chartData = {
     "Last Year": {
       labels: [
-        "January",
-        "February",
-        "March",
-        "April",
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
         "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
       ],
       datasets: [
         {
@@ -50,12 +51,7 @@ const LineChart = () => {
       ],
     },
     "Last Month": {
-      labels: [
-        "Week 1",
-        "Week 2",
-        "Week 3",
-        "Week 4",
-      ],
+      labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
       datasets: [
         {
           data: [40, 25, 30, 45],
@@ -66,7 +62,15 @@ const LineChart = () => {
       ],
     },
     "Last Week": {
-      labels: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+      labels: [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday",
+      ],
       datasets: [
         {
           data: [10, 20, 15, 25, 18, 22, 30],
@@ -106,7 +110,7 @@ const LineChart = () => {
     <>
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold">Performance Overview</h2>
-        <select
+        {/* <select
           value={filter}
           onChange={handleFilterChange}
           className="border border-gray-300 rounded-md px-3 py-2 outline-none"
@@ -114,7 +118,42 @@ const LineChart = () => {
           <option value="Last Year">Last Year</option>
           <option value="Last Month">Last Month</option>
           <option value="Last Week">Last Week</option>
-        </select>
+        </select> */}
+
+        <Popover className="relative">
+          <Popover.Button className="p-2 px-4 outline-none border rounded-md">
+            {filter}
+          </Popover.Button>
+          <Popover.Panel className="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 z-50">
+            {({ close }) => (
+              <div className="py-2">
+                {["Last Year", "Last Month", "Last Week"].map((level) => (
+                  <button
+                    key={level}
+                    type="button"
+                    onClick={() => {
+                      setFilter(level);
+                      close();
+                    }}
+                    className={`px-4 py-1 flex gap-2 font-medium text-nowrap ${
+                      filter === level ? "text-black" : "text-[#A7A7A7]"
+                    }`}
+                  >
+                    <img
+                      src={`${
+                        filter === level
+                          ? "/assets/fill-redio.svg"
+                          : "/assets/unfill-redio.svg"
+                      }`}
+                      alt=""
+                    />
+                    {level}
+                  </button>
+                ))}
+              </div>
+            )}
+          </Popover.Panel>
+        </Popover>
       </div>
       <div className="max-h-[350px] flex justify-center items-center">
         <Line data={chartData[filter]} options={options} />

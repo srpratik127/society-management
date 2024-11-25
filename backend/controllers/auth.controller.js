@@ -5,6 +5,7 @@ const Resident = require("../models/resident.model");
 const cloudinary = require("../utils/cloudinary");
 const fs = require("fs");
 const Society = require("../models/society.model");
+const Guard = require("../models/guard.model");
 
 const Register = async (req, res) => {
   try {
@@ -26,7 +27,7 @@ const Register = async (req, res) => {
     }
 
     if (!password) {
-      return res.status(400).json({ msg: "Passwords is mendetory" });
+      return res.status(400).json({ msg: "Passwords is mandatory" });
     }
 
     let user = await Admin.findOne({ email });
@@ -65,6 +66,11 @@ const Login = async (req, res) => {
     if (!user) {
       user = await Resident.findOne({ email });
     }
+
+    if (!user) {
+      user = await Guard.findOne({ email });
+    }
+
     if (!user) {
       return res.status(400).json({ msg: "email not exists" });
     }
@@ -84,7 +90,6 @@ const Login = async (req, res) => {
     res.status(500).json({ msg: "Server error" });
   }
 };
-
 
 const updateUser = async (req, res) => {
   try {
@@ -106,15 +111,22 @@ const updateUser = async (req, res) => {
     }
     let profilePictureUrl = profile_picture;
     if (req.file) {
-      if (user.profile_picture && user.profile_picture.includes("cloudinary.com")) {
-        const publicIdWithExtension = user.profile_picture.split('/').pop();
-        const oldProfilePicturePublicId = `profile_pictures/${publicIdWithExtension.split('.')[0]}`;
-        await cloudinary.uploader.destroy(oldProfilePicturePublicId, (error, result) => {
-          if (error) {
-            console.error("Error deleting old image from Cloudinary:", error);
-          } else {
-            console.log("Old image deleted from Cloudinary:", result);
-          }
+      if (
+        user.profile_picture &&
+        user.profile_picture.includes("cloudinary.com")
+      ) {
+        const publicIdWithExtension = user.profile_picture.split("/").pop();
+        const oldProfilePicturePublicId = `profile_pictures/${
+          publicIdWithExtension.split(".")[0]
+        }`;
+        await cloudinary.uploader.destroy(
+          oldProfilePicturePublicId,
+          (error, result) => {
+            if (error) {
+              console.error("Error deleting old image from Cloudinary:", error);
+            } else {
+              console.log("Old image deleted from Cloudinary:", result);
+            }
         });
       }
       const result = await cloudinary.uploader.upload(req.file.path, {
@@ -153,11 +165,11 @@ const updateUser = async (req, res) => {
         country,
         state,
         city,
-        select_society: parsedSociety._id, 
+        select_society: parsedSociety._id,
         profile_picture: profilePictureUrl,
       },
       { new: true, runValidators: true }
-    ); 
+    );
     if (!updatedUser) {
       return res.status(404).json({ msg: "User not found" });
     }

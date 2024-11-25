@@ -8,7 +8,7 @@ const { log } = require("console");
 
 const createGuard = async (req, res) => {
     try {
-        const { fullName, phoneNumber, gender, shift, shiftDate, shiftTime, email } = req.body;
+        const { fullName, phoneNumber, gender, shift, shiftDate, shiftTime, email, select_society } = req.body;
         let profilePictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKc08Wq1A-TIERnJUrHsmF9Asnmz5f_EnD5Mr8kQsJNZCdHjg_medKyoo&s";
         let aadharCardUrl = '';
 
@@ -37,16 +37,17 @@ const createGuard = async (req, res) => {
         const randomPassword = crypto.randomBytes(4).toString('hex');
         const hashedPassword = await bcrypt.hash(randomPassword, 10);
         const newGuard = new Guard({
-            profile_photo: profilePictureUrl,
+            profile_picture: profilePictureUrl,
             fullName,
-            phoneNumber,
+            phone: phoneNumber,
             gender,
             shift,
             shiftDate,
             shiftTime,
             aadhar_card: aadharCardUrl,
             email,
-            password: hashedPassword, 
+            password: hashedPassword,
+            select_society
         });
 
         await newGuard.save();
@@ -85,10 +86,10 @@ const getGuard = async (req, res) => {
 const updateGuard = async (req, res) => {
     try {
         const { id } = req.params;
-        const { fullName, phoneNumber, gender, shift, shiftDate, shiftTime } = req.body;
+        const { fullName, phone, gender, shift, shiftDate, shiftTime } = req.body;
         console.log(id);
 
-        if (!fullName || !phoneNumber || !gender || !shift || !shiftDate || !shiftTime) {
+        if (!fullName || !phone || !gender || !shift || !shiftDate || !shiftTime) {
             return res.status(400).json({ message: 'All fields are required' });
         }
 
@@ -106,9 +107,9 @@ const updateGuard = async (req, res) => {
         const updatedGuard = await Guard.findByIdAndUpdate(
             id,
             {
-                profile_photo: profilePictureUrl || req.body.profile_photo,  
+                profile_picture: profilePictureUrl,
                 fullName,
-                phoneNumber,
+                phone,
                 gender,
                 shift,
                 shiftDate,

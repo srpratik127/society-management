@@ -34,6 +34,7 @@ import OtherIncomeInvoice from "./pages/user/OtherIncomeInvoice";
 import MaintenanceInvoices from "./pages/user/MaintenanceInvoices";
 import Poll from "./pages/user/Polls";
 import ViewInvoice from "./components/user/ViewInvoice";
+import Security from "./pages/security/Security";
 
 function App() {
   return (
@@ -45,7 +46,8 @@ function App() {
           <Route path="forget" element={<PublicRoute><ForgetPassword /></PublicRoute>} />
           <Route path="get-otp" element={<PublicRoute><OtpScreen /></PublicRoute>} />
           <Route path="reset" element={<PublicRoute><ResetPassword /></PublicRoute>} />
-        </Route> 
+        </Route>
+
         <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>}>
           <Route path="" element={<Dashboard />} />
           <Route path="profile" element={<Profile />} />
@@ -77,6 +79,11 @@ function App() {
           <Route path="other-invoice" element={<OtherIncomeInvoice />} />
           <Route path="security-protocols" element={<ResidentSecurityProtocols />} />
           <Route path="polls" element={<Poll />} />
+        </Route>
+
+        <Route path="/security" element={<ProtectedRoute><Security /></ProtectedRoute>}>
+          <Route path="" element={<Dashboard />} />
+          <Route path="profile" element={<Profile />} />
         </Route>
 
         <Route path="*" element={<ErrorPage />} />

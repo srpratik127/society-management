@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const guardSchema = new mongoose.Schema({
-  profile_photo: {
+  profile_picture: {
     type: String,
     default:
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKc08Wq1A-TIERnJUrHsmF9Asnmz5f_EnD5Mr8kQsJNZCdHjg_medKyoo&s",
@@ -10,7 +10,7 @@ const guardSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  phoneNumber: {
+  phone: {
     type: String,
     required: true,
   },
@@ -37,6 +37,15 @@ const guardSchema = new mongoose.Schema({
   },
   password: {
     type: String,
+    required: true,
+  },
+  user_role: {
+    type: String,
+    default: "security",
+  },
+  select_society: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "societies",
     required: true,
   },
 });

@@ -20,19 +20,19 @@ const DetailsViewPopup = ({ onClose, perPersonAmount, members, totalAmount }) =>
         <div className="flex justify-between items-center mb-4">
           <label className="text-gray-600 font-medium">Per Person Amount:</label>
           <span className="font-medium text-gray-700">
-            ₹ {perPersonAmount.toLocaleString()}
+            {/* ₹ {perPersonAmount.toLocaleString()} */}
           </span>
         </div>
 
         <div className="flex justify-between items-center mb-4">
           <label className="text-gray-600 font-medium">Total Member:</label>
-          <span className="font-medium text-gray-700">{members}</span>
+          {/* <span className="font-medium text-gray-700">{members}</span> */}
         </div>
 
         <div className="flex justify-between items-center mb-6">
           <label className="text-gray-600 font-medium">Total Amount:</label>
           <span className="font-medium text-gray-800">
-            ₹ {totalAmount.toLocaleString()}
+            {/* ₹ {totalAmount.toLocaleString()} */}
           </span>
         </div>
 

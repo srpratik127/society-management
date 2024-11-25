@@ -51,7 +51,7 @@ const createOwner = async (req, res) => {
     };
     const profilePictureUrl = req.files?.profile_picture
       ? await uploadToCloudinary(req.files.profile_picture[0].path, 'profile_pictures')
-      : null;
+      : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKc08Wq1A-TIERnJUrHsmF9Asnmz5f_EnD5Mr8kQsJNZCdHjg_medKyoo&s";
     const aadharCardFrontUrl = req.files?.aadharCardFront
       ? await uploadToCloudinary(req.files.aadharCardFront[0].path, 'aadhar_cards')
       : null;
