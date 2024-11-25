@@ -26,6 +26,8 @@ const notificationSchema = new mongoose.Schema(
         },
       },
     ],
+    // extra
+    amount: { type: String, default: "" },
   },
   {
     timestamps: true,

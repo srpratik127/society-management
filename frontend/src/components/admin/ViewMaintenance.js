@@ -46,7 +46,7 @@ const ViewMaintenance = ({ maintenance }) => {
                           src={member?.user?.profile_picture}
                           alt="Profile"
                         />
-                        <span>{member?.user?.fullName}</span>
+                        <span className="text-nowrap">{member?.user?.fullName}</span>
                       </td>
                       <td className="text-center">
                         <span className="p-2 text-[#5678E9] bg-[#F6F8FB] font-semibold py-1 rounded-full">

@@ -7,8 +7,6 @@ function AddResident() {
   const resident = location.state?.resident;
   const [view, setView] = useState(resident?.role ? resident?.role : "owner");
 
-  console.log("residentdata inside AddResident", resident);
-
   return (
     <>
       <div className="flex px-8 pt-8">

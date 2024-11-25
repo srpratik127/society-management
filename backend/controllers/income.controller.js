@@ -27,6 +27,7 @@ const createIncome = async (req, res) => {
     const newNotification = await new Notification({
       title: "New Income Created",
       name: title,
+      amount: amount,
       message: `Per Person Amount : ₹${amount}
       A new income "${title}" has been created. `,
       users,

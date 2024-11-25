@@ -96,7 +96,7 @@ const Profile = () => {
             <h1 className="text-2xl font-semibold text-gray-700">
               {isEditing ? "Edit Profile" : "Profile"}
             </h1>
-            {!isEditing && !user.role && (
+            {!isEditing && user?.user_role === "admin" && (
               <button
                 onClick={() => setIsEditing(true)}
                 className="flex items-center bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white font-medium px-4 py-2 rounded-lg"
@@ -141,24 +141,17 @@ const Profile = () => {
                   )}
                 </div>
                 <h2 className="mt-4 text-xl font-medium capitalize">
-                  {user.role
-                    ? `${user?.fullName}`
-                    : `${user?.firstname} ${user?.lastname}`}
+                  {!user?.user_role === "admin"
+                    ? `${user?.firstname} ${user?.lastname}`
+                    : `${user?.fullName}`}
                 </h2>
               </div>
               <div className="col-span-2 grid grid-cols-2 gap-4 ">
                 <div className="col-span-2 md:col-span-1">
                   <label className="block font-medium mb-1" htmlFor="firstname">
-                    {user.role ? "Full Name*" : "First Name*"}
+                    {user?.user_role === "admin" ? "First Name*" : "Full Name*"}
                   </label>
-                  {user.role ? (
-                    <input
-                      type="text"
-                      disabled
-                      value={user.fullName}
-                      className={`w-full bg-white border p-2 rounded-md outline-none`}
-                    />
-                  ) : (
+                  {user?.user_role === "admin" ? (
                     <input
                       type="text"
                       id="firstname"
@@ -167,13 +160,33 @@ const Profile = () => {
                       onChange={handleChange}
                       className={`w-full bg-white border p-2 rounded-md outline-none`}
                     />
+                  ) : (
+                    <input
+                      type="text"
+                      disabled
+                      value={user.fullName}
+                      className={`w-full bg-white border p-2 rounded-md outline-none`}
+                    />
                   )}
                 </div>
                 <div className="col-span-2 md:col-span-1">
                   <label className="block font-medium mb-1" htmlFor="lastname">
-                    {user.role ? "Role*" : "Last Name*"}
+                    {user?.user_role === "admin"
+                      ? " Last Name* "
+                      : user?.user_role === "resident"
+                      ? "Role*"
+                      : "Shift*"}
                   </label>
-                  {user.role ? (
+                  {user?.user_role === "admin" ? (
+                    <input
+                      type="text"
+                      id="lastname"
+                      disabled={!isEditing}
+                      value={formData.lastname || ""}
+                      onChange={handleChange}
+                      className={`w-full bg-white border p-2 rounded-md outline-none`}
+                    />
+                  ) : user?.user_role === "resident" ? (
                     <input
                       type="text"
                       disabled
@@ -183,10 +196,8 @@ const Profile = () => {
                   ) : (
                     <input
                       type="text"
-                      id="lastname"
-                      disabled={!isEditing}
-                      value={formData.lastname || ""}
-                      onChange={handleChange}
+                      disabled
+                      value={user.shift}
                       className={`w-full bg-white border p-2 rounded-md outline-none`}
                     />
                   )}
@@ -235,16 +246,13 @@ const Profile = () => {
                 </div>
                 <div className="col-span-2 md:col-span-1">
                   <label className="block font-medium mb-1" htmlFor="country">
-                    {user.role ? "Gender*" : "Country*"}
+                    {user?.user_role === "admin"
+                      ? "Country*"
+                      : user?.user_role === "resident"
+                      ? "Gender*"
+                      : "Role*"}
                   </label>
-                  {user.role ? (
-                    <input
-                      type="text"
-                      disabled
-                      value={user.gender}
-                      className={`w-full bg-white border p-2 rounded-md outline-none`}
-                    />
-                  ) : (
+                  {user?.user_role === "admin" ? (
                     <input
                       type="text"
                       id="country"
@@ -253,20 +261,28 @@ const Profile = () => {
                       onChange={handleChange}
                       className={`w-full bg-white border p-2 rounded-md outline-none`}
                     />
+                  ) : (
+                    <input
+                      type="text"
+                      disabled
+                      value={
+                        user?.user_role === "resident"
+                          ? user.gender
+                          : user.user_role
+                      }
+                      className={`w-full bg-white border p-2 rounded-md outline-none`}
+                    />
                   )}
                 </div>
                 <div className="col-span-2 md:col-span-1">
                   <label className="block font-medium mb-1" htmlFor="state">
-                    {user.role ? "Wing*" : "State*"}
+                    {user?.user_role === "admin"
+                      ? "State*"
+                      : user?.user_role === "resident"
+                      ? "Wing*"
+                      : "Shift Date*"}
                   </label>
-                  {user.role ? (
-                    <input
-                      type="text"
-                      disabled
-                      value={user.wing}
-                      className={`w-full bg-white border p-2 rounded-md outline-none`}
-                    />
-                  ) : (
+                  {user?.user_role === "admin" ? (
                     <input
                       type="text"
                       id="state"
@@ -275,26 +291,41 @@ const Profile = () => {
                       onChange={handleChange}
                       className={`w-full bg-white border p-2 rounded-md outline-none`}
                     />
+                  ) : (
+                    <input
+                      type="text"
+                      disabled
+                      value={
+                        user?.user_role === "resident"
+                          ? user.wing
+                          : user.shiftDate
+                      }
+                      className={`w-full bg-white border p-2 rounded-md outline-none`}
+                    />
                   )}
                 </div>
                 <div className="col-span-2 md:col-span-1">
                   <label className="block font-medium mb-1" htmlFor="city">
-                    {user.role ? "Unit*" : "City*"}
+                    {user?.user_role === "admin"
+                      ? "City*"
+                      : user?.user_role === "resident"
+                      ? "Unit*"
+                      : "Shift Time*"}
                   </label>
-                  {user.role ? (
-                    <input
-                      type="text"
-                      disabled
-                      value={user.unit}
-                      className={`w-full bg-white border p-2 rounded-md outline-none`}
-                    />
-                  ) : (
+                  {user?.user_role === "admin" ? (
                     <input
                       type="text"
                       id="city"
                       disabled={!isEditing}
                       value={formData.city || ""}
                       onChange={handleChange}
+                      className={`w-full bg-white border p-2 rounded-md outline-none`}
+                    />
+                  ) : (
+                    <input
+                      type="text"
+                      disabled
+                      value={user?.user_role === "resident" ? user.unit : user.shiftTime}
                       className={`w-full bg-white border p-2 rounded-md outline-none`}
                     />
                   )}

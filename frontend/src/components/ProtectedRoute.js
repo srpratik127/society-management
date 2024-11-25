@@ -10,18 +10,14 @@ export const ProtectedRoute = ({ children }) => {
     return <Navigate to="/login" replace state={{ from: location }} />;
   }
 
-  if (user?.role) {
-    return location.pathname.startsWith("/resident") ? (
-      children
-    ) : (
-      <Navigate to="/resident" replace />
-    );
-  } else {
-    return location.pathname.startsWith("/admin") ? (
-      children
-    ) : (
-      <Navigate to="/admin" replace />
-    );
+  if (user?.user_role === "admin") {
+    return location.pathname.startsWith("/admin") ? (children) : (<Navigate to="/admin" replace />);
+  }  
+  else if (user?.user_role === "resident") {
+    return location.pathname.startsWith("/resident") ? (children) : (<Navigate to="/resident" replace />);
+  }
+  else if (user?.user_role === "security") {
+    return location.pathname.startsWith("/security") ? (children) : (<Navigate to="/security" replace />);
   }
 };
 
@@ -32,7 +28,7 @@ export const PublicRoute = ({ children }) => {
 
   return token ? (
     <Navigate
-      to={user.role ? "/resident" : "/admin"}
+      to={user?.user_role==="admin" ? "/admin" : user?.user_role==="resident" ? "/resident" : "/security"}
       replace
       state={{ from: location }}
     />

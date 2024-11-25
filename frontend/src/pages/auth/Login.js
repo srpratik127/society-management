@@ -45,7 +45,13 @@ const Login = () => {
         const parts = response.data.token.split(".");
         const user = JSON.parse(atob(parts[1])).user;
         toast.success("Login successful!");
-        navigate(user.role ? "/resident" :"/admin");
+        navigate(
+          user?.user_role === "admin"
+            ? "/admin"
+            : user?.user_role === "resident"
+            ? "/resident"
+            : "/security"
+        );
       } catch (error) {
         toast.error(error.message);
       }
@@ -57,7 +63,9 @@ const Login = () => {
 
   return (
     <div className="w-full max-w-md p-6 bg-white shadow rounded-md sm:max-w-sm md:max-w-md lg:max-w-lg min-w-[370px]">
-      <h2 className="text-3xl font-bold mb-6 text-gray-800 text-center">Login</h2>
+      <h2 className="text-3xl font-bold mb-6 text-gray-800 text-center">
+        Login
+      </h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <label
@@ -69,8 +77,9 @@ const Login = () => {
           <input
             type="text"
             id="emailOrPhone"
-            className={`w-full px-4 py-2 border ${errors.emailOrPhone ? "border-[#E74C3C]" : "border-gray-300"
-              } rounded-md focus:outline-none focus:ring-1 focus:ring-slate-600`}
+            className={`w-full px-4 py-2 border ${
+              errors.emailOrPhone ? "border-[#E74C3C]" : "border-gray-300"
+            } rounded-md focus:outline-none focus:ring-1 focus:ring-slate-600`}
             placeholder="Enter Your Phone Number Or Email"
             value={emailOrPhone}
             onChange={(e) => {
@@ -95,10 +104,11 @@ const Login = () => {
             <input
               type={showPassword ? "text" : "password"}
               id="password"
-              className={`w-full px-4 py-2 border ${errors.password
+              className={`w-full px-4 py-2 border ${
+                errors.password
                   ? "border-[#E74C3C]"
                   : "border-gray-300 focus:ring-1 focus:ring-slate-600"
-                } rounded-md focus:outline-none `}
+              } rounded-md focus:outline-none `}
               placeholder="Enter Password"
               value={password}
               onChange={(e) => {
@@ -146,10 +156,11 @@ const Login = () => {
 
         <button
           type="submit"
-          className={`w-full font-semibold py-2 px-4 rounded-md ${isFormValid
+          className={`w-full font-semibold py-2 px-4 rounded-md ${
+            isFormValid
               ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white"
               : "bg-[#F6F8FB] text-[#A7A7A7]"
-            }`}
+          }`}
           disabled={!isFormValid}
         >
           Sign In
@@ -163,7 +174,6 @@ const Login = () => {
         </p>
       </form>
     </div>
-
   );
 };
 

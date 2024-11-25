@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import DetailPopup from "../../components/models/DetailPopup";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
