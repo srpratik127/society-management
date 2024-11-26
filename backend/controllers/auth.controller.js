@@ -6,6 +6,7 @@ const cloudinary = require("../utils/cloudinary");
 const fs = require("fs");
 const Society = require("../models/society.model");
 const Guard = require("../models/guard.model");
+const cookie = require("cookie")
 
 const Register = async (req, res) => {
   try {
@@ -84,6 +85,14 @@ const Login = async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: "30d" }
     );
+
+    res.cookie("authToken", token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "strict",
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+    });
+
     res.status(200).json({ msg: "Login successful", token });
   } catch (error) {
     console.error("Error during login:", error.message);
