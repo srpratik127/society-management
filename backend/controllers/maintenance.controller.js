@@ -74,7 +74,7 @@ const getStatus = async (req, res) => {
     })
       .populate({
         path: "member.user",
-        select: "fullName profile_picture wing unit phone role",
+        select: "fullName profile_picture wing unit phone role email",
       })
       .exec();
 

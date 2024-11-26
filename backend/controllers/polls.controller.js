@@ -35,13 +35,13 @@ const createPoll = async (req, res) => {
     if (model === "Resident") {
       populatedPoll = await Polls.findById(savedPoll._id).populate({
         path: "createdBy._id",
-        select: "fullName",
+        select: "fullName profile_picture",
         model: "Resident",
       });
     } else if (model === "Admin") {
       populatedPoll = await Polls.findById(savedPoll._id).populate({
         path: "createdBy._id",
-        select: "firstname lastname", 
+        select: "firstname lastname profile_picture", 
         model: "Admin",
       });
     }
@@ -54,7 +54,6 @@ const createPoll = async (req, res) => {
     res.status(500).json({ message: "Error creating poll" });
   }
 };
-
 
 const votePoll = async (req, res) => {
   try {
@@ -101,13 +100,19 @@ const votePoll = async (req, res) => {
     });
     poll.totalVotes = poll.options.reduce((sum, option) => sum + option.votes, 0);
     await poll.save();
-    res.status(200).json({ message: "Vote updated successfully", poll });
+
+    const populatedPoll = await Polls.findById(pollId).populate({
+      path: "createdBy._id",
+      select: "fullName firstname lastname profile_picture",
+      model: poll.createdBy.model,
+    });
+
+    res.status(200).json({ message: "Vote updated successfully", poll: populatedPoll });
   } catch (error) {
     console.error("Error voting on poll:", error);
     res.status(500).json({ message: "Error voting on poll" });
   }
 };
-
 
 const getPollResultsById = async (req, res) => {
   try {
@@ -134,7 +139,6 @@ const getPollResultsById = async (req, res) => {
   }
 };
 
-
 const getAllPollResults = async (req, res) => {
   try {
     const polls = await Polls.find();
@@ -144,7 +148,7 @@ const getAllPollResults = async (req, res) => {
           return await Polls.findById(poll._id)
             .populate({
               path: "createdBy._id",
-              select: "fullName email",
+              select: "fullName email profile_picture",
               model: "Resident",
             })
             .populate("options.voters", "fullName email");
@@ -152,12 +156,12 @@ const getAllPollResults = async (req, res) => {
           return await Polls.findById(poll._id)
             .populate({
               path: "createdBy._id",
-              select: "firstname lastname email",
+              select: "firstname lastname email profile_picture",
               model: "Admin",
             })
             .populate({
               path: "options.voters",
-              select: "firstname lastname email",
+              select: "firstname lastname email profile_picture",
               model: "Admin", 
             });
         }
