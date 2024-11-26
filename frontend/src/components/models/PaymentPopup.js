@@ -1,7 +1,17 @@
-import React, { useState, useEffect } from "react";
+import axios from "axios";
+import React, { useState } from "react";
 import DatePicker from "react-datepicker";
+import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
 
-const PaymentPopup = ({ isOpen, onClose }) => {
+const PaymentPopup = ({
+  isOpen,
+  onClose,
+  selectMaintenance,
+  setMaintenance,
+  selectOtherIncome,
+  setOtherIncomeData,
+}) => {
   const [isConform, setIsConform] = useState(false);
   const [payMethod, setPayMethod] = useState(null);
   const [formData, setFormData] = useState({
@@ -11,6 +21,7 @@ const PaymentPopup = ({ isOpen, onClose }) => {
     cvv: "",
   });
   const [formErrors, setFormErrors] = useState({});
+  const userId = useSelector((store) => store.auth.user?._id);
 
   const validateForm = () => {
     const { cardName, cardNumber, expiryDate, cvv } = formData;
@@ -27,14 +38,88 @@ const PaymentPopup = ({ isOpen, onClose }) => {
     return Object.keys(errors).length === 0;
   };
 
-  const handleConfirmClick = () => {
-    if (!isConform) {
-      setIsConform(true);
-    } else {
-      if (validateForm()) {
-        alert("Payment Successful!");
+  const handleConfirmClick = async () => {
+    if (payMethod === "Cash Payment") {
+      // Directly process cash payment
+      try {
+        if (selectOtherIncome) {
+          const response = await axios.put(
+            `${process.env.REACT_APP_BASE_URL}/v1/api/income/add-member/${selectOtherIncome._id}`,
+            {
+              user: userId,
+              paymentMethod: "cash",
+              payAmount: selectOtherIncome.amount,
+            }
+          );
+          setOtherIncomeData((prev) =>
+            prev.filter(
+              (OtherIncome) => OtherIncome._id !== selectOtherIncome._id
+            )
+          );
+        }
+        if (selectMaintenance) {
+          const response = await axios.put(
+            `${process.env.REACT_APP_BASE_URL}/v1/api/maintenance/${selectMaintenance._id}`,
+            { userId, paymentMethod: "cash" }
+          );
+          setMaintenance((prev) =>
+            prev.filter(
+              (Maintenance) => Maintenance._id !== selectMaintenance._id
+            )
+          );
+        }
+        toast.success("Cash Payment Successful!");
         onClose();
         resetForm();
+      } catch (error) {
+        toast.error(error.message);
+        alert("Payment failed. Please try again.");
+      }
+    } else {
+      // For online payment, check if already confirmed
+      if (!isConform) {
+        setIsConform(true);
+      } else {
+        if (validateForm()) {
+          const paymentType =
+            payMethod === "Master Card" || payMethod === "Visa Card"
+              ? "online"
+              : null;
+          try {
+            if (selectOtherIncome) {
+              const response = await axios.put(
+                `${process.env.REACT_APP_BASE_URL}/v1/api/income/add-member/${selectOtherIncome._id}`,
+                {
+                  user: userId,
+                  paymentMethod: paymentType,
+                  payAmount: selectOtherIncome.amount,
+                }
+              );
+              setOtherIncomeData((prev) =>
+                prev.filter(
+                  (OtherIncome) => OtherIncome._id !== selectOtherIncome._id
+                )
+              );
+            }
+            if (selectMaintenance) {
+              const response = await axios.put(
+                `${process.env.REACT_APP_BASE_URL}/v1/api/maintenance/${selectMaintenance._id}`,
+                { userId, paymentMethod: paymentType }
+              );
+              setMaintenance((prev) =>
+                prev.filter(
+                  (Maintenance) => Maintenance._id !== selectMaintenance._id
+                )
+              );
+            }
+            toast.success("Online Payment Successful!");
+            onClose();
+            resetForm();
+          } catch (error) {
+            toast.error(error.message);
+            alert("Payment failed. Please try again.");
+          }
+        }
       }
     }
   };

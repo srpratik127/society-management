@@ -1,47 +1,52 @@
 const mongoose = require("mongoose");
 
 const incomeSchema = new mongoose.Schema({
-    title: {
+  title: {
+    type: String,
+    required: true,
+  },
+  date: {
+    type: Date,
+    required: true,
+  },
+  dueDate: {
+    type: Date,
+    required: true,
+  },
+  description: {
+    type: String,
+    required: true,
+  },
+  amount: {
+    type: Number,
+    required: true,
+  },
+  members: [
+    {
+      user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Resident",
+        required: true,
+      },
+      status: {
         type: String,
-        required: true
-    },
-    date: {
-        type: Date,
-        required: true
-    },
-    dueDate: {
-        type: Date,
-        required: true
-    },
-    description: {
+        enum: ["pending", "done"],
+        default: "pending",
+      },
+      paymentDate: {
         type: String,
-        required: true
+        default: new Date().toISOString().split("T")[0],
+      },
+      paymentMethod: {
+        type: String,
+      },
+      payAmount: {
+        type: String,
+      },
     },
-    amount: {
-        type: Number,
-        required: true
-    },
-    members: [
-        {
-          user: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Resident", 
-            required: true,
-          },
-          paymentDate: {
-            type: String, 
-            default: new Date().toISOString().split('T')[0],
-          },
-          paymentMethod: {
-            type: String, 
-          },
-          payAmount: {
-            type: String, 
-          }
-        }
-      ]
+  ],
 });
 
 const income = mongoose.model("income", incomeSchema);
 
-module.exports = income
+module.exports = income;

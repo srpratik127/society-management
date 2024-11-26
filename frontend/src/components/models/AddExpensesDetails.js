@@ -52,7 +52,7 @@ const AddExpensesDetails = ({ onClose, setExpansesData }) => {
         formDataToSend.append("amount", amount);
         formDataToSend.append("bill", fileInputRef.current.files[0]);
         const response = await axios.post(
-          `${process.env.REACT_APP_BASE_URL}/api/expenses`,
+          `${process.env.REACT_APP_BASE_URL}/v1/api/expenses`,
           formDataToSend
         );
         toast.success("Expenses Create successful!");

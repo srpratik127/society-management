@@ -1,7 +1,7 @@
 const Facility = require("../models/facility.model");
 const Notification = require("../models/notification.model");
 const Resident = require("../models/resident.model");
-const User = require("../models/user.model");
+const Admin = require("../models/admin.model");
 
 const createFacility = async (req, res) => {
   try {
@@ -19,9 +19,9 @@ const createFacility = async (req, res) => {
         _id,
         model: "Resident",
       })),
-      ...(await User.find().select("_id")).map(({ _id }) => ({
+      ...(await Admin.find().select("_id")).map(({ _id }) => ({
         _id,
-        model: "User",
+        model: "Admin",
       })),
     ];
 

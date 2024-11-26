@@ -35,7 +35,7 @@ const requestSchema = new mongoose.Schema(
     },
     userType: {
       type: String,
-      enum: ["User", "Resident"],
+      enum: ["Admin", "Resident"],
       required: true,
     },
     user: {

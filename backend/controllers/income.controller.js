@@ -1,18 +1,45 @@
 const Income = require("../models/income.model");
+const Notification = require("../models/notification.model");
+const Resident = require("../models/resident.model");
+const Admin = require("../models/admin.model");
 
 const createIncome = async (req, res) => {
   try {
     const { title, date, dueDate, description, amount } = req.body;
-    const response = new Income({
+    const newIncome = new Income({
       title,
       date,
       dueDate,
       description,
       amount,
     });
-    const data = await response.save();
-    res.status(200).json({ data, message: "Income created successfully" });
+    const savedIncome = await newIncome.save();
+    const users = [
+      ...(await Resident.find().select("_id")).map(({ _id }) => ({
+        _id,
+        model: "Resident",
+      })),
+      ...(await Admin.find().select("_id")).map(({ _id }) => ({
+        _id,
+        model: "Admin",
+      })),
+    ];
+    const newNotification = await new Notification({
+      title: "New Income Created",
+      name: title,
+      amount: amount,
+      message: `Per Person Amount : ₹${amount}
+      A new income "${title}" has been created. `,
+      users,
+    }).save();
+
+    res.status(201).json({
+      data: savedIncome,
+      notification: newNotification,
+      message: "Income created successfully and notification sent.",
+    });
   } catch (error) {
+    console.error("Error creating income:", error);
     res
       .status(500)
       .json({ message: "Error creating Income", error: error.message });
@@ -81,6 +108,7 @@ const addMemberToIncome = async (req, res) => {
             user: user,
             paymentMethod: paymentMethod,
             payAmount: payAmount,
+            status: "done",
           },
         },
       },
@@ -106,10 +134,38 @@ const addMemberToIncome = async (req, res) => {
   }
 };
 
+const getIncomeExcludingMembers = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // 1. userId is not in members.user
+    // 2. dueDate is in the past  -- not applied
+    const incomes = await Income.find({
+      $and: [
+        { "members.user": { $ne: userId } },
+        // { dueDate: { $lt: new Date() } },
+      ],
+    }).select("-members");
+
+    res.status(200).json({
+      success: true,
+      data: incomes,
+    });
+  } catch (error) {
+    console.error("Error fetching incomes:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error fetching incomes",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   createIncome,
   getIncome,
   updateIncome,
+  getIncomeExcludingMembers,
   deleteIncome,
   addMemberToIncome,
 };

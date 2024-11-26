@@ -60,12 +60,12 @@ const AddEditRequestTracking = ({
 
         if (existingData) {
           response = await axios.put(
-            `${process.env.REACT_APP_BASE_URL}/api/requests/${existingData._id}`,
+            `${process.env.REACT_APP_BASE_URL}/v1/api/requests/${existingData._id}`,
             requestData
           );
         } else {
           response = await axios.post(
-            `${process.env.REACT_APP_BASE_URL}/api/requests`,
+            `${process.env.REACT_APP_BASE_URL}/v1/api/requests`,
             requestData
           );
         }

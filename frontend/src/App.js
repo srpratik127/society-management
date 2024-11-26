@@ -35,6 +35,7 @@ import MaintenanceInvoices from "./pages/user/MaintenanceInvoices";
 import Poll from "./pages/user/Polls";
 import ViewInvoice from "./components/user/ViewInvoice";
 import CommunitiesDiscussion from "./pages/user/CommunitiesDiscussion";
+import Security from "./pages/security/Security";
 
 function App() {
   return (
@@ -46,7 +47,8 @@ function App() {
           <Route path="forget" element={<PublicRoute><ForgetPassword /></PublicRoute>} />
           <Route path="get-otp" element={<PublicRoute><OtpScreen /></PublicRoute>} />
           <Route path="reset" element={<PublicRoute><ResetPassword /></PublicRoute>} />
-        </Route> 
+        </Route>
+
         <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>}>
           <Route path="" element={<Dashboard />} />
           <Route path="profile" element={<Profile />} />
@@ -68,6 +70,7 @@ function App() {
 
         <Route path="/resident" element={<ProtectedRoute><User /></ProtectedRoute>}>
           <Route path="" element={<Dashboard />} />
+          <Route path="profile" element={<Profile />} />
           <Route path="access-forums" element={<Chat />} />
           <Route path="personal-detail" element={<PersonalDetails />} />
           <Route path="service-and-complaint" element={<ServiceAndComplaint />} />
@@ -75,9 +78,14 @@ function App() {
           <Route path="maintenance-invoices" element={<MaintenanceInvoices />} />
           <Route path="view-invoice" exact element={<ViewInvoice />} />
           <Route path="other-invoice" element={<OtherIncomeInvoice />} />
-          <Route path="resident-security-protocols" element={<ResidentSecurityProtocols />} />
+          <Route path="security-protocols" element={<ResidentSecurityProtocols />} />
           <Route path="polls" element={<Poll />} />
           <Route path="communities-discussion" element={<CommunitiesDiscussion />} />
+        </Route>
+
+        <Route path="/security" element={<ProtectedRoute><Security /></ProtectedRoute>}>
+          <Route path="" element={<Dashboard />} />
+          <Route path="profile" element={<Profile />} />
         </Route>
 
         <Route path="*" element={<ErrorPage />} />

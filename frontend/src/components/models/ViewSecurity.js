@@ -12,7 +12,7 @@ const ViewSecurity = ({ guard, onClose }) => {
         </div>
         <div className="flex items-center mb-4 py-2">
           <img
-            src={guard.profile_photo || "/assets/Avatar.png"}
+            src={guard.profile_picture || "/assets/Avatar.png"}
             className="w-[70px] h-[70px] rounded-full mr-3 border-[2px]"
             alt="Guard avatar"
           />

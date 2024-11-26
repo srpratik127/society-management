@@ -1,7 +1,7 @@
 const Maintenance = require("../models/maintenance.model");
 const Resident = require("../models/resident.model");
 const Notification = require("../models/notification.model");
-const User = require("../models/user.model");
+const Admin = require("../models/admin.model");
 
 const addMaintenance = async (req, res) => {
   try {
@@ -36,9 +36,9 @@ const addMaintenance = async (req, res) => {
         _id,
         model: "Resident",
       })),
-      ...(await User.find().select("_id")).map(({ _id }) => ({
+      ...(await Admin.find().select("_id")).map(({ _id }) => ({
         _id,
-        model: "User",
+        model: "Admin",
       })),
     ];
     const newNotification = await new Notification({
@@ -49,7 +49,8 @@ const addMaintenance = async (req, res) => {
     }).save();
 
     res.status(200).json({
-      data: populatedMaintenance, notification: newNotification,
+      data: populatedMaintenance,
+      notification: newNotification,
       message: "Maintenance record created successfully",
     });
   } catch (error) {
@@ -64,21 +65,32 @@ const getStatus = async (req, res) => {
   try {
     const { status } = req.params;
 
-    if (status === "pending" || status === "done") {
-      const response = await Maintenance.find({ "member.status": status })
-        .populate({
-          path: "member.user",
-          select: "fullName profile_picture wing unit phone role",
-        })
-        .exec();
-
-      res.status(200).json(response);
-    } else {
-      res.status(404).json({ message: "Invalid status value" });
-      console.log("Invalid status value");
+    if (status !== "pending" && status !== "done") {
+      return res.status(404).json({ message: "Invalid status value" });
     }
+
+    const response = await Maintenance.find({
+      "member.status": status,
+    })
+      .populate({
+        path: "member.user",
+        select: "fullName profile_picture wing unit phone role",
+      })
+      .exec();
+
+    const filteredMembers = response.flatMap((record) =>
+      record.member
+        .filter((member) => member.status === status)
+        .map((member) => ({
+          ...member.toObject(),
+          penaltyDay: record.penaltyDay,
+          amount: record.amount,
+        }))
+    );
+
+    res.status(200).json(filteredMembers);
   } catch (error) {
-    console.log("Get status controller error:", error);
+    console.error("Get status controller error:", error);
     res
       .status(500)
       .json({ message: "Error fetching status data", error: error.message });
@@ -113,10 +125,14 @@ const getPendingMaintenanceByUser = async (req, res) => {
       "member.status": "pending",
     });
 
-    const filteredRecords = maintenanceRecords.map(record => {
-      const member = record.member.find(m => m.user.toString() === userId && m.status === "pending");
-      return member ? { ...record.toObject(), member: [member] } : null;
-    }).filter(Boolean);
+    const filteredRecords = maintenanceRecords
+      .map((record) => {
+        const member = record.member.find(
+          (m) => m.user.toString() === userId && m.status === "pending"
+        );
+        return member ? { ...record.toObject(), member: [member] } : null;
+      })
+      .filter(Boolean);
 
     // if (!filteredRecords.length) {
     //   return res.status(404).json({ message: 'No pending maintenance records found for this user' });
@@ -125,7 +141,10 @@ const getPendingMaintenanceByUser = async (req, res) => {
     res.status(200).json(filteredRecords);
   } catch (error) {
     console.error("Error fetching pending maintenance for user:", error);
-    res.status(500).json({ message: 'Error fetching pending maintenance records', error: error.message });
+    res.status(500).json({
+      message: "Error fetching pending maintenance records",
+      error: error.message,
+    });
   }
 };
 
@@ -136,7 +155,6 @@ const applyPenalties = async () => {
   //     "member.status": "pending",
   //     penaltyDay: { $lte: today },
   //   });
-
   //   const updatePromises = maintenanceRecords.map(async (record) => {
   //     const updatedMembers = record.member.map((member) => {
   //       if (member.status === "pending") {
@@ -148,14 +166,12 @@ const applyPenalties = async () => {
   //       }
   //       return member;
   //     });
-
   //     return Maintenance.findByIdAndUpdate(
   //       record._id,
   //       { $set: { amount: record.amount, member: updatedMembers } },
   //       { new: true }
   //     );
   //   });
-
   //   await Promise.all(updatePromises);
   //   console.log("Penalties applied to overdue maintenance records.");
   // } catch (error) {
@@ -163,10 +179,78 @@ const applyPenalties = async () => {
   // }
 };
 
+const paymentForMaintenance = async (req, res) => {
+  try {
+    const { maintenanceId } = req.params;
+    const { userId, paymentMethod } = req.body;
+
+    if (!userId || !maintenanceId || !paymentMethod) {
+      return res.status(400).json({ message: "All fields are required." });
+    }
+
+    const maintenance = await Maintenance.findById(maintenanceId);
+
+    if (!maintenance) {
+      return res.status(404).json({ message: "Maintenance record not found." });
+    }
+
+    const member = maintenance.member.find((m) => m.user.toString() === userId);
+
+    if (!member) {
+      return res
+        .status(404)
+        .json({ message: "Admin not found in maintenance record." });
+    }
+
+    member.status = "done";
+    member.paymentMethod = paymentMethod;
+
+    await maintenance.save();
+
+    res.status(200).json({
+      message: "Payment status updated successfully.",
+      data: maintenance,
+    });
+  } catch (error) {
+    console.error("Error updating payment status:", error);
+    res.status(500).json({
+      message: "Error updating payment status.",
+      error: error.message,
+    });
+  }
+};
+
+const getTotalAmount = async (req, res) => {
+  try {
+    const maintenanceRecords = await Maintenance.find().populate(
+      "member.user",
+      "fullName"
+    );
+
+    const totalAmount = maintenanceRecords.reduce((total, record) => {
+      const doneMembers = record.member.filter((m) => m.status === "done");
+      return total + doneMembers.length * record.amount;
+    }, 0);
+
+    res.status(200).json({
+      message: "Total amount calculated successfully.",
+      totalAmount,
+    });
+  } catch (error) {
+    console.error("Error calculating total amount:", error);
+    res.status(500).json({
+      message: "Error calculating total amount.",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   addMaintenance,
   getStatus,
   getAllStatus,
   getPendingMaintenanceByUser,
+  paymentForMaintenance,
   applyPenalties,
+  getTotalAmount,
 };

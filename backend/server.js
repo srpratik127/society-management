@@ -29,7 +29,7 @@ const io = socketIo(server, {
   transports: ["websocket", "polling"],
 });
 
-const userRouter = require("./routes/user.route.js");
+const authRouter = require("./routes/auth.route.js");
 const SocietyRouter = require("./routes/society.route.js");
 const ownerRoutes = require("./routes/resident.route.js");
 const complaintRoutes = require("./routes/complaint.route.js");
@@ -49,31 +49,34 @@ const notificationRoutes = require("./routes/notification.routes.js");
 const polls = require("./routes/polls.route.js");
 const chatRoutes = require("./routes/chat.routes.js");
 const Message = require("./models/Message.js");
+const GroupChat = require('./models/groupMessage.model.js');
+const Resident = require("./models/resident.model.js");
+const User = require("./models/admin.model.js");
 
 app.get("/", (req, res) => {
   res.send("Welcome...!!");
 });
 
-app.use("/users", userRouter);
-app.use("/society", SocietyRouter);
-app.use("/forgetpassword", forgetPassword);
-app.use("/api/complaints", complaintRoutes);
-app.use("/api/numbers", importantNumRoutes);
-app.use("/api/maintenance", maintenance);
-app.use("/api/resident", ownerRoutes);
-app.use("/api/announcement", announcement);
-app.use("/api/income", income);
-app.use("/api/expenses", expenseDetailsRoutes);
-app.use("/api/notes", notesRoutes);
-app.use("/api/facilities", facilitiesRoutes);
-app.use("/api/requests", requestsRoutes);
-app.use("/api/protocol", protocol);
-app.use("/api/guard", guard);
-app.use("/api/visitors", visitors);
-app.use("/api/user/polls", polls);
-app.use("/api/notifications", notificationRoutes);
-app.use("/api/polls", polls);
-app.use("/api/chat", chatRoutes);
+app.use("/v1/api/auth", authRouter);
+app.use("/v1/api/society", SocietyRouter);
+app.use("/v1/api/forget-password", forgetPassword);
+app.use("/v1/api/complaints", complaintRoutes);
+app.use("/v1/api/numbers", importantNumRoutes);
+app.use("/v1/api/maintenance", maintenance);
+app.use("/v1/api/resident", ownerRoutes);
+app.use("/v1/api/announcement", announcement);
+app.use("/v1/api/income", income);
+app.use("/v1/api/expenses", expenseDetailsRoutes);
+app.use("/v1/api/notes", notesRoutes);
+app.use("/v1/api/facilities", facilitiesRoutes);
+app.use("/v1/api/requests", requestsRoutes);
+app.use("/v1/api/protocol", protocol);
+app.use("/v1/api/guard", guard);
+app.use("/v1/api/visitors", visitors);
+// app.use("/v1/api/user/polls", polls);
+app.use("/v1/api/notifications", notificationRoutes);
+app.use("/v1/api/polls", polls);
+app.use("/v1/api/chat", chatRoutes);
 
 io.on("connection", (socket) => {
   console.log("New user connected");
@@ -99,7 +102,57 @@ io.on("connection", (socket) => {
       console.error("Error handling message:", error);
     }
   });
-  socket.on("disconnect", () => {
+
+  socket.on('joinGroup', async ({ userId, groupId }) => {
+    try {
+      const groupChat = await GroupChat.findById(groupId);
+      if (!groupChat) {
+        socket.emit('error', { message: 'Group not found' });
+        return;
+      }
+
+      const isResident = await Resident.findById(userId);
+      const isUser = await User.findById(userId);
+
+      if (!isResident && !isUser) {
+        socket.emit('error', { message: 'User not found in either Residents or Users' });
+        return;
+      }
+
+      socket.userId = userId;
+      socket.groupId = groupId;
+
+      socket.join(groupId);
+      console.log(`User ${userId} joined group ${groupId}`);
+
+      socket.emit('groupMembers', groupChat.groupMembers);
+    } catch (error) {
+      console.error("Error while user joining the group:", error);
+      socket.emit('error', { message: 'Error joining group' });
+    }
+  });
+
+  socket.on('sendGroupMessage', async ({ senderId, groupId, message, mediaUrl }) => {
+    try {
+      const groupChat = await GroupChat.findById(groupId);
+      if (!groupChat) {
+        socket.emit('error', { message: 'Group not found' });
+        return;
+      }
+
+      const newMessage = { senderId, message, mediaUrl, createdAt: new Date() };
+
+      groupChat.messages.push(newMessage);
+      await groupChat.save();
+
+      io.to(groupId).emit('groupMessage', newMessage);
+    } catch (error) {
+      console.error("Error sending group message:", error);
+      socket.emit('error', { message: 'Error sending message' });
+    }
+  });
+
+  socket.on('disconnect', () => {
     console.log(`${socket.userId} disconnected`);
   });
 });

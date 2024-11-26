@@ -28,7 +28,7 @@ const ForgetPassword = () => {
     if (validate()) {
       try {
         const response = await axios.post(
-          `${process.env.REACT_APP_BASE_URL}/forgetpassword/otpmail`,
+          `${process.env.REACT_APP_BASE_URL}/v1/api/forget-password/otpmail`,
           {
             email: emailOrPhone,
           }

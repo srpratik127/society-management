@@ -1,11 +1,11 @@
 import React from "react";
+import { Outlet } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
 import Navbar from "../../components/Navbar";
-import { Outlet } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { removeMenu } from "../../store/ToggleMenuSlice";
 
-const Admin = () => {
+const Security = () => {
   const dispatch = useDispatch();
   const isOpenMenu = useSelector((store) => store.menu.openMenu);
 
@@ -25,4 +25,4 @@ const Admin = () => {
   );
 };
 
-export default Admin;
+export default Security;

@@ -1,10 +1,11 @@
-const User = require("../models/user.model");
+const Admin = require("../models/admin.model");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const Resident = require("../models/resident.model");
 const cloudinary = require("../utils/cloudinary");
 const fs = require("fs");
 const Society = require("../models/society.model");
+const Guard = require("../models/guard.model");
 
 const Register = async (req, res) => {
   try {
@@ -26,18 +27,18 @@ const Register = async (req, res) => {
     }
 
     if (!password) {
-      return res.status(400).json({ msg: "Passwords is mendetory" });
+      return res.status(400).json({ msg: "Passwords is mandatory" });
     }
 
-    let user = await User.findOne({ email });
+    let user = await Admin.findOne({ email });
     if (user) {
-      return res.status(400).json({ msg: "User already exists" });
+      return res.status(400).json({ msg: "Admin already exists" });
     }
 
     const salt = await bcrypt.genSalt(10);
     const hashpassword = await bcrypt.hash(password, salt);
 
-    const newUser = new User({
+    const newUser = new Admin({
       firstname,
       lastname,
       email,
@@ -50,7 +51,7 @@ const Register = async (req, res) => {
     });
 
     await newUser.save();
-    res.status(201).json({ msg: "User registered successfully" });
+    res.status(201).json({ msg: "Admin registered successfully" });
   } catch (error) {
     console.error("Error during registration:", error.message);
     res.status(500).json({ msg: "Server error" });
@@ -60,11 +61,16 @@ const Register = async (req, res) => {
 const Login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    let user = await User.findOne({ email });
+    let user = await Admin.findOne({ email });
 
     if (!user) {
       user = await Resident.findOne({ email });
     }
+
+    if (!user) {
+      user = await Guard.findOne({ email });
+    }
+
     if (!user) {
       return res.status(400).json({ msg: "email not exists" });
     }
@@ -85,7 +91,6 @@ const Login = async (req, res) => {
   }
 };
 
-
 const updateUser = async (req, res) => {
   try {
     const { id } = req.params;
@@ -100,21 +105,28 @@ const updateUser = async (req, res) => {
       select_society,
       profile_picture,
     } = req.body;
-    const user = await User.findById(id);
+    const user = await Admin.findById(id);
     if (!user) {
       return res.status(404).json({ msg: "User not found" });
     }
     let profilePictureUrl = profile_picture;
     if (req.file) {
-      if (user.profile_picture && user.profile_picture.includes("cloudinary.com")) {
-        const publicIdWithExtension = user.profile_picture.split('/').pop();
-        const oldProfilePicturePublicId = `profile_pictures/${publicIdWithExtension.split('.')[0]}`;
-        await cloudinary.uploader.destroy(oldProfilePicturePublicId, (error, result) => {
-          if (error) {
-            console.error("Error deleting old image from Cloudinary:", error);
-          } else {
-            console.log("Old image deleted from Cloudinary:", result);
-          }
+      if (
+        user.profile_picture &&
+        user.profile_picture.includes("cloudinary.com")
+      ) {
+        const publicIdWithExtension = user.profile_picture.split("/").pop();
+        const oldProfilePicturePublicId = `profile_pictures/${
+          publicIdWithExtension.split(".")[0]
+        }`;
+        await cloudinary.uploader.destroy(
+          oldProfilePicturePublicId,
+          (error, result) => {
+            if (error) {
+              console.error("Error deleting old image from Cloudinary:", error);
+            } else {
+              console.log("Old image deleted from Cloudinary:", result);
+            }
         });
       }
       const result = await cloudinary.uploader.upload(req.file.path, {
@@ -143,7 +155,7 @@ const updateUser = async (req, res) => {
       });
     }
 
-    const updatedUser = await User.findByIdAndUpdate(
+    const updatedUser = await Admin.findByIdAndUpdate(
       id,
       {
         firstname,
@@ -153,11 +165,11 @@ const updateUser = async (req, res) => {
         country,
         state,
         city,
-        select_society: parsedSociety._id, 
+        select_society: parsedSociety._id,
         profile_picture: profilePictureUrl,
       },
       { new: true, runValidators: true }
-    ); 
+    );
     if (!updatedUser) {
       return res.status(404).json({ msg: "User not found" });
     }
@@ -184,7 +196,7 @@ const updateUser = async (req, res) => {
 const verifyPassword = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
+    const user = await Admin.findOne({ email });
     if (!user) {
       return res.status(400).json({
         success: false,

@@ -18,7 +18,7 @@ const CreateComplaint = () => {
     const fetchComplainList = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_BASE_URL}/api/complaints`
+          `${process.env.REACT_APP_BASE_URL}/v1/api/complaints`
         );
         setComplaints(response?.data?.data);
       } catch (error) {
@@ -32,7 +32,7 @@ const CreateComplaint = () => {
   const handleDelete = async () => {
     try {
       await axios.delete(
-        `${process.env.REACT_APP_BASE_URL}/api/complaints/${selectedComplain._id}`
+        `${process.env.REACT_APP_BASE_URL}/v1/api/complaints/${selectedComplain._id}`
       );
       setComplaints((prev) =>
         prev.filter((complain) => complain._id !== selectedComplain._id)
@@ -87,7 +87,7 @@ const CreateComplaint = () => {
           <tbody>
             {complaints.length > 0 ? (
               complaints.map((entry, index) => (
-                <tr key={index} className="border-b border-gray-200 ">
+                <tr key={index} className="border-b border-gray-200 capitalize">
                   <td className="py-3 px-4 text-gray-700 flex text-nowrap gap-3 items-center mr-6">
                     <img
                       src={entry.user?.profile_picture}

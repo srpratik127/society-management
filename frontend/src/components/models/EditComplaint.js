@@ -18,7 +18,7 @@ const EditComplaint = ({ closePopup, selectedComplain, setComplainList }) => {
   const handleSave = async () => {
     try {
       const response = await axios.put(
-        `${process.env.REACT_APP_BASE_URL}/api/complaints/${selectedComplain._id}`,
+        `${process.env.REACT_APP_BASE_URL}/v1/api/complaints/${selectedComplain._id}`,
         {
           complainerName,
           complaintName,

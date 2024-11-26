@@ -10,7 +10,7 @@ const AnnouncementData = () => {
     const fetchComplainList = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_BASE_URL}/api/announcement`
+          `${process.env.REACT_APP_BASE_URL}/v1/api/announcement`
         );
         setAnnouncements(response?.data);
       } catch (err) {

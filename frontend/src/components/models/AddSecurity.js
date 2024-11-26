@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState, useRef } from "react";
 import DatePicker from "react-datepicker";
 import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
 
 const AddSecurity = ({ isOpen, onClose, setGuards }) => {
   const [formData, setFormData] = useState({
@@ -18,6 +19,7 @@ const AddSecurity = ({ isOpen, onClose, setGuards }) => {
   const [errors, setErrors] = useState({});
   const fileInputRef = useRef(null);
   const photoInputRef = useRef(null);
+  const user = useSelector((store) => store.auth.user);
 
   const handleFileChange = (setter) => (e) => setter(e.target.files[0]?.name || "");
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -44,8 +46,9 @@ const AddSecurity = ({ isOpen, onClose, setGuards }) => {
       Object.entries(formData).forEach(([key, value]) => formDataToSend.append(key, value));
       if (fileInputRef.current.files[0]) formDataToSend.append("aadhar_card", fileInputRef.current.files[0]);
       if (photoInputRef.current.files[0]) formDataToSend.append("profile_photo", photoInputRef.current.files[0]);
+      formDataToSend.append("select_society", user.select_society);
 
-      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/api/guard`, formDataToSend, {
+      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/v1/api/guard`, formDataToSend, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       if (response.data?.data) {
@@ -58,7 +61,7 @@ const AddSecurity = ({ isOpen, onClose, setGuards }) => {
     }
   };
 
-  const isFormValid = Object.values(formData).every(Boolean) && aadharCardFileName && photoFileName;
+  const isFormValid = Object.values(formData).every(Boolean) && aadharCardFileName;
 
   if (!isOpen) return null;
 

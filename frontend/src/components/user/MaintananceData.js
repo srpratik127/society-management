@@ -9,21 +9,42 @@ const MaintenanceData = ({ isViewInvoice }) => {
   const [maintenance, setMaintenance] = useState([]);
   const user = useSelector((store) => store.auth.user);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-
-  const viewMaintenanceFn = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/api/maintenance/pending/${user._id}`
-      );
-      setMaintenance(response?.data);
-    } catch (error) {
-      toast.error(error.message);
-    }
-  };
+  const [selectMaintenance, setSelectMaintenance] = useState({});
 
   useEffect(() => {
-    viewMaintenanceFn();
-  }, []);
+    const fetchMaintenance = async () => {
+      try {
+        const { data } = await axios.get(
+          `${process.env.REACT_APP_BASE_URL}/v1/api/maintenance/pending/${user._id}`
+        );
+        setMaintenance(data);
+      } catch (error) {
+        toast.error(error.message);
+      }
+    };
+    fetchMaintenance();
+  }, [user._id]);
+
+  const currentMonth = new Date().getMonth();
+  const currentYear = new Date().getFullYear();
+
+  const filterMaintenance = (condition) =>
+    maintenance.filter(({ dueDate }) => {
+      const due = new Date(dueDate);
+      const dueMonth = due.getMonth();
+      const dueYear = due.getFullYear();
+      return condition(dueMonth, dueYear);
+    });
+
+  const pendingMaintenance = filterMaintenance(
+    (month, year) =>
+      year > currentYear || (year === currentYear && month >= currentMonth)
+  );
+
+  const dueMaintenance = filterMaintenance(
+    (month, year) =>
+      year < currentYear || (year === currentYear && month < currentMonth)
+  );
 
   return (
     <>
@@ -51,7 +72,6 @@ const MaintenanceData = ({ isViewInvoice }) => {
             </div>
           </div>
         </div>
-
         <div className="bg-[#ffff] p-4 m-6 rounded-lg">
           <div className="flex justify-between">
             <h2 className="text-lg font-semibold mb-4">Pending Maintenance</h2>
@@ -64,79 +84,78 @@ const MaintenanceData = ({ isViewInvoice }) => {
               </Link>
             )}
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {
-              <div className="rounded-lg shadow">
-                <div className="bg-[#5678E9] text-white rounded-t-lg p-2 flex items-center justify-between">
-                  <span>Maintenance</span>
-                  <span className="bg-[#FFFFFF1A] px-3 rounded-full py-1 capitalize">
-                    {maintenance[maintenance?.length - 1]?.member[0].status}
-                  </span>
+          {pendingMaintenance.length ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {pendingMaintenance.map((item, index) => (
+                <div key={index} className="rounded-lg shadow">
+                  <div className="bg-[#5678E9] text-white rounded-t-lg p-2 flex items-center justify-between">
+                    <span>Maintenance</span>
+                    <span className="bg-[#FFFFFF1A] px-3 rounded-full py-1 capitalize">
+                      {item.member[0].status}
+                    </span>
+                  </div>
+                  <div className="space-y-4 text-gray-700 p-4">
+                    <div className="flex justify-between">
+                      <p>Due Date</p>
+                      <p>
+                        {new Date(item.dueDate).toLocaleString("en-GB", {
+                          month: "2-digit",
+                          year: "numeric",
+                        })}
+                      </p>
+                    </div>
+                    <div className="flex justify-between border-b pb-2">
+                      <p>Penalty Date</p>
+                      <p>
+                        {new Date(item.penaltyDay).toLocaleString("en-GB", {
+                          day: "2-digit",
+                          month: "2-digit",
+                          year: "numeric",
+                        })}
+                      </p>
+                    </div>
+                    <div className="flex justify-between items-center text-red-600">
+                      <p className="pr-2">Maintenance Amount</p>
+                      <p>₹ {item.amount}</p>
+                    </div>
+                    <div className="flex justify-between items-center text-red-600 border-b pb-2">
+                      <p className="pr-2">Maintenance Penalty Amount</p>
+                      <p className="text-nowrap">₹ {item.penaltyAmount}</p>
+                    </div>
+                    <div className="flex justify-between font-semibold">
+                      <p>Grand Total</p>
+                      <p className="text-green-600">
+                        ₹{" "}
+                        {new Date() >= new Date(item.penaltyDay)
+                          ? `${
+                              item.amount + item.penaltyAmount
+                            } - (Penalty Applied)`
+                          : item.amount}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => {
+                        setIsPopupOpen(true);
+                        setSelectMaintenance(item);
+                      }}
+                      className="mt-3 w-full py-2 bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white rounded-md font-semibold"
+                    >
+                      Pay Now
+                    </button>
+                  </div>
                 </div>
-                <div className="space-y-4 text-gray-700 p-4">
-                  <div className="flex justify-between">
-                    <p>Due Date</p>
-                    <p>
-                      {new Date(
-                        maintenance[maintenance?.length - 1]?.dueDate
-                      ).toLocaleString("en-GB", {
-                        month: "2-digit",
-                        year: "numeric",
-                      })}
-                    </p>
-                  </div>
-                  <div className="flex justify-between border-b pb-2">
-                    <p>Penalty Date</p>
-                    <p>
-                      {new Date(
-                        maintenance[maintenance?.length - 1]?.penaltyDay
-                      ).toLocaleString("en-GB", {
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "numeric",
-                      })}
-                    </p>
-                  </div>
-                  <div className="flex justify-between items-center text-red-600">
-                    <p className="pr-2">Maintenance Amount</p>
-                    <p>₹ {maintenance[maintenance?.length - 1]?.amount}</p>
-                  </div>
-                  <div className="flex justify-between items-center text-red-600 border-b pb-2">
-                    <p className="pr-2">Maintenance Penalty Amount</p>
-                    <p className="text-nowrap">
-                      ₹ {maintenance[maintenance?.length - 1]?.penaltyAmount}
-                    </p>
-                  </div>
-                  <div className="flex justify-between font-semibold">
-                    <p>Grand Total</p>
-                    <p className="text-green-600">
-                      ₹{" "}
-                      {new Date() >=
-                      new Date(maintenance[maintenance?.length - 1]?.penaltyDay)
-                        ? `${
-                            maintenance[maintenance?.length - 1].amount +
-                            maintenance[maintenance?.length - 1]?.penaltyAmount
-                          } - (Penalty Applied)`
-                        : maintenance[maintenance?.length - 1]?.amount}
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => setIsPopupOpen(true)}
-                    className="mt-3 w-full py-2 bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white rounded-md font-semibold"
-                  >
-                    Pay Now
-                  </button>
-                </div>
-              </div>
-            }
-          </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-center text-gray-400 select-none">No Pending Maintenance Found!</p>
+          )}
         </div>
 
         <div className="bg-[#ffff] p-4 m-6 rounded-lg">
           <h2 className="text-lg font-semibold mb-4">Due Maintenance</h2>
-          {maintenance.slice(0, -1).length ? (
+          {dueMaintenance.length ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {maintenance.slice(0, -1).map((item, index) => (
+              {dueMaintenance.map((item, index) => (
                 <div key={index} className="bg-white rounded-lg shadow">
                   <div className="bg-[#5678E9] text-white rounded-t-lg p-2 font-semibold flex items-center justify-between">
                     <span>Maintenance</span>
@@ -163,7 +182,10 @@ const MaintenanceData = ({ isViewInvoice }) => {
                       <p>₹ {item.penaltyAmount}</p>
                     </div>
                     <button
-                      onClick={() => setIsPopupOpen(true)}
+                      onClick={() => {
+                        setIsPopupOpen(true);
+                        setSelectMaintenance(item);
+                      }}
                       className="w-full py-2 bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white rounded-md font-semibold"
                     >
                       Pay Now
@@ -173,17 +195,17 @@ const MaintenanceData = ({ isViewInvoice }) => {
               ))}
             </div>
           ) : (
-            <p className="text-center">Data no found!</p>
+            <p className="text-center text-gray-400 select-none">No Due Maintenance Found!</p>
           )}
         </div>
 
         <PaymentPopup
           isOpen={isPopupOpen}
           onClose={() => setIsPopupOpen(false)}
+          selectMaintenance={selectMaintenance}
+          setMaintenance={setMaintenance}
         />
       </div>
-
-      {/* <PaymentPopup isOpen={isDueMaintenance} onClose={handleClosePopup} /> */}
     </>
   );
 };

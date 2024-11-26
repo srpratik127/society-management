@@ -37,11 +37,9 @@ const AddEditAnnouncement = ({
     const [time, modifier] = time12h.split(" ");
     let [hours, minutes] = time.split(":");
   
-    // Convert 12-hour time to 24-hour time
     if (modifier === "PM" && hours !== "12") hours = parseInt(hours) + 12;
     if (modifier === "AM" && hours === "12") hours = "00";
   
-    // Ensure that the hours are two digits (i.e., "05" instead of "5")
     hours = hours.padStart(2, "0");
   
     return `${hours}:${minutes}`;
@@ -95,7 +93,7 @@ const AddEditAnnouncement = ({
       if (editAnnouncement) {
         // If editing, update the announcement
         const response = await axios.put(
-          `${process.env.REACT_APP_BASE_URL}/api/announcement/${editAnnouncement._id}`,
+          `${process.env.REACT_APP_BASE_URL}/v1/api/announcement/${editAnnouncement._id}`,
           {
             title: formData.title,
             description: formData.description,
@@ -113,7 +111,7 @@ const AddEditAnnouncement = ({
         toast.success("Announcement Updated successful!");
       } else {
         const response = await axios.post(
-          `${process.env.REACT_APP_BASE_URL}/api/announcement`,
+          `${process.env.REACT_APP_BASE_URL}/v1/api/announcement`,
           {
             title: formData.title,
             description: formData.description,
@@ -136,7 +134,7 @@ const AddEditAnnouncement = ({
         <h2 className="text-xl font-semibold mb-4">Add Announcement</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block">Announcement Title*</label>
+            <label className="block">Announcement Title<span className="text-red-500">*</span></label>
             <input
               type="text"
               placeholder="Enter Name"
@@ -152,7 +150,7 @@ const AddEditAnnouncement = ({
             )}
           </div>
           <div className="mb-4">
-            <label className="block">Description*</label>
+            <label className="block">Description<span className="text-red-500">*</span></label>
             <textarea
               name="description"
               placeholder="Enter Description"
@@ -171,7 +169,7 @@ const AddEditAnnouncement = ({
           <div className="flex gap-4 mb-4">
             <div>
               <label className="block font-poppins text-[14px] text-nowrap">
-                Announcement Date*
+                Announcement Date<span className="text-red-500">*</span>
               </label>
               <DatePicker
                 selected={formData.date}
@@ -189,7 +187,7 @@ const AddEditAnnouncement = ({
             </div>
             <div>
               <label className="block font-poppins text-[14px] text-nowrap">
-                Announcement Time*
+                Announcement Time<span className="text-red-500">*</span>
               </label>
               <input
                 type="time"

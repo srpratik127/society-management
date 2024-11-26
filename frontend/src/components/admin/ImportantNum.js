@@ -15,7 +15,7 @@ export const ImportantNum = () => {
     const fetchImportantNumbers = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_BASE_URL}/api/numbers`
+          `${process.env.REACT_APP_BASE_URL}/v1/api/numbers`
         );
         setImportantNumbers(response?.data?.data);
       } catch (error) {
@@ -38,7 +38,7 @@ export const ImportantNum = () => {
   const handleDelete = async () => {
     try {
       await axios.delete(
-        `${process.env.REACT_APP_BASE_URL}/api/numbers/${numberToDelete}`
+        `${process.env.REACT_APP_BASE_URL}/v1/api/numbers/${numberToDelete}`
       );
       setImportantNumbers((prev) =>
         prev.filter((number) => number._id !== numberToDelete)

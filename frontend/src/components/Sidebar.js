@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { sidebarAdminData, sidebarResidentData } from "../data/sidebardata";
 import { useDispatch, useSelector } from "react-redux";
 import { removeToken } from "../store/authSlice";
 import { useLocation, useNavigate } from "react-router-dom";
 import { removeMenu, ToggleMenu } from "../store/ToggleMenuSlice";
+import {
+  sidebarAdminData,
+  sidebarResidentData,
+  sidebarSecurityData,
+} from "../utils/sidebardata";
 
 const Sidebar = () => {
   const [activeDropdown, setActiveDropdown] = useState(null);
@@ -15,10 +19,12 @@ const Sidebar = () => {
   const [sidebarData, setSidebarData] = useState([]);
 
   useEffect(() => {
-    if (user.role) {
-      setSidebarData(sidebarResidentData);
-    } else {
+    if (user?.user_role === "admin") {
       setSidebarData(sidebarAdminData);
+    } else if (user?.user_role === "resident") {
+      setSidebarData(sidebarResidentData);
+    } else if (user?.user_role === "security") {
+      setSidebarData(sidebarSecurityData);
     }
   }, []);
 

@@ -67,7 +67,7 @@ const EditFacilityManagement = ({
 
     try {
       const response = await axios.put(
-        `${process.env.REACT_APP_BASE_URL}/api/facilities/${selectedFacility._id}`,
+        `${process.env.REACT_APP_BASE_URL}/v1/api/facilities/${selectedFacility._id}`,
         updatedFacilityData
       );
       setFacilities((prevFacilities) =>

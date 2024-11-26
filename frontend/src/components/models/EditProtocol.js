@@ -8,9 +8,21 @@ const EditProtocol = ({ protocol, onClose, setProtocols }) => {
     title: "",
     description: "",
     date: new Date(),
-    time: new Date(),
+    time: "",
   });
   const [errors, setErrors] = useState({});
+
+  const convertTo24HourFormat = (time12h) => {
+    const [time, modifier] = time12h.split(" ");
+    let [hours, minutes] = time.split(":");
+
+    if (modifier === "PM" && hours !== "12") hours = parseInt(hours) + 12;
+    if (modifier === "AM" && hours === "12") hours = "00";
+
+    hours = hours.padStart(2, "0");
+
+    return `${hours}:${minutes}`;
+  };
 
   useEffect(() => {
     if (protocol) {
@@ -18,7 +30,7 @@ const EditProtocol = ({ protocol, onClose, setProtocols }) => {
         title: protocol.title,
         description: protocol.description,
         date: new Date(protocol.date),
-        time: protocol.time ? new Date(protocol.time) : new Date(),
+        time: convertTo24HourFormat(protocol.time),
       });
     }
   }, [protocol]);
@@ -37,7 +49,7 @@ const EditProtocol = ({ protocol, onClose, setProtocols }) => {
   const updateProtocol = async () => {
     try {
       const response = await axios.put(
-        `${process.env.REACT_APP_BASE_URL}/api/protocol/${protocol._id}`,
+        `${process.env.REACT_APP_BASE_URL}/v1/api/protocol/${protocol._id}`,
         formData
       );
       const updatedProtocol = response.data.data;
@@ -71,13 +83,14 @@ const EditProtocol = ({ protocol, onClose, setProtocols }) => {
           {["title", "description"].map((field) => (
             <div key={field} className="mb-4">
               <label className="block font-semibold text-gray-700">
-                {field.charAt(0).toUpperCase() + field.slice(1)}*
+                {field.charAt(0).toUpperCase() + field.slice(1)}
+                <span className="text-red-500">*</span>
               </label>
               {field === "description" ? (
                 <textarea
                   value={formData[field]}
                   onChange={handleFieldChange(field)}
-                  className={`w-full border ${
+                  className={`w-full border outline-none ${
                     errors[field] ? "border-red-500" : "border-gray-300"
                   } p-2 rounded-lg mt-1`}
                   placeholder={`Enter ${field}`}
@@ -87,7 +100,7 @@ const EditProtocol = ({ protocol, onClose, setProtocols }) => {
                   type="text"
                   value={formData[field]}
                   onChange={handleFieldChange(field)}
-                  className={`w-full border ${
+                  className={`w-full border outline-none ${
                     errors[field] ? "border-red-500" : "border-gray-300"
                   } p-2 rounded-lg mt-1`}
                   placeholder={`Enter ${field}`}
@@ -100,14 +113,16 @@ const EditProtocol = ({ protocol, onClose, setProtocols }) => {
           ))}
           <div className="flex space-x-4 mb-4">
             <div className="w-1/2">
-              <label className="block font-semibold text-gray-700">Date*</label>
+              <label className="block font-semibold text-gray-700">
+                Date<span className="text-red-500">*</span>
+              </label>
               <DatePicker
                 selected={formData.date}
                 onChange={handleFieldChange("date")}
                 minDate={new Date()}
                 dateFormat="dd-MM-yyyy"
                 placeholderText="Select Date"
-                className={`w-full border ${
+                className={`w-full border outline-none ${
                   errors.date ? "border-red-500" : "border-gray-300"
                 } p-2 rounded-lg`}
               />
@@ -116,12 +131,14 @@ const EditProtocol = ({ protocol, onClose, setProtocols }) => {
               )}
             </div>
             <div className="w-1/2">
-              <label className="block font-semibold text-gray-700">Time*</label>
+              <label className="block font-semibold text-gray-700">
+                Time<span className="text-red-500">*</span>
+              </label>
               <input
                 type="time"
                 value={formData.time}
                 onChange={handleFieldChange("time")}
-                className={`w-full border ${
+                className={`w-full border outline-none ${
                   errors.time ? "border-red-500" : "border-gray-300"
                 } p-2 rounded-lg mt-1`}
               />

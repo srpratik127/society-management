@@ -14,9 +14,7 @@ const DashbordCard = ({ cards }) => {
         <p className="text-gray-500 text-sm font-medium leading-6">
           {cards.title}
         </p>
-        <p className="text-black font-bold text-xl leading-6">
-          ₹ {cards.amount}
-        </p>
+        <p className="text-black font-bold text-xl leading-6">{cards.amount}</p>
       </div>
       <div
         className="flex justify-center items-center border rounded-lg"

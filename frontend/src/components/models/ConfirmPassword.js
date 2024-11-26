@@ -14,7 +14,7 @@ const ConfirmPassword = ({ onClose, setIsAddMaintenance }) => {
   const onContinue = async () => {
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/users/verify-password`,
+        `${process.env.REACT_APP_BASE_URL}/v1/api/auth/verify-password`,
         { email: user.email, password }
       );
       if (response.data.success) {
@@ -23,7 +23,7 @@ const ConfirmPassword = ({ onClose, setIsAddMaintenance }) => {
         setIsAddMaintenance(true);
       }
     } catch (error) {
-      toast.error(error.message);
+      toast.error("Incorrect password");
     }
   };
 

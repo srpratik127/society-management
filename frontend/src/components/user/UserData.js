@@ -12,7 +12,7 @@ const UserData = () => {
             <img
               src={user.profile_picture}
               alt="Profile"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover border-2"
             />
           </div>
         </div>

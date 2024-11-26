@@ -40,13 +40,13 @@ const ViewMaintenance = ({ maintenance }) => {
                       key={`${index}-${memberIndex}`}
                       className="border-b hover:bg-gray-50"
                     >
-                      <td className="px-4 py-2 flex items-center space-x-3">
+                      <td className="px-4 py-2 flex items-center space-x-3 capitalize">
                         <img
                           className="w-10 h-10 rounded-full"
                           src={member?.user?.profile_picture}
                           alt="Profile"
                         />
-                        <span>{member?.user?.fullName}</span>
+                        <span className="text-nowrap">{member?.user?.fullName}</span>
                       </td>
                       <td className="text-center">
                         <span className="p-2 text-[#5678E9] bg-[#F6F8FB] font-semibold py-1 rounded-full">
@@ -63,7 +63,7 @@ const ViewMaintenance = ({ maintenance }) => {
                       </td>
                       <td className="text-center">
                         <span
-                          className={`flex items-center justify-center ${
+                          className={`flex items-center justify-center capitalize min-w-[130px] ${
                             member?.user?.role === "tenant"
                               ? "text-[#EC4899] font-semibold py-2 px-4 rounded-full bg-[#FFF1F8]"
                               : "text-[#4F46E5] font-semibold py-2 px-4 rounded-full bg-[#F1F0FF]"
@@ -81,7 +81,7 @@ const ViewMaintenance = ({ maintenance }) => {
                           {member?.user?.role}
                         </span>
                       </td>
-                      <td className="px-4 py-2">+91 {member?.user?.phone}</td>
+                      <td className="px-4 py-2 text-nowrap">+91 {member?.user?.phone}</td>
                       <td className="px-4 py-2 text-green-600">
                         ₹ {record.amount}
                       </td>
@@ -92,15 +92,13 @@ const ViewMaintenance = ({ maintenance }) => {
                               ? "text-[#FFFFFF] font-semibold bg-[#E74C3C]"
                               : "bg-[#F6F8FB]"
                           }`}
-                        >
-                          {console.log(isPenaltyApplied)}
-                          
+                        >                          
                           {isPenaltyApplied ? record.penaltyAmount : "--"}
                         </span>
                       </td>
                       <td className="px-4 text-center ">
                         <span
-                          className={`px-2 py-2 rounded-full flex items-center justify-center ${
+                          className={`px-2 py-2 rounded-full flex items-center justify-center capitalize min-w-[130px] ${
                             member.status === "pending"
                               ? "bg-yellow-100 text-yellow-600"
                               : "bg-green-100 text-green-600"
@@ -121,7 +119,7 @@ const ViewMaintenance = ({ maintenance }) => {
                       </td>
                       <td className="px-4 py-2 text-center">
                         <span
-                          className={`px-2 py-2 flex items-center justify-center rounded-full ${
+                          className={`px-2 py-2 flex items-center justify-center rounded-full capitalize min-w-[130px] ${
                             member.paymentMethod === "online"
                               ? "bg-blue-100 text-blue-600"
                               : "bg-gray-100 text-gray-600"

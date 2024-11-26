@@ -19,7 +19,7 @@ const Resident = () => {
     const fetchResidents = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_BASE_URL}/api/resident`
+          `${process.env.REACT_APP_BASE_URL}/v1/api/resident`
         );
         setResidents(response?.data?.data);
       } catch (error) {
@@ -42,7 +42,7 @@ const Resident = () => {
   const handleVacate = async () => {
     try {
       const response = await axios.put(
-        `${process.env.REACT_APP_BASE_URL}/api/resident/vacate-flat/${selectedResident._id}`
+        `${process.env.REACT_APP_BASE_URL}/v1/api/resident/vacate-flat/${selectedResident._id}`
       );
       setSelectedResident(null);
       setOpenConform(false);
@@ -98,7 +98,7 @@ const Resident = () => {
                   const Vacate = resident.residenceStatus === "Vacate";
                   return (
                     <tr key={resident._id} className="border-t mx-auto">
-                      <td className="py-4 px-4 flex items-center capitalize">
+                      <td className="py-2 px-4 flex items-center capitalize">
                         <span className="mr-2">
                           <img
                             src={
@@ -107,7 +107,7 @@ const Resident = () => {
                                 : "/assets/empty.png"
                             }
                             alt={`${resident.fullName}'s Avatar`}
-                            className="h-8 w-8 rounded-full"
+                            className="h-10 w-10 rounded-full"
                           />
                         </span>
                         {!Vacate ? resident.fullName : "--"}
@@ -118,9 +118,9 @@ const Resident = () => {
                         </span>
                         <span>{resident.unit}</span>
                       </td>
-                      <td className="py-2 flex justify-center text-center">
+                      <td className="py-2 text-center min-w-[170px]">
                         <span
-                          className={`flex items-center ${
+                          className={`flex items-center mx-4 justify-center ${
                             resident.residenceStatus === "Occupied"
                               ? "text-[#14B8A6] font-semibold py-2 px-3 rounded-full bg-[#ECFFFF]"
                               : "text-[#9333EA] font-semibold py-2 px-3 rounded-full bg-[#FFF6FF]"
@@ -164,7 +164,7 @@ const Resident = () => {
                           {!Vacate ? resident.role : "--"}
                         </span>
                       </td>
-                      <td className="py-2 px-4">
+                      <td className="py-2 px-4 text-nowrap">
                         {!Vacate ? `+91 ${resident.phone}` : "--"}
                       </td>
                       <td className="py-2 text-center">
@@ -181,7 +181,7 @@ const Resident = () => {
                         {!Vacate ? (
                           <>
                             <button
-                              className="text-green-500 hover:text-green-700 px-2"
+                              className="text-green-500 hover:text-green-700 px-2  w-12"
                               aria-label={`Edit ${resident.name}`}
                               onClick={() => handleEditClick(resident)}
                             >
@@ -192,7 +192,7 @@ const Resident = () => {
                               />
                             </button>
                             <button
-                              className="text-blue-500 hover:text-blue-700 px-2"
+                              className="text-blue-500 hover:text-blue-700 px-2  w-12"
                               onClick={() => {
                                 setViewResident(true);
                                 setSelectViewResidents(resident);

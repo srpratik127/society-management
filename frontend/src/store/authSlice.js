@@ -10,23 +10,26 @@ const authSlice = createSlice({
     addToken: (state, action) => {
       state.token = action.payload;
       localStorage.setItem("token", state.token);
+
       try {
         const parts = state.token.split(".");
         if (parts.length === 3) {
-          state.user = JSON.parse(atob(parts[1])).user;
+          const base64Url = parts[1];
+          const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+          state.user = JSON.parse(atob(base64)).user || {};
         } else {
           throw new Error("Invalid token structure");
         }
       } catch (error) {
         console.error("Error decoding token:", error.message);
-        state.user = {};
+        // state.user = {};
       }
     },
     removeToken: (state, action) => {
       localStorage.removeItem("token");
       state.token = null;
       state.user = {};
-    }
+    },
   },
 });
 

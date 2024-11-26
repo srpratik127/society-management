@@ -5,6 +5,7 @@ const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 
 router.post('/', upload.single('bill'), expenseDetailsController.createExpense);
+router.get('/total-expense', expenseDetailsController.getTotalExpense);
 router.get('/', expenseDetailsController.getAllExpenses);
 router.get('/:id', expenseDetailsController.getExpenseById);
 router.put('/:id', upload.single('bill'), expenseDetailsController.updateExpense);

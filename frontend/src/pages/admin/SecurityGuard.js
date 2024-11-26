@@ -19,7 +19,7 @@ const SecurityGuard = () => {
     const fetchGuards = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_BASE_URL}/api/guard`
+          `${process.env.REACT_APP_BASE_URL}/v1/api/guard`
         );
         setGuards(response?.data);
       } catch (error) {
@@ -33,7 +33,7 @@ const SecurityGuard = () => {
   const handleDelete = async () => {
     try {
       const response = await axios.delete(
-        `${process.env.REACT_APP_BASE_URL}/api/guard/${selectedGuard._id}`
+        `${process.env.REACT_APP_BASE_URL}/v1/api/guard/${selectedGuard._id}`
       );
       toast.success("Guard Deleted successful!");
       if (response.status === 200) {
@@ -93,18 +93,18 @@ const SecurityGuard = () => {
             {guards.length > 0 ? (
               guards.map((guard) => (
                 <tr key={guard._id} className="border-b hover:bg-gray-50">
-                  <td className="py-4 px-2 sm:px-6 flex items-center text-nowrap">
+                  <td className="py-2 px-2 sm:px-6 flex items-center text-nowrap capitalize">
                     <img
                       className="w-8 h-8 sm:w-10 sm:h-10 rounded-full mr-2 sm:mr-3"
-                      src={guard.profile_photo}
+                      src={guard.profile_picture}
                       alt={guard.fullName}
                     />
                     {guard.fullName}
                   </td>
-                  <td className="py-4 px-2 sm:px-6 text-nowrap">
-                    {guard.phoneNumber}
+                  <td className="py-2 px-2 sm:px-6 text-nowrap">
+                    + 91 {guard.phone}
                   </td>
-                  <td className="py-4 px-2 sm:px-6 text-nowrap text-center">
+                  <td className="py-2 px-2 sm:px-6 text-nowrap text-center">
                     {guard.shift === "Day" ? (
                       <span className="inline-block px-2 py-1 text-xs sm:text-sm font-medium rounded-full">
                         <img src="/assets/clips.png" alt="Day" />
@@ -115,28 +115,28 @@ const SecurityGuard = () => {
                       </span>
                     )}
                   </td>
-                  <td className="py-4 px-2 sm:px-6 text-center text-nowrap">
+                  <td className="py-2 px-2 sm:px-6 text-center text-nowrap">
                     {new Date(guard.shiftDate).toLocaleString("en-GB", {
                       day: "2-digit",
                       month: "2-digit",
                       year: "numeric",
                     })}
                   </td>
-                  <td className="py-4 px-2 sm:px-6 text-center text-nowrap">
+                  <td className="py-2 px-2 sm:px-6 text-center text-nowrap">
                     {guard.shiftTime}
                   </td>
-                  <td className="py-4 px-2 sm:px-6 text-center text-nowrap">
+                  <td className="py-2 px-2 sm:px-6 text-center text-nowrap">
                     {guard.gender === "Male" ? (
-                      <span className="inline-block px-2 py-1 text-xs sm:text-sm rounded-full">
+                      <span className="inline-block rounded-full">
                         <img src="/assets/male.png" alt="Male" />
                       </span>
                     ) : (
-                      <span className="inline-block px-2 py-1 text-xs sm:text-sm rounded-full">
+                      <span className="inline-block rounded-full">
                         <img src="/assets/female.png" alt="Female" />
                       </span>
                     )}
                   </td>
-                  <td className="py-4 px-2 sm:px-6 text-center flex justify-center space-x-3">
+                  <td className="py-2 px-2 sm:px-6 text-center flex justify-center space-x-3">
                     <button
                       className="text-green-500 hover:text-green-700 h-10 w-10"
                       onClick={() => {

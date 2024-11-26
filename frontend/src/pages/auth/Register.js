@@ -28,7 +28,7 @@ const Register = () => {
   useEffect(() => {
     const fetchSocieties = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/society`);
+        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/v1/api/society`);
         const societies = response.data.map(society => ({
           value: society._id,
           label: society.name,
@@ -93,15 +93,14 @@ const Register = () => {
           ...dataToSubmit,
           select_society: select_society?.value,
         };
-        
-        const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/users/register`, payload);
+
+        const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/v1/api/auth/register`, payload);
         console.log("Form submitted:", response.data);
         setErrors({});
         toast.success("Register successful!");
         navigate("/login");
       } catch (error) {
-        toast.error(error.message);
-        console.error("Error submitting the form:", error);
+        toast.error(error.response?.data?.msg || error.message);
       }
     }
   };

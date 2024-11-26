@@ -53,6 +53,11 @@ const residentSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    select_society: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "societies",
+      required: true
+    },
     profile_picture: {
       type: String,
       default:
@@ -78,6 +83,10 @@ const residentSchema = new mongoose.Schema(
       type: String,
       enum: ["Occupied", "Vacate"],
       required: true,
+    },
+    user_role: {
+      type: String,
+      default: "resident",
     },
     members: [
       {

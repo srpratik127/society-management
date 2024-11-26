@@ -20,7 +20,7 @@ const EditOtherIncome = ({ onClose, selectedItem, setIncomeData }) => {
 
     try {
       const response = await axios.put(
-        `${process.env.REACT_APP_BASE_URL}/api/income/${selectedItem._id}`,
+        `${process.env.REACT_APP_BASE_URL}/v1/api/income/${selectedItem._id}`,
         updatedIncome
       );
       setIncomeData(prevData =>
