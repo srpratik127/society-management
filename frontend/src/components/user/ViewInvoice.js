@@ -1,82 +1,28 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const ViewInvoice = () => {
-  const data = [
-    {
-      invoiceId: 152563,
-      ownerName: "Terry Rhiel Madsen",
-      billDate: "10/02/2024",
-      paymentDate: "10/02/2024",
-      phoneNumber: 9764816457,
-      email: "FrancesLHarris@rhyta.com",
-      maintenanceAmount: 1500,
-      pendingAmount: 2500,
-    },
-    {
-      invoiceId: 152563,
-      ownerName: "Terry Rhiel Madsen",
-      billDate: "10/02/2024",
-      paymentDate: "10/02/2024",
-      phoneNumber: 9764816457,
-      email: "FrancesLHarris@rhyta.com",
-      maintenanceAmount: 1500,
-      pendingAmount: 2500,
-    },
-    {
-      invoiceId: 152563,
-      ownerName: "Terry Rhiel Madsen",
-      billDate: "10/02/2024",
-      paymentDate: "10/02/2024",
-      phoneNumber: 9764816457,
-      email: "FrancesLHarris@rhyta.com",
-      maintenanceAmount: 1500,
-      pendingAmount: 2500,
-    },
-    {
-      invoiceId: 152563,
-      ownerName: "Terry Rhiel Madsen",
-      billDate: "10/02/2024",
-      paymentDate: "10/02/2024",
-      phoneNumber: 9764816457,
-      email: "FrancesLHarris@rhyta.com",
-      maintenanceAmount: 1500,
-      pendingAmount: 2500,
-    },
-    {
-      invoiceId: 152563,
-      ownerName: "Terry Rhiel Madsen",
-      billDate: "10/02/2024",
-      paymentDate: "10/02/2024",
-      phoneNumber: 9764816457,
-      email: "FrancesLHarris@rhyta.com",
-      maintenanceAmount: 1500,
-      pendingAmount: 2500,
-    },
-    {
-      invoiceId: 152563,
-      ownerName: "Terry Rhiel Madsen",
-      billDate: "10/02/2024",
-      paymentDate: "10/02/2024",
-      phoneNumber: 9764816457,
-      email: "FrancesLHarris@rhyta.com",
-      maintenanceAmount: 1500,
-      pendingAmount: 2500,
-    },
-    {
-      invoiceId: 152563,
-      ownerName: "Terry Rhiel Madsen",
-      billDate: "10/02/2024",
-      paymentDate: "10/02/2024",
-      phoneNumber: 9764816457,
-      email: "FrancesLHarris@rhyta.com",
-      maintenanceAmount: 1500,
-      pendingAmount: 2500,
-    },
-  ];
+  const [doneMaintenance, setDoneMaintenance] = useState([]);
+
+  useEffect(() => {
+    const fetchPendingMaintenance = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_BASE_URL}/v1/api/maintenance/done`
+        );
+        setDoneMaintenance(response?.data);
+      } catch (error) {
+        toast.error(error.message);
+      }
+    };
+
+    fetchPendingMaintenance();
+  }, []);
 
   return (
     <div className="bg-blue-50 m-5 rounded-lg ">
-      <div className="container bg-white p-4 overflow-auto">
+      <div className="w-full bg-white p-4 overflow-auto">
         <div className="flex justify-between items-center py-4 w-full">
           <h1 className="text-2xl font-semibold">Maintenance Invoices</h1>
           <div className="">
@@ -88,48 +34,51 @@ const ViewInvoice = () => {
           </div>
         </div>
 
-        <table className="border-gray-300">
+        <table className="border-gray-300 w-full">
           <thead className="items-center font-poppins px-0 rounded-lg">
             <tr className="bg-blue-50">
               <th className="py-2 px-4 border-b ">Invoice ID</th>
               <th className="py-2 px-4 border-b">Owner Name</th>
-              <th className="py-2 px-4 border-b">Bill Date</th>
-              <th className="py-2 px-4 border-b">Payment Date</th>
               <th className="py-2 px-4 border-b">Phone Number</th>
+              <th className="py-2 px-4 border-b">Role</th>
               <th className="py-2 px-4 border-b">Email</th>
+              <th className="py-2 px-4 border-b">Wing</th>
               <th className="py-2 px-4 border-b">Maintenance Amount</th>
-              <th className="py-2 px-4 border-b">Pending Amount</th>
+              <th className="py-2 px-4 border-b">Penalty Day</th>
               <th className="py-2 px-4 border-b">Action</th>
             </tr>
           </thead>
           <tbody>
-            {data.map((invoice) => (
-              <tr key={invoice.invoiceId}>
+            {doneMaintenance.map((invoice) => (
+              <tr key={invoice._id}>
                 <td className="py-2 px-4 border-b text-center font-poppins">
-                  {invoice.invoiceId}
+                  {invoice._id}
                 </td>
-                <td className="py-2 px-4 border-b text-center font-poppins">
-                  {invoice.ownerName}
+                <td className="py-2 px-4 border-b text-center capitalize">
+                  {invoice?.user?.fullName}
                 </td>
-                <td className="py-2 px-4 border-b text-center font-poppins">
-                  {invoice.billDate}
+                <td className="py-2 px-4 border-b text-center text-nowrap">
+                  {invoice?.user?.phone}
+                </td>
+                <td className="py-4 px-4 border-b text-center capitalize">
+                  {invoice?.user?.role}
                 </td>
                 <td className="py-4 px-4 border-b text-center font-poppins">
-                  {invoice.paymentDate}
+                  {invoice?.user?.email}
                 </td>
                 <td className="py-4 px-4 border-b text-center font-poppins">
-                  {invoice.phoneNumber}
-                </td>
-                <td className="py-4 px-4 border-b text-center font-poppins">
-                  {invoice.email}
+                  {invoice?.user?.wing}
                 </td>
                 <td className="py-4 px-4 border-b text-center font-poppins text-green-500">
                   {" "}
-                  ₹ {invoice.maintenanceAmount}
+                  ₹ {invoice.amount}
                 </td>
                 <td className="py-4 px-4 border-b text-center font-poppins text-red-500">
-                  {" "}
-                  ₹{invoice.pendingAmount}
+                  {new Date(invoice.penaltyDay).toLocaleString("en-GB", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                  })}
                 </td>
                 <td className="items-center text-center">
                   <button>

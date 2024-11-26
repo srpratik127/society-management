@@ -1,10 +1,12 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 const Poll = () => {
   const [pollsData, setPollsData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const user = useSelector((store) => store.auth.user);
 
   useEffect(() => {
     const fetchPolls = async () => {
@@ -23,17 +25,16 @@ const Poll = () => {
     fetchPolls();
   }, []);
 
-  const handleVote = async (pollId, selectedOptions, residentId) => {
+  const handleVote = async (pollId, selectedOptions) => {
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_BASE_URL}/v1/api/polls/vote`,
         {
           pollId,
-          selectedOptions,
-          residentId,
+          selectedOptions: [selectedOptions],
+          residentId: user?._id,
         }
       );
-      alert("Vote recorded successfully!");
       setPollsData((prevPollsData) =>
         prevPollsData.map((poll) =>
           poll._id === pollId ? { ...poll, ...response.data.poll } : poll
@@ -41,7 +42,6 @@ const Poll = () => {
       );
     } catch (error) {
       console.error("Error voting on poll:", error);
-      alert("Failed to vote on the poll.");
     }
   };
 
@@ -49,9 +49,9 @@ const Poll = () => {
 
   return (
     <>
-      <div className="flex justify-between items-center border-b-2 border-gray-200 m-6">
+      <div className="flex justify-between items-center border-gray-200 m-6 mb-0">
         <div className="flex space-x-6">
-          <button className="pb-2 border-b-4 border-orange-500 text-orange-500 font-semibold">
+          <button className="p-2 px-4 border-b-4 border-orange-500 text-white bg-gradient-to-r from-[#FE512E] to-[#F09619] rounded-t-md font-semibold">
             Own Poll
           </button>
           <button className="pb-2 text-gray-600">New Poll</button>
@@ -67,7 +67,6 @@ const Poll = () => {
           </button>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-
           {pollsData.map((poll) => (
             <div
               key={poll._id}
@@ -76,7 +75,7 @@ const Poll = () => {
               <div className="flex items-center justify-between border-b pb-3">
                 <div className="flex items-center space-x-4">
                   <img
-                    src="/assets/Avatar.png"
+                    src={poll?.createdBy?._id?.profile_picture}
                     alt=""
                     className="w-10 h-10 rounded-full"
                   />
@@ -107,30 +106,46 @@ const Poll = () => {
                 </p>
               </div>
               {poll.options.map((option, idx) => (
-                <div key={idx} className="space-y-1">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="capitalize text-gray-600">
-                        {option.optionText}
-                      </span>
+                <div key={idx} className="space-y-1 flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleVote(poll._id, option._id)}
+                    className={`flex gap-2 rounded-lg font-medium ${"border-gray-200 text-[#A7A7A7]"}`}
+                  >
+                    <img
+                      src={
+                        option.voters.some((voter) => voter._id === user?._id)
+                          ? "/assets/fill-redio.svg"
+                          : "/assets/unfill-redio.svg"
+                      }
+                      alt="Radio"
+                    />
+                  </button>
+                  <div className="w-full">
+                    <div className="flex items-center justify-between w-full">
+                      <div className="flex items-center gap-2">
+                        <span className="capitalize text-gray-600">
+                          {option.optionText}
+                        </span>
+                      </div>
+                      <span>{option.votes} votes</span>
                     </div>
-                    <span>{option.votes} votes</span>
-                  </div>
-                  <div className="w-full bg-gray-200 h-2 rounded-full">
-                    {poll.totalVotes > 0 ? (
-                      <div
-                        className={`h-2 rounded-full ${
-                          poll.options[0] === option
-                            ? "bg-green-500"
-                            : "bg-red-500"
-                        }`}
-                        style={{
-                          width: `${(option.votes / poll.totalVotes) * 100}%`,
-                        }}
-                      ></div>
-                    ) : (
-                      <div className="h-2 rounded-full bg-gray-200"></div>
-                    )}
+                    <div className="w-full bg-gray-200 h-2 rounded-full">
+                      {poll.totalVotes > 0 ? (
+                        <div
+                          className={`h-2 rounded-full ${
+                            poll.options[0] === option
+                              ? "bg-green-500"
+                              : "bg-red-500"
+                          }`}
+                          style={{
+                            width: `${(option.votes / poll.totalVotes) * 100}%`,
+                          }}
+                        ></div>
+                      ) : (
+                        <div className="h-2 rounded-full bg-gray-200"></div>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -147,7 +162,6 @@ const Poll = () => {
               </p>
             </div>
           ))}
-          
         </div>
       </div>
     </>
