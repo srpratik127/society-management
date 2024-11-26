@@ -34,6 +34,7 @@ import OtherIncomeInvoice from "./pages/user/OtherIncomeInvoice";
 import MaintenanceInvoices from "./pages/user/MaintenanceInvoices";
 import Poll from "./pages/user/Polls";
 import ViewInvoice from "./components/user/ViewInvoice";
+import CommunitiesDiscussion from "./pages/user/CommunitiesDiscussion";
 import Security from "./pages/security/Security";
 import Emergency from "./pages/security/Emergency";
 
@@ -80,6 +81,7 @@ function App() {
           <Route path="other-invoice" element={<OtherIncomeInvoice />} />
           <Route path="security-protocols" element={<ResidentSecurityProtocols />} />
           <Route path="polls" element={<Poll />} />
+          <Route path="communities-discussion" element={<CommunitiesDiscussion />} />
         </Route>
 
         <Route path="/security" element={<ProtectedRoute><Security /></ProtectedRoute>}>
