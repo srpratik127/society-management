@@ -35,6 +35,7 @@ import MaintenanceInvoices from "./pages/user/MaintenanceInvoices";
 import Poll from "./pages/user/Polls";
 import ViewInvoice from "./components/user/ViewInvoice";
 import Security from "./pages/security/Security";
+import Emergency from "./pages/security/Emergency";
 
 function App() {
   return (
@@ -82,7 +83,8 @@ function App() {
         </Route>
 
         <Route path="/security" element={<ProtectedRoute><Security /></ProtectedRoute>}>
-          <Route path="" element={<Dashboard />} />
+          <Route path="" element={<VisitorLogs isAddable={true}/>} />
+          <Route path="emergency-management" element={<Emergency/>} />
           <Route path="profile" element={<Profile />} />
         </Route>
 
