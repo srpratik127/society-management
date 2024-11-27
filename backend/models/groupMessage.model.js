@@ -4,13 +4,12 @@ const groupChatSchema = new mongoose.Schema({
   groupName: { type: String, required: true },
   groupMembers: [
     {
-      _id: { type: mongoose.Schema.Types.ObjectId, ref: "Resident" || "User" },
-      model: { type: String, enum: ["Resident", "User"] }
+      _id: { type: mongoose.Schema.Types.ObjectId, ref: "Resident" }
     }
   ],
   messages: [
     {
-      senderId: { type: mongoose.Schema.Types.ObjectId, ref: "Resident" || "User" },
+      senderId: { type: mongoose.Schema.Types.ObjectId, ref: "Resident" },
       message: { type: String },
       mediaUrl: { type: String },
       createdAt: { type: Date, default: Date.now }

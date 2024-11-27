@@ -3,11 +3,7 @@ import { io } from "socket.io-client";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
-
-const socket = io(`${process.env.REACT_APP_BASE_URL}`, {
-  transports: ["websocket"],
-  withCredentials: true,
-});
+import { socket } from "../../utils/socket";
 
 const ChatComponent = () => {
   const userId = useSelector((store) => store.auth.user._id);

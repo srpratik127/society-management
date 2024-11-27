@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const Admin = require("../models/admin.model");
 // const cookieParser = require("cookie-parser");
 const Resident = require("../models/resident.model");
+const Guard = require("../models/guard.model");
 
 const generateOTP = () =>
   Math.floor(100000 + Math.random() * 900000).toString();
@@ -23,6 +24,10 @@ const otpmail = async (req, res) => {
 
     if (!user) {
       user = await Resident.findOne({ email });
+    }
+
+    if (!user) {
+      user = await Guard.findOne({ email });
     }
 
     if (!user) {
@@ -86,6 +91,15 @@ const resetPassword = async (req, res) => {
         { new: true }
       );
     }
+
+    if (!user) {
+      user = await Guard.findOneAndUpdate(
+        { email },
+        { password: hashedPassword },
+        { new: true }
+      );
+    }
+
     if (!user) {
       return res.status(404).json({ message: "Admin not found" });
     }

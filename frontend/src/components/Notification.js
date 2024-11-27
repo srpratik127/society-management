@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { format } from "timeago.js";
 import { initialNotification } from "../store/NotificationSlice";
 import DetailPopup from "./models/DetailPopup";
+import DetailsViewPopup from "./models/DetailsViewPopup";
 
 const Notification = () => {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ const Notification = () => {
   const user = useSelector((store) => store.auth.user);
   const notification = useSelector((store) => store.notification.notification);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const [detailsViewPopup, setDetailsViewPopup] = useState(false);
   const [personAmount, setPersonAmount] = useState(null);
 
   useEffect(() => {
@@ -186,16 +188,16 @@ const Notification = () => {
               setIsDetailsOpen(false);
             }}
             personAmount={personAmount}
+            setDetailsViewPopup={setDetailsViewPopup}
           />
-          // <DetailsViewPopup
-          //   onClose={() => {
-          //     setIsDetailsViewOpen(false);
-          //     setPerPersonAmount(null);
-          //   }}
-          //   perPersonAmount={perPersonAmount}
-          //   // members={members}
-          //   // totalAmount={totalAmount}
-          // />
+        )}
+        {detailsViewPopup && (
+          <DetailsViewPopup
+            onClose={() => setDetailsViewPopup(false)}
+            // perPersonAmount={perPersonAmount}
+            // members={members}
+            // totalAmount={totalAmount}
+          />
         )}
       </Popover>
     </>
