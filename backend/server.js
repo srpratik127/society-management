@@ -52,6 +52,7 @@ const Message = require("./models/Message.js");
 const GroupChat = require('./models/groupMessage.model.js');
 const Resident = require("./models/resident.model.js");
 const User = require("./models/admin.model.js");
+const emergencyAlertRoutes =require("./routes/emergencyalert.route.js")
 
 app.get("/", (req, res) => {
   res.send("Welcome...!!");
@@ -77,6 +78,7 @@ app.use("/v1/api/visitors", visitors);
 app.use("/v1/api/notifications", notificationRoutes);
 app.use("/v1/api/polls", polls);
 app.use("/v1/api/chat", chatRoutes);
+app.use("/v1/api", emergencyAlertRoutes);
 
 io.on("connection", (socket) => {
   console.log("New user connected");
