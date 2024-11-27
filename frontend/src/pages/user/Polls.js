@@ -2,10 +2,12 @@ import React from "react";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import CreatePoll from "../../components/models/CreatePolls";
 
 const Poll = () => {
   const [pollsData, setPollsData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isCreatePollOpen, setIsCreatePollOpen] = useState(false);
   const user = useSelector((store) => store.auth.user);
 
   useEffect(() => {
@@ -62,7 +64,9 @@ const Poll = () => {
       <div className="p-4 m-6 mt-0 bg-white rounded-lg">
         <div className="flex justify-between items-center mb-3">
           <h2 className="text-xl font-semibold mb-4">Polls</h2>
-          <button className="bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white px-4 py-2 rounded-md shadow hover:bg-orange-600">
+          <button className="bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white px-4 py-2 rounded-md shadow hover:bg-orange-600"
+            onClick={() => setIsCreatePollOpen(true)}
+          >
             Create Polls
           </button>
         </div>
@@ -133,11 +137,10 @@ const Poll = () => {
                     <div className="w-full bg-gray-200 h-2 rounded-full">
                       {poll.totalVotes > 0 ? (
                         <div
-                          className={`h-2 rounded-full ${
-                            poll.options[0] === option
+                          className={`h-2 rounded-full ${poll.options[0] === option
                               ? "bg-green-500"
                               : "bg-red-500"
-                          }`}
+                            }`}
                           style={{
                             width: `${(option.votes / poll.totalVotes) * 100}%`,
                           }}
@@ -163,6 +166,9 @@ const Poll = () => {
             </div>
           ))}
         </div>
+        {isCreatePollOpen && (
+          <CreatePoll onClose={() => setIsCreatePollOpen(false)} />
+        )}
       </div>
     </>
   );
