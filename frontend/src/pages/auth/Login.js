@@ -39,7 +39,8 @@ const Login = () => {
       try {
         const response = await axios.post(
           `${process.env.REACT_APP_BASE_URL}/v1/api/auth/login`,
-          { email: emailOrPhone, password }
+          { email: emailOrPhone, password },
+          { withCredentials: true }
         );
         dispatch(addToken(response.data.token));
         const parts = response.data.token.split(".");

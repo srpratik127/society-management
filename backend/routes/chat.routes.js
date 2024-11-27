@@ -1,5 +1,5 @@
 const express = require('express');
-const { handleMessage, getChatHistory, createGroup, sendGroupMessage, getGroupMessages } = require('../controllers/chat.controller');
+const { handleMessage, getChatHistory, createGroup, sendGroupMessage, getGroupMessages, getAllGroups } = require('../controllers/chat.controller');
 const multer = require('multer');
 const router = express.Router();
 
@@ -18,6 +18,8 @@ router.get('/history/:senderId/:receiverId', getChatHistory);
 router.post('/creategroup', createGroup);
 router.post('/sendgroupmessage', upload.single('file'), sendGroupMessage);
 router.get('/messages/:groupId', getGroupMessages);
+router.get('/groups', getAllGroups);
+
 
 
 module.exports = router;
