@@ -21,13 +21,13 @@ const Navbar = () => {
       <span key={index} className="flex items-center">
         {index > 0 && <span className="mx-2 text-xl">{">"}</span>}
         {index === pathSegments.length - 1 ? (
-          <span className="text-gray-500 text-nowrap block">
+          <span className="text-blue-600 text-nowrap block">
             {formattedSegment}
           </span>
         ) : (
           <Link
             to={`/${pathSegments.slice(0, index + 1).join("/")}`}
-            className="text-blue-600"
+            className="text-gray-500"
           >
             {formattedSegment}
           </Link>
