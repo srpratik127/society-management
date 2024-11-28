@@ -30,10 +30,10 @@ const AddSecurity = ({ isOpen, onClose, setGuards }) => {
       .reduce((acc, field) => {
         if (!formData[field]) acc[field] = `${field} is required`;
         return acc;
-      }, {}); 
+      }, {});
 
     if (!aadharCardFileName) newErrors.aadharCardFileName = "Aadhar card upload is required";
-    
+
     setErrors(newErrors);
     return !Object.keys(newErrors).length;
   };
@@ -69,14 +69,27 @@ const AddSecurity = ({ isOpen, onClose, setGuards }) => {
     `w-full border p-2 rounded mt-2 ${error ? "border-red-500 outline-none" : ""}`;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-[410px] max-w-lg">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 overflow-y-auto ">
+      <div className="bg-white p-4 sm:p-6 rounded-lg shadow-lg w-full max-w-[90%] h-[90%] sm:w-[450px] lg:w-[400px] max-h-screen overflow-y-auto">
         <h2 className="text-xl font-bold mb-4">Add Security</h2>
-        
+
         <div className="flex justify-start mb-4">
-          <img className="w-16 h-16 rounded-full" src={photoFileName ? URL.createObjectURL(photoInputRef.current?.files[0]) : "/assets/empty.png"} alt="User" />
-          <button className="text-blue-500 ml-4" onClick={() => photoInputRef.current.click()}>Add Photo</button>
-          <input type="file" ref={photoInputRef} className="hidden" onChange={handleFileChange(setPhotoFileName)} accept=".png,.jpeg,.jpg," required />
+          <img
+            className="w-16 h-16 rounded-full"
+            src={photoFileName ? URL.createObjectURL(photoInputRef.current?.files[0]) : "/assets/empty.png"}
+            alt="User"
+          />
+          <button className="text-blue-500 ml-4" onClick={() => photoInputRef.current.click()}>
+            Add Photo
+          </button>
+          <input
+            type="file"
+            ref={photoInputRef}
+            className="hidden"
+            onChange={handleFileChange(setPhotoFileName)}
+            accept=".png,.jpeg,.jpg,"
+            required
+          />
           {errors.photoFileName && <p className="text-red-500 text-xs">{errors.photoFileName}</p>}
         </div>
 
@@ -95,9 +108,9 @@ const AddSecurity = ({ isOpen, onClose, setGuards }) => {
           </div>
         ))}
 
-        <div className="flex gap-4 mb-4">
+        <div className="flex flex-wrap gap-4 mb-4">
           {["gender", "shift"].map((field) => (
-            <div key={field} className="w-[175px]">
+            <div key={field} className="flex-1 min-w-[150px]">
               <label className="block text-gray-700">{`${field.charAt(0).toUpperCase() + field.slice(1)}*`}</label>
               <select
                 name={field}
@@ -106,15 +119,25 @@ const AddSecurity = ({ isOpen, onClose, setGuards }) => {
                 onChange={handleChange}
               >
                 <option value="">{`Select ${field.charAt(0).toUpperCase() + field.slice(1)}`}</option>
-                {field === "gender" ? ["Male", "Female"].map(option => <option key={option} value={option}>{option}</option>) : ["Day", "Night"].map(option => <option key={option} value={option}>{option}</option>)}
+                {field === "gender"
+                  ? ["Male", "Female"].map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))
+                  : ["Day", "Night"].map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
               </select>
               {errors[field] && <p className="text-red-500 text-xs">{errors[field]}</p>}
             </div>
           ))}
         </div>
 
-        <div className="flex gap-4 mb-4">
-          <div className="w-1/2">
+        <div className="flex flex-wrap gap-4 mb-4">
+          <div className="flex-1 min-w-[150px]">
             <label className="block text-gray-700">Shift Date*</label>
             <DatePicker
               selected={formData.shiftDate}
@@ -126,7 +149,7 @@ const AddSecurity = ({ isOpen, onClose, setGuards }) => {
             />
             {errors.shiftDate && <p className="text-red-500 text-xs">{errors.shiftDate}</p>}
           </div>
-          <div className="w-1/2">
+          <div className="flex-1 min-w-[150px]">
             <label className="block text-gray-700">Shift Time*</label>
             <input
               name="shiftTime"
@@ -141,21 +164,48 @@ const AddSecurity = ({ isOpen, onClose, setGuards }) => {
 
         <div className="mb-4">
           <label className="block text-gray-700">Upload Aadhar Card*</label>
-          <div onClick={() => fileInputRef.current.click()} className={`mt-1 flex flex-col items-center justify-center rounded-md border-2 border-dashed p-4 cursor-pointer ${errors.aadharCardFileName && "border-red-500"}`}>
+          <div
+            onClick={() => fileInputRef.current.click()}
+            className={`mt-1 flex flex-col items-center justify-center rounded-md border-2 border-dashed p-4 cursor-pointer ${errors.aadharCardFileName && "border-red-500"
+              }`}
+          >
             <img src="/assets/addPhoto.svg" alt="Upload Icon" className="w-6 h-6" />
-            <p className="mt-2 text-sm text-gray-700 font-medium">{aadharCardFileName || "Upload Aadhar Card"}</p>
+            <p className="mt-2 text-sm text-gray-700 font-medium">
+              {aadharCardFileName || "Upload Aadhar Card"}
+            </p>
             <span className="text-[#A7A7A7] text-sm mt-3">PNG, JPG, PDF up to 10MB</span>
           </div>
-          <input type="file" ref={fileInputRef} accept=".png,.jpeg,.jpg," className="hidden" onChange={handleFileChange(setAadharCardFileName)} required />
+          <input
+            type="file"
+            ref={fileInputRef}
+            accept=".png,.jpeg,.jpg,"
+            className="hidden"
+            onChange={handleFileChange(setAadharCardFileName)}
+            required
+          />
           {errors.aadharCardFileName && <p className="text-red-500 text-xs">{errors.aadharCardFileName}</p>}
         </div>
 
         <div className="flex gap-3">
-          <button className="bg-white border w-full border-gray-300 font-semibold text-gray-700 py-2 px-4 rounded-lg" onClick={onClose}>Cancel</button>
-          <button className={`px-4 py-2 w-full rounded-lg ${isFormValid ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white" : "bg-gray-300 text-gray-500"}`} onClick={handleSubmit}>Create</button>
+          <button
+            className="bg-white border w-full border-gray-300 font-semibold text-gray-700 py-2 px-4 rounded-lg"
+            onClick={onClose}
+          >
+            Cancel
+          </button>
+          <button
+            className={`px-4 py-2 w-full rounded-lg ${isFormValid
+                ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white"
+                : "bg-gray-300 text-gray-500"
+              }`}
+            onClick={handleSubmit}
+          >
+            Create
+          </button>
         </div>
       </div>
     </div>
+
   );
 };
 
