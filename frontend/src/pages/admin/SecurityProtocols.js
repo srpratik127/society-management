@@ -22,7 +22,7 @@ const SecurityProtocols = () => {
         );
         setProtocols(response?.data);
       } catch (error) {
-        toast.error(error.message);
+        toast.error(error.response?.data?.message);
       }
     };
 
@@ -42,7 +42,7 @@ const SecurityProtocols = () => {
       setOpenDelete(false);
       setSelectedProtocol(null);
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data?.message);
     }
   };
 

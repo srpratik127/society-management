@@ -23,7 +23,7 @@ const Profile = () => {
           const { _id, name } = response?.data?.data;
           setUserSociety({ _id, name });
         } catch (error) {
-          toast.error(error.message);
+          toast.error(error.response?.data?.message);
         }
       };
       fetchUserSociety();
@@ -80,7 +80,7 @@ const Profile = () => {
       setIsEditing(false);
       toast.success("User Updated successful!");
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data?.message);
     }
   };
 

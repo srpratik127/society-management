@@ -18,7 +18,7 @@ const Main = () => {
               Connect, Collaborate, and Control –
               <span className="text-[#FE512E] font-semibold">
                 Society <br />
-                Management{" "}
+                Management
               </span>
               Simplified
             </p>

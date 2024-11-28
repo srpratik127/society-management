@@ -22,7 +22,7 @@ const CreateComplaint = () => {
         );
         setComplaints(response?.data?.data);
       } catch (error) {
-        toast.error(error.message);
+        toast.error(error.response?.data?.message);
       }
     };
 
@@ -40,7 +40,7 @@ const CreateComplaint = () => {
       setOpenDeleteComplain(false);
       toast.success("Complaints Deleted successful!");
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data?.message);
     }
   };
 

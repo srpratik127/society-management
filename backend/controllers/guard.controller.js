@@ -64,7 +64,7 @@ const createGuard = async (req, res) => {
             from:'maulikpatel4334@gmail.com' ,
             to: email,
             subject: 'Sending Your Password',
-            html:  `<h1>DashStack</h1><p>Your Password is: ${randomPassword}</p>`,
+            html:  `<h1>DashStack</h1><h3>welcome to DashStack</h3><p>Your Password is: ${randomPassword}</p>`,
         };
 
         await transporter.sendMail(mailOptions);

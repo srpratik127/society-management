@@ -9,7 +9,12 @@ const Emergency = () => {
   const user = useSelector((store) => store.auth.user);
 
   const alertOptions = [
-    "Emergency", "Warning", "Fire Alarm", "Earthquake", "High Winds", "Thunder"
+    "Emergency",
+    "Warning",
+    "Fire Alarm",
+    "Earthquake",
+    "High Winds",
+    "Thunder",
   ];
 
   const handleSubmit = async (e) => {
@@ -22,7 +27,7 @@ const Emergency = () => {
 
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/v1/api/create-alert`,
+        `${process.env.REACT_APP_BASE_URL}/v1/api/alert`,
         {
           alertType,
           description,
@@ -36,7 +41,6 @@ const Emergency = () => {
       setDescription("");
     } catch (error) {
       toast.error("Failed to create alert");
-      console.error("Error creating alert: ", error);
     }
   };
 

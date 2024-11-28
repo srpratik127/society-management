@@ -23,7 +23,7 @@ const Resident = () => {
         );
         setResidents(response?.data?.data);
       } catch (error) {
-        toast.error(error.message);
+        toast.error(error.response?.data?.message);
       }
     };
 
@@ -55,7 +55,7 @@ const Resident = () => {
       toast.success("Vacate Flat successful!");
       setResidents(updatedResidents);
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data?.message);
     }
   };
 

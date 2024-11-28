@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import toast from "react-hot-toast";
 
 const authSlice = createSlice({
   name: "auth",
@@ -21,8 +22,7 @@ const authSlice = createSlice({
           throw new Error("Invalid token structure");
         }
       } catch (error) {
-        console.error("Error decoding token:", error.message);
-        // state.user = {};
+        toast.error(error.response?.data?.message);
       }
     },
     removeToken: (state, action) => {

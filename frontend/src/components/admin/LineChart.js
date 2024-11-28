@@ -47,6 +47,10 @@ const LineChart = () => {
           fill: false,
           borderColor: "#9CABFF",
           tension: 0.4,
+          pointRadius: 6,
+          pointBackgroundColor: "#9CABFF",
+          pointBorderColor: "#ffffff",
+          pointBorderWidth: 2,
         },
       ],
     },
@@ -58,6 +62,10 @@ const LineChart = () => {
           fill: false,
           borderColor: "#9CABFF",
           tension: 0.4,
+          pointRadius: 6,
+          pointBackgroundColor: "#9CABFF",
+          pointBorderColor: "#ffffff",
+          pointBorderWidth: 2,
         },
       ],
     },
@@ -77,12 +85,18 @@ const LineChart = () => {
           fill: false,
           borderColor: "#9CABFF",
           tension: 0.4,
+          pointRadius: 6,
+          pointBackgroundColor: "#9CABFF",
+          pointBorderColor: "#ffffff",
+          pointBorderWidth: 2,
         },
       ],
     },
   };
 
   const options = {
+    responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         display: false,
@@ -102,24 +116,10 @@ const LineChart = () => {
     },
   };
 
-  const handleFilterChange = (e) => {
-    setFilter(e.target.value);
-  };
-
   return (
     <>
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold">Performance Overview</h2>
-        {/* <select
-          value={filter}
-          onChange={handleFilterChange}
-          className="border border-gray-300 rounded-md px-3 py-2 outline-none"
-        >
-          <option value="Last Year">Last Year</option>
-          <option value="Last Month">Last Month</option>
-          <option value="Last Week">Last Week</option>
-        </select> */}
-
         <Popover className="relative">
           <Popover.Button className="p-2 px-4 outline-none border rounded-md">
             {filter}
@@ -155,7 +155,7 @@ const LineChart = () => {
           </Popover.Panel>
         </Popover>
       </div>
-      <div className="max-h-[350px] flex justify-center items-center">
+      <div className="min-h-[350px] w-[100%] flex justify-center items-center">
         <Line data={chartData[filter]} options={options} />
       </div>
     </>

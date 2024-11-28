@@ -18,7 +18,8 @@ const Dashboard = () => {
       try {
         const [maintenanceRes, expenseRes] = await Promise.all([
           axios.get(
-            `${process.env.REACT_APP_BASE_URL}/v1/api/maintenance/total-maintenance`, {
+            `${process.env.REACT_APP_BASE_URL}/v1/api/maintenance/total-maintenance`,
+            {
               withCredentials: true,
             }
           ),
@@ -28,8 +29,8 @@ const Dashboard = () => {
         ]);
         setTotalMaintenance(maintenanceRes?.data?.totalAmount);
         setTotalExpense(expenseRes?.data?.totalExpense);
-      } catch (err) {
-        toast.error(err.message);
+      } catch (error) {
+        toast.error(error.response?.data?.message);
       }
     };
     const fetchResidents = async () => {
@@ -39,7 +40,7 @@ const Dashboard = () => {
         );
         setTotalUnit(response?.data?.data?.length);
       } catch (error) {
-        toast.error(error.message);
+        toast.error(error.response?.data?.message);
       }
     };
 
@@ -51,28 +52,28 @@ const Dashboard = () => {
     {
       id: "1",
       title: "Total Balance",
-      amount: `₹ ${totalMaintenance - totalExpense}`,
+      amount: `₹ ${totalMaintenance - totalExpense}` || "00",
       icon: "/assets/1-4.svg",
       color: "#F7CA8C",
     },
     {
       id: "2",
       title: "Total Income",
-      amount: `₹ ${totalMaintenance}`,
+      amount: `₹ ${totalMaintenance}` || "00",
       icon: "/assets/money-recive.svg",
       color: "#9CCB9E",
     },
     {
       id: "3",
       title: "Total Expense",
-      amount: `₹ ${totalExpense}`,
+      amount: `₹ ${totalExpense}` || "00",
       icon: "/assets/money-send.svg",
       color: "#C2CFF9",
     },
     {
       id: "4",
       title: "Total Unit",
-      amount: `0${totalUnit}`,
+      amount: `0${totalUnit}` || "00",
       icon: "/assets/building-4.svg",
       color: "#F59BE1",
     },

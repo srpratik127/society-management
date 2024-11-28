@@ -63,7 +63,7 @@ const EditExpensesDetails = ({ onClose, expense, setExpansesData }) => {
         toast.success("Expenses Update successful!");
         onClose();
       } catch (error) {
-        toast.error(error.message);
+        toast.error(error.response?.data?.message);
       }
     }
   };

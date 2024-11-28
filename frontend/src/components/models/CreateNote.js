@@ -44,7 +44,7 @@ const CreateNote = ({ onClose, setNotes }) => {
         toast.success("Notes Create successful!");
         onClose();
       } catch (error) {
-        toast.error(error.message);
+        toast.error(error.response?.data?.message);
       }
     } else {
       ["title", "description", "date"].forEach((field) =>

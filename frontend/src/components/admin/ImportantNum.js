@@ -19,7 +19,7 @@ export const ImportantNum = () => {
         );
         setImportantNumbers(response?.data?.data);
       } catch (error) {
-        toast.error(error.message);
+        toast.error(error.response?.data?.message);
       }
     };
 
@@ -45,7 +45,7 @@ export const ImportantNum = () => {
       );
       toast.success("Numbers delete successful!");
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data?.message);
     }
     setOpenDelete(false);
   };

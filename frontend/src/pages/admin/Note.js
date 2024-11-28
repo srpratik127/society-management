@@ -19,7 +19,7 @@ const Note = () => {
         );
         setNotes(response.data);
       } catch (error) {
-        toast.error(error.message);
+        toast.error(error.response?.data?.message);
       }
     };
 

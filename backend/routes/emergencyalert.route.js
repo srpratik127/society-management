@@ -2,6 +2,6 @@ const express = require('express');
 const router = express.Router();
 const { createEmergencyAlert } = require('../controllers/emergencyalert.controller');
 
-router.post('/create-alert', createEmergencyAlert);
+router.post('/', createEmergencyAlert);
 
 module.exports = router;

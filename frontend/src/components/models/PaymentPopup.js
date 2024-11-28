@@ -72,8 +72,7 @@ const PaymentPopup = ({
         onClose();
         resetForm();
       } catch (error) {
-        toast.error(error.message);
-        alert("Payment failed. Please try again.");
+        toast.error(error.response?.data?.message);
       }
     } else {
       // For online payment, check if already confirmed
@@ -116,8 +115,7 @@ const PaymentPopup = ({
             onClose();
             resetForm();
           } catch (error) {
-            toast.error(error.message);
-            alert("Payment failed. Please try again.");
+            toast.error(error.response?.data?.message);
           }
         }
       }

@@ -29,7 +29,7 @@ const ServiceAndComplaint = () => {
         );
         setComplainList(response?.data?.data);
       } catch (error) {
-        toast.error(error.message);
+        toast.error(error.response?.data?.message);
       }
     };
 
@@ -44,7 +44,7 @@ const ServiceAndComplaint = () => {
         );
         setRequestsList(response?.data);
       } catch (error) {
-        toast.error(error.message);
+        toast.error(error.response?.data?.message);
       }
     };
     fetchRequestsList();
@@ -62,7 +62,7 @@ const ServiceAndComplaint = () => {
       setSelectedComplain({});
       toast.success("Complaints Deleted successful!");
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data?.message);
     }
   };
   const handleDeleteRequest = async () => {
@@ -77,7 +77,7 @@ const ServiceAndComplaint = () => {
       setSelectedRequest({});
       toast.success("Requests Deleted successful!");
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data?.message);
     }
   };
 

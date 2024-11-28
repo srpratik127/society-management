@@ -5,7 +5,7 @@ const Admin = require("../models/admin.model");
 
 const createPoll = async (req, res) => {
   try {
-    const { userId, question, options, multipleChoice, endDate } = req.body;
+    const { userId, question, options, choice, endDate } = req.body;
     if (!options || options.length < 2) {
       return res
         .status(400)
@@ -23,7 +23,7 @@ const createPoll = async (req, res) => {
     const poll = new Polls({
       question,
       options: options.map((option) => ({ optionText: option })),
-      multipleChoice,
+      choice,
       createdBy: {
         _id: creator._id,
         model,
@@ -50,7 +50,6 @@ const createPoll = async (req, res) => {
       poll: populatedPoll,
     });
   } catch (error) {
-    console.error("Error creating poll:", error);
     res.status(500).json({ message: "Error creating poll" });
   }
 };
@@ -65,7 +64,7 @@ const votePoll = async (req, res) => {
     if (!poll) {
       return res.status(404).json({ message: "Poll not found" });
     }
-    if (!poll.multipleChoice && selectedOptions.length > 1) {
+    if (selectedOptions.length > 1) {
       return res
         .status(400)
         .json({ message: "Only one option allowed for this poll." });

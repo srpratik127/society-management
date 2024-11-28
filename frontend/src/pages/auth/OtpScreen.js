@@ -46,7 +46,7 @@ const OtpScreen = () => {
         toast.success("Mail sended successful!");
       }
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data?.message);
     }
   };
 
@@ -69,7 +69,7 @@ const OtpScreen = () => {
         setOtp(["", "", "", "", "", ""]);
       }
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data?.message);
     }
   };
 

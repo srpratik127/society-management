@@ -49,7 +49,7 @@ const Sidebar = () => {
         onClick={() => dispatch(ToggleMenu())}
       />
       <div className="px-4 pb-2 text-center">
-        <h1 className="text-4xl font-bold p-4 text-[#FE512E] to-[#F09619]">
+        <h1 className="text-4xl font-bold p-4 text-[#FE512E] to-[#F09619] select-none cursor-pointer">
           Dash<span className="text-black">Stack</span>
         </h1>
       </div>
@@ -65,26 +65,38 @@ const Sidebar = () => {
             return (
               <div key={sidebar.id}>
                 <button
-                  className={`group relative flex items-center p-4 py-3 w-full cursor-pointer rounded-xl before:absolute before:left-0 before:top-0 before:bottom-0 before:w-2 before:rounded-r-lg before:-ml-4 ${
+                  className={`group relative flex items-center justify-between p-4 py-3 w-full cursor-pointer rounded-xl before:absolute before:left-0 before:top-0 before:bottom-0 before:w-2 before:rounded-r-lg before:-ml-4 ${
                     isActive
                       ? "text-white bg-gradient-to-r from-[#FE512E] to-[#F09619] before:bg-[#FE512E]"
                       : ""
                   }`}
                   onClick={() => handleButtonClick(sidebar)}
                 >
-                  <span className="pr-3">
-                    <svg
-                      width="22"
-                      height="22"
-                      viewBox="0 0 22 22"
-                      xmlns="http://www.w3.org/2000/svg"
-                      className={` ${
-                        isActive ? "fill-white" : "fill-[#4F4F4F]"
-                      }`}
-                      dangerouslySetInnerHTML={{ __html: sidebar.icon }}
+                  <div className="flex items-center">
+                    <span className="pr-3">
+                      <svg
+                        width="22"
+                        height="22"
+                        viewBox="0 0 22 22"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className={` ${
+                          isActive ? "fill-white" : "fill-[#4F4F4F]"
+                        }`}
+                        dangerouslySetInnerHTML={{ __html: sidebar.icon }}
+                      />
+                    </span>
+                    <span className="font-normal text-nowrap">
+                      {sidebar.title}
+                    </span>
+                  </div>
+
+                  {sidebar.dropdown && (
+                    <img
+                      src="/assets/dropdown-arrow-down.svg"
+                      className=""
+                      alt=""
                     />
-                  </span>
-                  <span className="font-normal">{sidebar.title}</span>
+                  )}
                 </button>
 
                 {sidebar.dropdown && activeDropdown === sidebar.id && (

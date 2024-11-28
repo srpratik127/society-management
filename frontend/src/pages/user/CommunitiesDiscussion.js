@@ -21,8 +21,8 @@ const CommunitiesDiscussion = () => {
           `${process.env.REACT_APP_BASE_URL}/v1/api/chat/groups`
         );
         setGroups(data);
-      } catch (err) {
-        toast.error(err.message);
+      } catch (error) {
+        toast.error(error.response?.data?.message);
       }
     };
     fetchGroups();
@@ -36,8 +36,8 @@ const CommunitiesDiscussion = () => {
         `${process.env.REACT_APP_BASE_URL}/v1/api/chat/messages/${chat._id}`
       );
       setShowHistoryMessage(data);
-    } catch (err) {
-      toast.error(err.message);
+    } catch (error) {
+      toast.error(error.response?.data?.message);
     }
   };
 
@@ -86,7 +86,7 @@ const CommunitiesDiscussion = () => {
       setMessage("");
       setMedia(null);
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data?.message);
     }
   };
 

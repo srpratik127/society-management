@@ -59,7 +59,7 @@ const AddExpensesDetails = ({ onClose, setExpansesData }) => {
         setExpansesData((pre) => [...pre, response.data?.data]);
         onClose();
       } catch (error) {
-        toast.error(error.message);
+        toast.error(error.response?.data?.message);
       }
     }
   };

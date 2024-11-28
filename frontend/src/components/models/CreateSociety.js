@@ -38,7 +38,7 @@ export const CreateSociety = ({ closePopup, setOptions }) => {
       toast.success("Society Create successful!");
       closePopup();
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data?.message);
     }
   };
 

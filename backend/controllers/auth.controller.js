@@ -24,16 +24,16 @@ const Register = async (req, res) => {
 
     const society = await Society.findById(select_society);
     if (!society) {
-      return res.status(404).json({ msg: "Society not found" });
+      return res.status(404).json({ message: "Society not found" });
     }
 
     if (!password) {
-      return res.status(400).json({ msg: "Passwords is mandatory" });
+      return res.status(400).json({ message: "Passwords is mandatory" });
     }
 
     let user = await Admin.findOne({ email });
     if (user) {
-      return res.status(400).json({ msg: "Admin already exists" });
+      return res.status(400).json({ message: "Admin already exists" });
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -52,10 +52,9 @@ const Register = async (req, res) => {
     });
 
     await newUser.save();
-    res.status(201).json({ msg: "Admin registered successfully" });
+    res.status(201).json({ message: "Admin registered successfully" });
   } catch (error) {
-    console.error("Error during registration:", error.message);
-    res.status(500).json({ msg: "Server error" });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -73,11 +72,11 @@ const Login = async (req, res) => {
     }
 
     if (!user) {
-      return res.status(400).json({ msg: "email not exists" });
+      return res.status(400).json({ message: "email not exists" });
     }
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ msg: "password do not match" });
+      return res.status(400).json({ message: "password do not match" });
     }
     const { password: _, ...userWithoutPassword } = user.toObject();
     const token = jwt.sign(
@@ -93,10 +92,10 @@ const Login = async (req, res) => {
       maxAge: 30 * 24 * 60 * 60 * 1000,
     });
 
-    res.status(200).json({ msg: "Login successful", token });
+    res.status(200).json({ message: "Login successful", token });
   } catch (error) {
     console.error("Error during login:", error.message);
-    res.status(500).json({ msg: "Server error" });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -116,7 +115,7 @@ const updateUser = async (req, res) => {
     } = req.body;
     const user = await Admin.findById(id);
     if (!user) {
-      return res.status(404).json({ msg: "User not found" });
+      return res.status(404).json({ message: "User not found" });
     }
     let profilePictureUrl = profile_picture;
     if (req.file) {
@@ -155,7 +154,7 @@ const updateUser = async (req, res) => {
       try {
         parsedSociety = JSON.parse(select_society);
       } catch (err) {
-        return res.status(400).json({ msg: "Invalid select_society format" });
+        return res.status(400).json({ message: "Invalid select_society format" });
       }
     }
     if (parsedSociety && parsedSociety._id) {
@@ -180,7 +179,7 @@ const updateUser = async (req, res) => {
       { new: true, runValidators: true }
     );
     if (!updatedUser) {
-      return res.status(404).json({ msg: "User not found" });
+      return res.status(404).json({ message: "User not found" });
     }
     const { password: _, ...userWithoutPassword } = updatedUser.toObject();
     const token = jwt.sign(
@@ -189,16 +188,15 @@ const updateUser = async (req, res) => {
       { expiresIn: "30d" }
     );
     if (!token) {
-      return res.status(400).json({ msg: "Token generation failed" });
+      return res.status(400).json({ message: "Token generation failed" });
     }
     res.status(200).json({
-      msg: "User updated successfully",
+      message: "User updated successfully",
       user: updatedUser,
       token,
     });
   } catch (error) {
-    console.error("Error updating user:", error.message);
-    res.status(500).json({ msg: "Server error" });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -224,7 +222,6 @@ const verifyPassword = async (req, res) => {
       message: "Password is correct.",
     });
   } catch (error) {
-    console.error("Error in checkPassword:", error.message);
     res.status(500).json({
       success: false,
       message: "Server error,",
