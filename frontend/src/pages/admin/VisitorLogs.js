@@ -7,10 +7,6 @@ const VisitorLogs = ({isAddable}) => {
   const [visitorData, setVisitorData] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const addNewVisitor = (newVisitor) => {
-    console.log("New Visitor Details:", newVisitor);
-  };
-
   useEffect(() => {
     const fetchComplainList = async () => {
       try {
@@ -19,7 +15,7 @@ const VisitorLogs = ({isAddable}) => {
         );
         setVisitorData(response?.data);
       } catch (error) {
-        toast.error(error.message);
+        toast.error(error.response.data.message);
       }
     };
 
@@ -82,7 +78,7 @@ const VisitorLogs = ({isAddable}) => {
                     <span>{securityManagement.name}</span>
                   </td>
                   <td className="py-3 px-6 text-center text-nowrap min-w-[200px]">
-                    {securityManagement.number}
+                    {securityManagement.phoneNumber}
                   </td>
                   <td className="py-3 px-6 text-center text-nowrap min-w-[200px]">
                     {new Date(securityManagement.date).toLocaleString("en-GB", {
@@ -116,7 +112,7 @@ const VisitorLogs = ({isAddable}) => {
         <AddVisitorDetails
           isOpen={isModalOpen}
           closeModal={() => setIsModalOpen(false)}
-          addNewVisitor={addNewVisitor}
+          setVisitorData={setVisitorData}
         />
       )}
     </div>

@@ -5,7 +5,7 @@ const visitorSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    number: {
+    phoneNumber: {
         type: String,
         required: true,
     },
