@@ -9,10 +9,15 @@ const Emergency = () => {
   const user = useSelector((store) => store.auth.user); // Get the logged-in guard user from Redux
 
   const alertOptions = [
-    "Emergency", "Warning", "Fire Alarm", "Earthquake", "High Winds", "Thunder"
+    "Emergency",
+    "Warning",
+    "Fire Alarm",
+    "Earthquake",
+    "High Winds",
+    "Thunder",
   ];
 
-  const handleSubmit = async (e) => {  
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!alertType || !description) {
@@ -21,22 +26,20 @@ const Emergency = () => {
     }
 
     try {
-      // Call POST API to create an emergency alert
-      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/v1/api/create-alert`, {
-        alertType,
-        description,
-        createdBy: user?._id, // Use the logged-in guard's ID
-      });
+      const response = await axios.post(
+        `${process.env.REACT_APP_BASE_URL}/v1/api/alert`,
+        {
+          alertType,
+          description,
+          createdBy: user?._id,
+        }
+      );
 
-      // Show success notification
       toast.success(`Alert "${alertType}" submitted successfully!`);
-
-      // Clear the form fields after successful submission
       setAlertType("");
       setDescription("");
     } catch (error) {
       toast.error("Failed to create alert");
-      console.error("Error creating alert: ", error);
     }
   };
 
@@ -56,9 +59,13 @@ const Emergency = () => {
             className="block w-full bg-white border border-gray-300 px-4 py-2 rounded-md"
             required
           >
-            <option value="" disabled>Select Alert</option>
-            {alertOptions.map(option => (
-              <option key={option} value={option}>{option}</option>
+            <option value="" disabled>
+              Select Alert
+            </option>
+            {alertOptions.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
             ))}
           </select>
         </div>
@@ -80,7 +87,11 @@ const Emergency = () => {
         <div className="flex justify-end">
           <button
             type="submit"
-            className={`w-full py-2 rounded-lg ${isSubmitDisabled ? 'bg-gray-100 text-black' : 'bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white'}`}
+            className={`w-full py-2 rounded-lg ${
+              isSubmitDisabled
+                ? "bg-gray-100 text-black"
+                : "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white"
+            }`}
             disabled={isSubmitDisabled}
           >
             Send

@@ -58,7 +58,7 @@ const Navbar = () => {
           </div>
         ) : (
           <div>
-            <p className={`xl:ms-0 hidden md:flex ${!isOpenMenu && "ms-10"}`}>
+            <p className={`xl:ms-0 hidden md:flex ${isOpenMenu ? "hidden md:hidden" : "block ms-10"}`}>
               {breadcrumb}
             </p>
           </div>

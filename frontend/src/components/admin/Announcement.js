@@ -20,8 +20,8 @@ const Announcement = () => {
           `${process.env.REACT_APP_BASE_URL}/v1/api/announcement`
         );
         setAnnouncements(response?.data);
-      } catch (err) {
-        toast.error(err.message);
+      } catch (error) {
+        toast.error(error.response?.data?.message);
       }
     };
 
@@ -39,7 +39,7 @@ const Announcement = () => {
       toast.success("Announcement Delete successful!");
       setIsDeleteOpen(false);
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data?.message);
     }
   };
 

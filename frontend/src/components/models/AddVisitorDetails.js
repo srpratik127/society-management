@@ -41,7 +41,7 @@ const AddVisitorDetails = ({ isOpen, closeModal, addNewVisitor }) => {
       role="dialog"
       aria-modal="true"
     >
-      <div className="fixed inset-0 bg-black bg-opacity-50" onClick={closeModal}></div>
+      <div className="fixed inset-0 bg-black bg-opacity-50"></div>
       <div className="bg-white p-8 rounded-lg shadow-lg w-[90%] max-w-md relative z-50">
         <h2 className="text-xl font-semibold mb-4">Add Visitor Details</h2>
         <form onSubmit={handleSubmit}>

@@ -22,7 +22,7 @@ const Expenses = () => {
         );
         setExpansesData(response?.data);
       } catch (error) {
-        toast.error(error.message);
+        toast.error(error.response?.data?.message);
       }
     };
     fetchExpensesList();
@@ -39,7 +39,7 @@ const Expenses = () => {
       setIsPopupDelete(false);
       toast.success("Expenses Deleted successful!");
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data?.message);
     }
   };
 

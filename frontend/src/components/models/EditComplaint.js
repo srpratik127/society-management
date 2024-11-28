@@ -37,7 +37,7 @@ const EditComplaint = ({ closePopup, selectedComplain, setComplainList }) => {
       toast.success("complaints Update successful!");
       closePopup();
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data?.message);
     }
   };
 

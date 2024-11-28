@@ -23,7 +23,7 @@ const OtherIncome = () => {
         );
         setOtherIncomeData(response?.data);
       } catch (error) {
-        toast.error(error.message);
+        toast.error(error.response?.data?.message);
       }
     };
     viewOtherIncome();
@@ -40,7 +40,7 @@ const OtherIncome = () => {
       setSelectedItem(null);
       toast.success("Income delete successful!");
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data?.message);
     }
     setOpenDeleteIncome(false);
   };

@@ -38,7 +38,7 @@ const Register = () => {
           { value: "create_society", label: "Create Society", isButton: true },
         ]);
       } catch (error) {
-        toast.error(error.message);
+        toast.error(error.response?.data?.message);
       }
     };
 
@@ -100,7 +100,7 @@ const Register = () => {
         toast.success("Register successful!");
         navigate("/login");
       } catch (error) {
-        toast.error(error.response?.data?.msg || error.message);
+        toast.error(error.response?.data?.message);
       }
     }
   };
@@ -408,7 +408,6 @@ const Register = () => {
           <div className="flex items-center">
             <input
               type="checkbox"
-              checked
               id="agree"
               className="h-4 w-4 text-yellow-500 focus:ring-yellow-500 border-gray-300 rounded"
             />

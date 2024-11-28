@@ -38,7 +38,7 @@ const EditNote = ({ note, onClose, setNotes }) => {
         onClose();
         toast.success("Notes Update successful!");
       } catch (error) {
-        toast.error(error.message);
+        toast.error(error.response?.data?.message);
       }
     } else {
       ["title", "description", "date"].forEach((field) =>

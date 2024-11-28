@@ -44,8 +44,7 @@ const otpmail = async (req, res) => {
     await transporter.sendMail(mailOptions);
     res.status(200).json({ message: "OTP sent successfully" });
   } catch (error) {
-    console.error("Error sending email:", error.message);
-    res.status(500).json({ error: "An error occurred" });
+    res.status(500).json({ message: "An error occurred" });
   }
 };
 
@@ -63,7 +62,6 @@ const verifyOTP = (req, res) => {
       res.status(401).json({ message: "Invalid OTP" });
     }
   } catch (error) {
-    console.error("Error verifying OTP:", error.message);
     res.status(500).json({ error: "An error occurred" });
   }
 };
@@ -105,7 +103,6 @@ const resetPassword = async (req, res) => {
     }
     res.status(200).json({ message: "Password reset successfully!" });
   } catch (error) {
-    console.error("Error resetting password:", error.message);
     res.status(500).json({ error: "An error occurred" });
   }
 };

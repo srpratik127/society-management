@@ -49,7 +49,7 @@ const CreateFacilityManagement = ({ onClose, setFacilities }) => {
       toast.success("Facilities Create successful!");
       onClose();
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data?.message);
     }
   };
 

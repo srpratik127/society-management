@@ -82,7 +82,6 @@ const createOwner = async (req, res) => {
       data: residentWithoutPassword,
     });
   } catch (error) {
-    console.error("Error in createOwner:", error.message);
     res.status(500).json({
       success: false,
       message: error.message,

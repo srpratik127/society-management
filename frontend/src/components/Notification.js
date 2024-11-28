@@ -25,8 +25,8 @@ const Notification = () => {
           `${process.env.REACT_APP_BASE_URL}/v1/api/notifications/${user?._id}`
         );
         dispatch(initialNotification(response.data));
-      } catch (err) {
-        toast.error(err.message);
+      } catch (error) {
+        toast.error(error.response?.data?.message);
       }
     };
     fetchNotification();
@@ -41,8 +41,8 @@ const Notification = () => {
         (item) => item._id !== notificationId
       );
       dispatch(initialNotification(updatedNotifications));
-    } catch (err) {
-      toast.error(err.message);
+    } catch (error) {
+      toast.error(error.response?.data?.message);
     }
   };
 
@@ -52,8 +52,8 @@ const Notification = () => {
         `${process.env.REACT_APP_BASE_URL}/v1/api/notifications/${user._id}`
       );
       dispatch(initialNotification([]));
-    } catch (err) {
-      toast.error(err.message);
+    } catch (error) {
+      toast.error(error.response?.data?.message);
     }
   };
 

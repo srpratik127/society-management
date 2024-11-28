@@ -21,7 +21,7 @@ const ComplainTable = () => {
         );
         setComplainList(response?.data?.data);
       } catch (error) {
-        toast.error(error.message);
+        toast.error(error.response?.data?.message);
       }
     };
 
@@ -49,7 +49,7 @@ const ComplainTable = () => {
       toast.success("Complaints Delete successful!");
       setOpenDeleteComplain(false);
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data?.message);
     }
   };
 

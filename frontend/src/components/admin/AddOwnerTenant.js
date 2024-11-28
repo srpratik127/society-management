@@ -109,7 +109,7 @@ const AddOwnerTenant = ({role, editResident}) => {
             }
     
         } catch (error) {
-            toast.error(error);
+            toast.error(error.response?.data?.message);
         }
     };
 

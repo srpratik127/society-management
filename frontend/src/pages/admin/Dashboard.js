@@ -28,8 +28,8 @@ const Dashboard = () => {
         ]);
         setTotalMaintenance(maintenanceRes?.data?.totalAmount);
         setTotalExpense(expenseRes?.data?.totalExpense);
-      } catch (err) {
-        toast.error(err.message);
+      } catch (error) {
+        toast.error(error.response?.data?.message);
       }
     };
     const fetchResidents = async () => {
@@ -39,7 +39,7 @@ const Dashboard = () => {
         );
         setTotalUnit(response?.data?.data?.length);
       } catch (error) {
-        toast.error(error.message);
+        toast.error(error.response?.data?.message);
       }
     };
 

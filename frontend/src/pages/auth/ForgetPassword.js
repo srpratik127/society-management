@@ -41,7 +41,7 @@ const ForgetPassword = () => {
           navigate("/get-otp", { state: { emailOrPhone } });
         }
       } catch (error) {
-        toast.error(error.message);
+        toast.error(error.response?.data?.message);
       }
     }
   };

@@ -52,7 +52,7 @@ const Message = require("./models/Message.js");
 const GroupChat = require("./models/groupMessage.model.js");
 const Resident = require("./models/resident.model.js");
 const User = require("./models/admin.model.js");
-const emergencyAlertRoutes =require("./routes/emergencyalert.route.js")
+const emergencyAlertRoutes = require("./routes/emergencyalert.route.js");
 
 app.get("/", (req, res) => {
   res.send("Welcome...!!");
@@ -74,11 +74,10 @@ app.use("/v1/api/requests", requestsRoutes);
 app.use("/v1/api/protocol", protocol);
 app.use("/v1/api/guard", guard);
 app.use("/v1/api/visitors", visitors);
-// app.use("/v1/api/user/polls", polls);
 app.use("/v1/api/notifications", notificationRoutes);
 app.use("/v1/api/polls", polls);
 app.use("/v1/api/chat", chatRoutes);
-app.use("/v1/api", emergencyAlertRoutes);
+app.use("/v1/api/", emergencyAlertRoutes);
 
 io.on("connection", (socket) => {
   console.log("New user connected");
@@ -129,7 +128,6 @@ io.on("connection", (socket) => {
       socket.join(groupId);
       socket.emit("groupMembers", groupChat.groupMembers);
     } catch (error) {
-      console.error("Error while user joining the group:", error);
       socket.emit("error", { message: "Error joining group" });
     }
   });
@@ -162,11 +160,41 @@ io.on("connection", (socket) => {
         });
         socket.emit("sendGroupMessage", newMessage);
       } catch (error) {
-        console.error("Error sending group message:", error);
         socket.emit("error", { message: "Error sending message" });
       }
     }
   );
+
+  // for video call
+  socket.on("offer", ({ offer, receiverId }) => {
+    const receiverSocket = Array.from(io.sockets.sockets.values()).find(
+      (s) => s.userId === receiverId
+    );
+    if (receiverSocket) {
+      receiverSocket.emit("offer", { offer, senderId: socket.userId });
+    }
+  });
+
+  socket.on("answer", ({ answer, receiverId }) => {
+    const receiverSocket = Array.from(io.sockets.sockets.values()).find(
+      (s) => s.userId === receiverId
+    );
+    if (receiverSocket) {
+      receiverSocket.emit("answer", { answer, senderId: socket.userId });
+    }
+  });
+
+  socket.on("ice-candidate", ({ candidate, receiverId }) => {
+    const receiverSocket = Array.from(io.sockets.sockets.values()).find(
+      (s) => s.userId === receiverId
+    );
+    if (receiverSocket) {
+      receiverSocket.emit("ice-candidate", {
+        candidate,
+        senderId: socket.userId,
+      });
+    }
+  });
 
   socket.on("disconnect", () => {
     console.log(`${socket.userId} disconnected`);

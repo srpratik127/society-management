@@ -26,9 +26,15 @@ const pollSchema = new mongoose.Schema({
     required: true,
   },
   options: [pollOptionSchema],
-  multipleChoice: {
-    type: Boolean,
-    default: false,
+  choice: {
+    type: String,
+    enum: [
+      "Multichoice polls",
+      "Ranking polls",
+      "Rating polls",
+      "Numeric polls",
+      "Text polls",
+    ],
   },
   createdBy: {
     _id: { type: mongoose.Schema.Types.ObjectId },

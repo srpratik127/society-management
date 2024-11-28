@@ -33,7 +33,7 @@ exports.handleMessage = async (req, res) => {
     const savedMessage = await newMessage.save();
     res.status(200).json(savedMessage);
   } catch (error) {
-    res.status(500).json({ error: "Failed to handle the message" });
+    res.status(500).json({ message: "Failed to handle the message" });
   }
 };
 
@@ -48,7 +48,7 @@ exports.getChatHistory = async (req, res) => {
     }).sort({ createdAt: 1 });
     res.status(200).json(messages);
   } catch (error) {
-    res.status(500).json({ error: "Failed to retrieve chat history" });
+    res.status(500).json({ message: "Failed to retrieve chat history" });
   }
 };
 // for group
@@ -62,7 +62,7 @@ exports.getAllGroups = async (req, res) => {
     res.status(200).json(groups);
   } catch (error) {
     console.error("Error retrieving groups:", error);
-    res.status(500).json({ error: "Failed to retrieve groups" });
+    res.status(500).json({ message: "Failed to retrieve groups" });
   }
 };
 
@@ -90,7 +90,7 @@ exports.createGroup = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Failed to create group chat" });
+    res.status(500).json({ message: "Failed to create group chat" });
   }
 };
 
@@ -134,7 +134,7 @@ exports.sendGroupMessage = async (req, res) => {
 
     res.status(200).json({ message: populatedMessage.messages[0] });
   } catch (error) {
-    res.status(500).json({ error: "Failed to send message" });
+    res.status(500).json({ message: "Failed to send message" });
   }
 };
 
@@ -153,6 +153,6 @@ exports.getGroupMessages = async (req, res) => {
     res.status(200).json(groupChat.messages);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Failed to retrieve messages" });
+    res.status(500).json({ message: "Failed to retrieve messages" });
   }
 };

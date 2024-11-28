@@ -31,7 +31,7 @@ const CreateProtocol = ({ onClose, setProtocols }) => {
           onClose();
         }
       } catch (error) {
-        toast.error(error.message);
+        toast.error(error.response?.data?.message);
       }
     } else {
       ["title", "description"].forEach((field) => validateField(field, formData[field]));

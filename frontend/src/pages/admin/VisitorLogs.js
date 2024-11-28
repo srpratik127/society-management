@@ -19,7 +19,7 @@ const VisitorLogs = ({ isAddable }) => {
         );
         setVisitorData(response?.data);
       } catch (error) {
-        toast.error(error.message);
+        toast.error(error.response?.data?.message);
       }
     };
 
@@ -27,7 +27,7 @@ const VisitorLogs = ({ isAddable }) => {
   }, []);
 
   return (
-    <div className="bg-white rounded-lg px-4 pt-2 w-full shadow">
+    <div className="bg-white rounded-lg px-4 pt-2 m-6 shadow">
       <div className="flex justify-between items-center mb-2">
         <h1 className="text-xl font-semibold">Visitor Logs</h1>
         <div className="flex gap-3">

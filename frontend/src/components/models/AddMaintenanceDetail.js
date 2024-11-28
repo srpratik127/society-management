@@ -60,7 +60,7 @@ const AddMaintenanceDetail = ({ onClose, setMaintenance }) => {
           toast.error(response.data);
         }
       } catch (error) {
-        toast.error(error.message);
+        toast.error(error.response?.data?.message);
       }
     }
   };

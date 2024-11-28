@@ -23,7 +23,7 @@ const SecurityGuard = () => {
         );
         setGuards(response?.data);
       } catch (error) {
-        toast.error(error.message);
+        toast.error(error.response?.data?.message);
       }
     };
 
@@ -44,7 +44,7 @@ const SecurityGuard = () => {
         setIsDeleteOpen(false);
       }
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data?.message);
     }
   };
 

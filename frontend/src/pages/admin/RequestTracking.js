@@ -20,7 +20,7 @@ const RequestTracking = () => {
         );
         setRequestProtocols(response?.data);
       } catch (error) {
-        toast.error(error.message);
+        toast.error(error.response?.data?.message);
       }
     };
     fetchRequestList();
@@ -37,7 +37,7 @@ const RequestTracking = () => {
       setOpenDeleteComplain(false);
       toast.success("Requests Deleted successful!");
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data?.message);
     }
   };
 

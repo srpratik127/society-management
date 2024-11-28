@@ -51,10 +51,10 @@ const Login = () => {
             ? "/admin"
             : user?.user_role === "resident"
             ? "/resident"
-            : "/security"
+            : user?.user_role === "security" && "/security"
         );
       } catch (error) {
-        toast.error(error.message);
+        toast.error(error.response?.data?.message);
       }
     }
   };

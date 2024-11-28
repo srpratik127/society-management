@@ -4,6 +4,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { socket } from "../../utils/socket";
+import VideoCall from "./VideoCall";
 
 const ChatComponent = () => {
   const userId = useSelector((store) => store.auth.user._id);
@@ -19,6 +20,8 @@ const ChatComponent = () => {
   const [recordingSeconds, setRecordingSeconds] = useState(0);
   const timerRef = useRef(null);
 
+  const [startVideoCall, setStartVideoCall] = useState(false);
+
   useEffect(() => {
     const fetchResidents = async () => {
       try {
@@ -27,7 +30,7 @@ const ChatComponent = () => {
         );
         setAllResident(response?.data?.data);
       } catch (error) {
-        toast.error(error.message);
+        toast.error(error.response?.data?.message);
       }
     };
     fetchResidents();
@@ -58,7 +61,7 @@ const ChatComponent = () => {
         );
         setMessages(response.data);
       } catch (error) {
-        toast.error(error.message);
+        toast.error(error.response?.data?.message);
       }
     };
     if (receiver) {
@@ -89,7 +92,7 @@ const ChatComponent = () => {
       setMessage("");
       setMedia(null);
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data?.message);
     }
   };
 
@@ -106,7 +109,6 @@ const ChatComponent = () => {
       mediaRecorderRef.current.onstop = () => {
         const blob = new Blob(chunks, { type: "audio/wav" });
         setAudioBlob(blob);
-        // setRecordingSeconds(0);
       };
 
       mediaRecorderRef.current.start();
@@ -158,7 +160,7 @@ const ChatComponent = () => {
 
       setRecordingSeconds(0);
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data?.message);
     }
   };
 
@@ -168,6 +170,12 @@ const ChatComponent = () => {
     return `${String(minutes).padStart(2, "0")}:${String(
       remainingSeconds
     ).padStart(2, "0")}`;
+  };
+
+  const initiateVideoCall = () => {
+    if (receiver) {
+      setStartVideoCall(true);
+    }
   };
 
   return (
@@ -227,6 +235,7 @@ const ChatComponent = () => {
                 <img
                   src="/assets/video.svg"
                   className="w-10 h-10 rounded-full cursor-pointer"
+                  onClick={initiateVideoCall}
                 />
                 <img
                   src="/assets/call.svg"
@@ -364,6 +373,9 @@ const ChatComponent = () => {
           </div>
         )}
       </div>
+      {startVideoCall && (
+        <VideoCall receiver={receiver} startCallFromParent={startVideoCall} />
+      )}
     </div>
   );
 };
