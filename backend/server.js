@@ -49,9 +49,10 @@ const notificationRoutes = require("./routes/notification.routes.js");
 const polls = require("./routes/polls.route.js");
 const chatRoutes = require("./routes/chat.routes.js");
 const Message = require("./models/Message.js");
-const GroupChat = require('./models/groupMessage.model.js');
+const GroupChat = require("./models/groupMessage.model.js");
 const Resident = require("./models/resident.model.js");
 const User = require("./models/admin.model.js");
+const emergencyAlertRoutes =require("./routes/emergencyalert.route.js")
 
 app.get("/", (req, res) => {
   res.send("Welcome...!!");
@@ -77,6 +78,7 @@ app.use("/v1/api/visitors", visitors);
 app.use("/v1/api/notifications", notificationRoutes);
 app.use("/v1/api/polls", polls);
 app.use("/v1/api/chat", chatRoutes);
+app.use("/v1/api", emergencyAlertRoutes);
 
 io.on("connection", (socket) => {
   console.log("New user connected");
@@ -103,11 +105,11 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on('joinGroup', async ({ userId, groupId }) => {
+  socket.on("joinGroup", async ({ userId, groupId }) => {
     try {
       const groupChat = await GroupChat.findById(groupId);
       if (!groupChat) {
-        socket.emit('error', { message: 'Group not found' });
+        socket.emit("error", { message: "Group not found" });
         return;
       }
 
@@ -115,7 +117,9 @@ io.on("connection", (socket) => {
       const isUser = await User.findById(userId);
 
       if (!isResident && !isUser) {
-        socket.emit('error', { message: 'User not found in either Residents or Users' });
+        socket.emit("error", {
+          message: "User not found in either Residents or Users",
+        });
         return;
       }
 
@@ -123,36 +127,48 @@ io.on("connection", (socket) => {
       socket.groupId = groupId;
 
       socket.join(groupId);
-      console.log(`User ${userId} joined group ${groupId}`);
-
-      socket.emit('groupMembers', groupChat.groupMembers);
+      socket.emit("groupMembers", groupChat.groupMembers);
     } catch (error) {
       console.error("Error while user joining the group:", error);
-      socket.emit('error', { message: 'Error joining group' });
+      socket.emit("error", { message: "Error joining group" });
     }
   });
 
-  socket.on('sendGroupMessage', async ({ senderId, groupId, message, mediaUrl }) => {
-    try {
-      const groupChat = await GroupChat.findById(groupId);
-      if (!groupChat) {
-        socket.emit('error', { message: 'Group not found' });
-        return;
+  socket.on(
+    "sendGroupMessage",
+    async ({ senderId, groupId, message, mediaUrl }) => {
+      try {
+        const groupChat = await GroupChat.findById(groupId).select(
+          "groupMembers"
+        );
+        if (!groupChat) {
+          socket.emit("error", { message: "Group not found" });
+          return;
+        }
+        const newMessage = {
+          senderId,
+          message,
+          mediaUrl,
+          createdAt: new Date(),
+        };
+        groupChat.groupMembers.forEach((member) => {
+          const memberSocketId = Array.from(io.sockets.sockets.values()).find(
+            (s) => s.userId === member._id.toString()
+          )?.id;
+
+          if (memberSocketId && member._id.toString() !== senderId) {
+            io.to(memberSocketId).emit("receiveGroupMessage", newMessage);
+          }
+        });
+        socket.emit("sendGroupMessage", newMessage);
+      } catch (error) {
+        console.error("Error sending group message:", error);
+        socket.emit("error", { message: "Error sending message" });
       }
-
-      const newMessage = { senderId, message, mediaUrl, createdAt: new Date() };
-
-      groupChat.messages.push(newMessage);
-      await groupChat.save();
-
-      io.to(groupId).emit('groupMessage', newMessage);
-    } catch (error) {
-      console.error("Error sending group message:", error);
-      socket.emit('error', { message: 'Error sending message' });
     }
-  });
+  );
 
-  socket.on('disconnect', () => {
+  socket.on("disconnect", () => {
     console.log(`${socket.userId} disconnected`);
   });
 });

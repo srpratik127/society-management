@@ -18,7 +18,9 @@ const Dashboard = () => {
       try {
         const [maintenanceRes, expenseRes] = await Promise.all([
           axios.get(
-            `${process.env.REACT_APP_BASE_URL}/v1/api/maintenance/total-maintenance`
+            `${process.env.REACT_APP_BASE_URL}/v1/api/maintenance/total-maintenance`, {
+              withCredentials: true,
+            }
           ),
           axios.get(
             `${process.env.REACT_APP_BASE_URL}/v1/api/expenses/total-expense`

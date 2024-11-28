@@ -1,19 +1,16 @@
 import { useState } from "react";
 import DetailsViewPopup from "./DetailsViewPopup";
 
-const DetailPopup = ({ onClose, personAmount }) => {
+const DetailPopup = ({ onClose, personAmount, setDetailsViewPopup }) => {
   const [members, setMembers] = useState(1);
-  const [isViewOpen, setIsViewOpen] = useState(false);
   const perPersonAmount = personAmount;
   const totalAmount = members * perPersonAmount;
 
   const handleGetPassClick = () => {
-    setIsViewOpen(true);
+    setDetailsViewPopup(true);
+    onClose();
   };
 
-  const handleClosePopup = () => {
-    setIsViewOpen(false);
-  };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -68,14 +65,14 @@ const DetailPopup = ({ onClose, personAmount }) => {
           </button>
         </div>
       </div>
-      {isViewOpen && (
+      {/* {isViewOpen && (
         <DetailsViewPopup
           onClose={handleClosePopup}
           perPersonAmount={perPersonAmount}
           members={members}
           totalAmount={totalAmount}
         />
-      )}
+      )} */}
     </div>
   );
 };
