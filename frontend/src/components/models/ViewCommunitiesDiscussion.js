@@ -3,8 +3,8 @@ import React from "react";
 const ViewMaintenanceInvoice = ({ invoice, onClose }) => {
     if (!invoice) return null;
     return (
-        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
-            <div className="bg-white w-[50%] max-w-[410px] rounded-lg shadow-lg p-6">
+        <div className="fixed inset-0  bg-gray-800 bg-opacity-50 flex justify-center items-center z-50  ">
+            <div className="bg-white w-[50%] max-w-[410px] rounded-lg shadow-lg p-6 max-h-[90%] overflow-y-auto">
 
                 <div className="flex justify-between items-center border-b pb-4 mb-4">
                     <h2 className="text-lg font-medium">Maintenance Invoices</h2>
@@ -17,7 +17,7 @@ const ViewMaintenanceInvoice = ({ invoice, onClose }) => {
                     <div className="grid grid-cols-2 gap-x-6 mb-4">
                         <div>
                             <p className="text-sm font-medium text-[#A7A7A7]">Invoice Id</p>
-                            <p className="text-sm">{invoice._id}</p>
+                            <p className="text-sm">12345</p>
                         </div>
                         <div>
                             <p className="text-sm font-medium text-[#A7A7A7]">Owner Name</p>
