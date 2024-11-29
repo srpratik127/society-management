@@ -22,7 +22,7 @@ const AddVisitorDetails = ({ isOpen, closeModal, setVisitorData }) => {
     if (!isOpen) {
       setNewVisitor(initialVisitorState);
       setErrors({});
-      setDate(null); // Clear date when modal closes
+      setDate(null); 
 
     }
   }, [isOpen]);
@@ -128,6 +128,7 @@ const AddVisitorDetails = ({ isOpen, closeModal, setVisitorData }) => {
             <input
               type="text"
               name="phoneNumber"
+              maxLength="10"
               placeholder="Enter Phone Number"
               value={newVisitor.phoneNumber}
               onChange={handleChange}
