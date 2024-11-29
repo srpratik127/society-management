@@ -51,8 +51,8 @@ const MaintenanceData = ({ isViewInvoice }) => {
       <div>
         <div className="flex justify-between flex-col bg-white md:flex-row space-y-4 md:space-y-0 md:space-x-4 mb-4 lg:mb-0 p-4 m-6 rounded-lg items-center">
           <h2 className="text-lg font-semibold">Show Maintenance Details</h2>
-          <div className="flex gap-4">
-            <div className="bg-white shadow rounded-lg p-4 w-full sm:w-[230px] flex flex-col justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+            <div className="bg-white shadow rounded-lg p-4 w-full sm:w-[230px] flex flex-col justify-center border-l-4 border-green-500">
               <div className="text-gray-500">Maintenance Amount</div>
               <div className="text-green-500 font-bold text-xl">
                 <h1>
@@ -61,7 +61,7 @@ const MaintenanceData = ({ isViewInvoice }) => {
                 </h1>
               </div>
             </div>
-            <div className="bg-white shadow rounded-lg p-4 w-full sm:w-[230px] flex flex-col justify-center">
+            <div className="bg-white shadow rounded-lg p-4 w-full sm:w-[230px] flex flex-col justify-center border-l-4 border-red-500">
               <div className="text-gray-500">Penalty Amount</div>
               <div className="text-red-500 font-bold text-xl">
                 <h1>
@@ -129,7 +129,7 @@ const MaintenanceData = ({ isViewInvoice }) => {
                         {new Date() >= new Date(item.penaltyDay)
                           ? `${
                               item.amount + item.penaltyAmount
-                            } - (Penalty Applied)`
+                          } - (Penalty Applied)`
                           : item.amount}
                       </p>
                     </div>
