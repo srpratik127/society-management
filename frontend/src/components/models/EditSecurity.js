@@ -90,6 +90,7 @@ const EditSecurity = ({ isOpen, onClose, guardData, setGuards }) => {
           <label className="block text-gray-700">Phone Number*</label>
           <input
             type="tel"
+            maxLength="10"
             className="w-full border p-2 rounded"
             value={phoneNumber}
             onChange={(e) => setPhoneNumber(e.target.value)}
