@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useRef, useState } from "react";
 import DatePicker from "react-datepicker";
 import toast from "react-hot-toast";
+import Loader from "../Loader";
 
 const EditExpensesDetails = ({ onClose, expense, setExpansesData }) => {
   const [file, setFile] = useState(null);
@@ -12,6 +13,7 @@ const EditExpensesDetails = ({ onClose, expense, setExpansesData }) => {
   const [amount, setAmount] = useState(expense?.amount || "");
   const [errors, setErrors] = useState({});
   const fileInputRef = useRef(null);
+  const [loader, setLoader] = useState(false);
 
   const validateForm = () => {
     const newErrors = {};
@@ -36,6 +38,7 @@ const EditExpensesDetails = ({ onClose, expense, setExpansesData }) => {
     e.preventDefault();
     if (validateForm()) {
       try {
+        setLoader(true);
         const formData = new FormData();
         formData.append("title", title);
         formData.append("description", description);
@@ -61,9 +64,11 @@ const EditExpensesDetails = ({ onClose, expense, setExpansesData }) => {
           )
         );
         toast.success("Expenses Update successful!");
+        setLoader(false);
         onClose();
       } catch (error) {
         toast.error(error.response?.data?.message);
+        setLoader(false);
       }
     }
   };
@@ -168,9 +173,10 @@ const EditExpensesDetails = ({ onClose, expense, setExpansesData }) => {
           </button>
           <button
             type="submit"
+            disabled={loader}
             className="w-full bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white rounded-lg py-2"
           >
-            Save
+            {!loader ? "Save" : <Loader />}
           </button>
         </div>
       </form>

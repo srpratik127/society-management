@@ -77,7 +77,7 @@ app.use("/v1/api/visitors", visitors);
 app.use("/v1/api/notifications", notificationRoutes);
 app.use("/v1/api/polls", polls);
 app.use("/v1/api/chat", chatRoutes);
-app.use("/v1/api/", emergencyAlertRoutes);
+app.use("/v1/api/alert", emergencyAlertRoutes);
 
 io.on("connection", (socket) => {
   console.log("New user connected");
@@ -171,6 +171,7 @@ io.on("connection", (socket) => {
       (s) => s.userId === receiverId
     );
     if (receiverSocket) {
+      receiverSocket.emit("incoming-call", { senderId: socket.userId });
       receiverSocket.emit("offer", { offer, senderId: socket.userId });
     }
   });
@@ -193,6 +194,16 @@ io.on("connection", (socket) => {
         candidate,
         senderId: socket.userId,
       });
+    }
+  });
+
+  socket.on("call-ended", ({ receiverId }) => {
+    const receiverSocket = Array.from(io.sockets.sockets.values()).find(
+      (s) => s.userId === receiverId
+    );
+
+    if (receiverSocket) {
+      receiverSocket.emit("call-ended");
     }
   });
 

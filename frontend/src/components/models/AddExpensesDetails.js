@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 import axios from "axios";
 import DatePicker from "react-datepicker";
 import toast from "react-hot-toast";
+import Loader from "../Loader";
 
 const AddExpensesDetails = ({ onClose, setExpansesData }) => {
   const [formData, setFormData] = useState({
@@ -13,6 +14,7 @@ const AddExpensesDetails = ({ onClose, setExpansesData }) => {
   const [fileName, setFileName] = useState("");
   const [errors, setErrors] = useState({});
   const fileInputRef = useRef(null);
+  const [loader, setLoader] = useState(false);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -45,6 +47,7 @@ const AddExpensesDetails = ({ onClose, setExpansesData }) => {
     if (validateForm()) {
       try {
         const { title, description, date, amount } = formData;
+        setLoader(true);
         const formDataToSend = new FormData();
         formDataToSend.append("title", title);
         formDataToSend.append("dueDate", date);
@@ -58,8 +61,10 @@ const AddExpensesDetails = ({ onClose, setExpansesData }) => {
         toast.success("Expenses Create successful!");
         setExpansesData((pre) => [...pre, response.data?.data]);
         onClose();
+        setLoader(false);
       } catch (error) {
         toast.error(error.response?.data?.message);
+        setLoader(false);
       }
     }
   };
@@ -138,8 +143,8 @@ const AddExpensesDetails = ({ onClose, setExpansesData }) => {
           <div
             onClick={() => fileInputRef.current.click()}
             className={`mt-1 flex flex-col items-center justify-center rounded-md border-2 border-dashed p-4 cursor-pointer ${
-                errors.fileName && "border-red-500"
-              }`}
+              errors.fileName && "border-red-500"
+            }`}
           >
             <img
               src="/assets/addPhoto.svg"
@@ -179,10 +184,11 @@ const AddExpensesDetails = ({ onClose, setExpansesData }) => {
             Cancel
           </button>
           <button
+            disabled={loader}
             type="submit"
             className="w-1/2 bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white rounded-lg py-2"
           >
-            Save
+            {!loader ? "Save" : <Loader />}
           </button>
         </div>
       </form>

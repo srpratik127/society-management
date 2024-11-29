@@ -38,7 +38,10 @@ export const ImportantNum = () => {
   const handleDelete = async () => {
     try {
       await axios.delete(
-        `${process.env.REACT_APP_BASE_URL}/v1/api/numbers/${numberToDelete}`
+        `${process.env.REACT_APP_BASE_URL}/v1/api/numbers/${numberToDelete}`,
+        {
+          withCredentials: true,
+        }
       );
       setImportantNumbers((prev) =>
         prev.filter((number) => number._id !== numberToDelete)

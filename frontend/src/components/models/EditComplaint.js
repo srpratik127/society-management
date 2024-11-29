@@ -27,11 +27,16 @@ const EditComplaint = ({ closePopup, selectedComplain, setComplainList }) => {
           unit,
           priority,
           status,
+        },
+        {
+          withCredentials: true,
         }
       );
       setComplainList((prev) =>
         prev.map((complaint) =>
-          complaint._id === selectedComplain._id ? response.data.data : complaint
+          complaint._id === selectedComplain._id
+            ? response.data.data
+            : complaint
         )
       );
       toast.success("complaints Update successful!");

@@ -157,7 +157,6 @@ const ChatComponent = () => {
       );
       socket.emit("message", response.data);
       setAudioBlob(null);
-
       setRecordingSeconds(0);
     } catch (error) {
       toast.error(error.response?.data?.message);
@@ -173,10 +172,13 @@ const ChatComponent = () => {
   };
 
   const initiateVideoCall = () => {
-    if (receiver) {
+    if (receiver && userId !== receiver._id) {
       setStartVideoCall(true);
+    } else {
+      toast.error("you can not call yourself.!");
     }
   };
+  
 
   return (
     <div className="flex bg-white m-4 rounded-lg">
@@ -234,7 +236,7 @@ const ChatComponent = () => {
               <div className="flex gap-3">
                 <img
                   src="/assets/video.svg"
-                  className="w-10 h-10 rounded-full cursor-pointer"
+                  className="w-10 h-10 rounded-full cursor-pointer hover:shadow-md"
                   onClick={initiateVideoCall}
                 />
                 <img
@@ -373,8 +375,13 @@ const ChatComponent = () => {
           </div>
         )}
       </div>
+
       {startVideoCall && (
-        <VideoCall receiver={receiver} startCallFromParent={startVideoCall} />
+        <VideoCall
+          receiver={receiver}
+          startCallFromParent={startVideoCall}
+          onClose={() => setStartVideoCall(false)}
+        />
       )}
     </div>
   );
