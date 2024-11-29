@@ -36,6 +36,11 @@ const createOwner = async (req, res) => {
         message: "Email already exists.",
       });
     }
+
+    const validVehicles = req.body.vehicles.filter(vehicle => 
+      vehicle.vehicleType === "Two Wheeler" || vehicle.vehicleType === "Four Wheeler"
+    );
+
     const tempPassword = generateTempPassword();
     await sendTempPasswordEmail(email, tempPassword);
     const uploadToCloudinary = async (filePath, folder) => {
@@ -84,6 +89,7 @@ const createOwner = async (req, res) => {
       ...req.body,
       password: hashedPassword,
       otp: tempPassword,
+      vehicles: validVehicles,
       profile_picture: profilePictureUrl,
       aadharCardFront: aadharCardFrontUrl,
       aadharCardBack: aadharCardBackUrl,

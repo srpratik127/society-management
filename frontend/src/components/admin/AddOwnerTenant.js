@@ -20,12 +20,12 @@ const AddOwnerTenant = ({ role, editResident }) => {
   const [memberDetails, setMemberDetails] = useState(
     editResident?.members
       ? editResident.members.map((member) => ({
-          name: member.fullName || "",
-          phone: member.phone || "",
-          email: member.email || "",
-          age: member.age || "",
-          gender: member.gender || "",
-          relation: member.relation || "",
+          name: member.fullName,
+          phone: member.phone ,
+          email: member.email,
+          age: member.age ,
+          gender: member.gender ,
+          relation: member.relation ,
         }))
       : [{ name: "", phone: "", email: "", age: "", gender: "", relation: "" }]
   );
@@ -130,7 +130,12 @@ const AddOwnerTenant = ({ role, editResident }) => {
       formData.append("rentAgreement", files["Rent Agreement"]);
       formData.append("residenceStatus", "Occupied");
       formData.append("select_society", user.select_society);
-      memberDetails.forEach((member, index) => {
+
+      const validMembers = memberDetails.filter(member => 
+        member.name || member.phone || member.email || member.age || member.gender || member.relation
+      );
+
+      validMembers.forEach((member, index) => {
         formData.append(`members[${index}][fullName]`, member.name);
         formData.append(`members[${index}][phone]`, member.phone);
         formData.append(`members[${index}][email]`, member.email);
@@ -494,7 +499,7 @@ const AddOwnerTenant = ({ role, editResident }) => {
                               )
                             }
                           >
-                            <option>Select Type</option>
+                             <option value="">Select Type</option>
                             <option value="Two Wheeler">Two Wheeler</option>
                             <option value="Four Wheeler">Four Wheeler</option>
                           </select>
