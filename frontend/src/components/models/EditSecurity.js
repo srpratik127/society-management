@@ -2,16 +2,22 @@ import axios from "axios";
 import React, { useState, useRef } from "react";
 import DatePicker from "react-datepicker";
 import toast from "react-hot-toast";
+import Loader from "../Loader";
 
 const EditSecurity = ({ isOpen, onClose, guardData, setGuards }) => {
   const [fullName, setFullName] = useState(guardData.fullName || "");
   const [phoneNumber, setPhoneNumber] = useState(guardData.phone || "");
   const [gender, setGender] = useState(guardData.gender || "");
   const [shift, setShift] = useState(guardData.shift || "");
-  const [shiftDate, setShiftDate] = useState(new Date(guardData.shiftDate) || new Date());
+  const [shiftDate, setShiftDate] = useState(
+    new Date(guardData.shiftDate) || new Date()
+  );
   const [shiftTime, setShiftTime] = useState(guardData.shiftTime || "");
-  const [profilePhoto, setProfilePhoto] = useState(guardData.profile_photo || null);
+  const [profilePhoto, setProfilePhoto] = useState(
+    guardData.profile_photo || null
+  );
   const profileInputRef = useRef(null);
+  const [loader, setLoader] = useState(false);
 
   const handleProfileUpload = (e) => {
     setProfilePhoto(e.target.files[0]);
@@ -31,7 +37,11 @@ const EditSecurity = ({ isOpen, onClose, guardData, setGuards }) => {
     }
 
     try {
-      const response = await axios.put(`http://localhost:5000/v1/api/guard/${guardData._id}`, formData);
+      setLoader(true);
+      const response = await axios.put(
+        `http://localhost:5000/v1/api/guard/${guardData._id}`,
+        formData
+      );
       if (response.status === 200) {
         const updatedGuard = response.data.data;
         setGuards((prevGuards) =>
@@ -41,9 +51,11 @@ const EditSecurity = ({ isOpen, onClose, guardData, setGuards }) => {
         );
         toast.success("Guard Update successful!");
         onClose();
+        setLoader(false);
       }
     } catch (error) {
       toast.error(error.response?.data?.message);
+      setLoader(false);
     }
   };
 
@@ -154,8 +166,9 @@ const EditSecurity = ({ isOpen, onClose, guardData, setGuards }) => {
           <button
             className="px-4 py-2 w-full bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white rounded-lg"
             onClick={handleSubmit}
+            disabled={loader}
           >
-            Save
+            {!loader ? "Save" : <Loader />}
           </button>
         </div>
       </div>

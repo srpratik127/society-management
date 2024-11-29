@@ -53,7 +53,10 @@ const ServiceAndComplaint = () => {
   const handleDeleteComplain = async () => {
     try {
       await axios.delete(
-        `${process.env.REACT_APP_BASE_URL}/v1/api/complaints/${selectedComplain._id}`
+        `${process.env.REACT_APP_BASE_URL}/v1/api/complaints/${selectedComplain._id}`,
+        {
+          withCredentials: true,
+        }
       );
       setComplainList((prev) =>
         prev.filter((complain) => complain._id !== selectedComplain._id)

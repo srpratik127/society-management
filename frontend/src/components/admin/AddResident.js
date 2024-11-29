@@ -9,7 +9,7 @@ function AddResident() {
 
   return (
     <>
-      <div className="flex px-8 pt-8">
+      <div className="flex px-4 pt-4">
         <button
           className={`py-2 px-4 font-semibold border-b-4 border-orange-500 rounded-tl-lg rounded-tr-lg ${
             view === "owner" ? "text-white" : "text-black"

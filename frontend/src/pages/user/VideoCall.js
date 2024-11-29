@@ -1,16 +1,20 @@
 import React, { useRef, useEffect, useState } from "react";
 import { socket } from "../../utils/socket";
+import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
 
-const VideoCall = ({ receiver, startCallFromParent }) => {
+const VideoCall = ({ receiver, startCallFromParent, onClose }) => {
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
   const peerConnectionRef = useRef(null);
   const [isCalling, setIsCalling] = useState(false);
   const pendingCandidates = useRef([]);
+  const userId = useSelector((store) => store.auth.user._id);
 
   useEffect(() => {
     socket.on("offer", async ({ offer, senderId }) => {
       if (receiver && senderId === receiver._id) {
+        toast.success(`Incoming call from ${senderId}`);
         await handleReceiveOffer(offer);
       }
     });
@@ -31,6 +35,7 @@ const VideoCall = ({ receiver, startCallFromParent }) => {
     });
 
     return () => {
+      socket.off("incoming-call");
       socket.off("offer");
       socket.off("answer");
       socket.off("ice-candidate");
@@ -44,44 +49,68 @@ const VideoCall = ({ receiver, startCallFromParent }) => {
   }, [startCallFromParent]);
 
   const startCall = async () => {
+    if (userId === receiver._id) {
+      toast.error("you can not call yourself.!");
+      return;
+    }
+
     setIsCalling(true);
-    const localStream = await navigator.mediaDevices.getUserMedia({
-      video: true,
-      audio: true,
-    });
+    try {
+      const localStream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true,
+      });
 
-    localVideoRef.current.srcObject = localStream;
+      localVideoRef.current.srcObject = localStream;
 
-    const peerConnection = createPeerConnection();
-    localStream.getTracks().forEach((track) => {
-      peerConnection.addTrack(track, localStream);
-    });
+      const peerConnection = createPeerConnection();
+      localStream.getTracks().forEach((track) => {
+        peerConnection.addTrack(track, localStream);
+      });
 
-    const offer = await peerConnection.createOffer();
-    await peerConnection.setLocalDescription(offer);
+      const offer = await peerConnection.createOffer();
+      await peerConnection.setLocalDescription(offer);
 
-    socket.emit("offer", { offer, receiverId: receiver._id });
+      socket.emit("offer", { offer, receiverId: receiver._id });
+    } catch (error) {
+      handleMediaError(error);
+      setIsCalling(false);
+    }
   };
 
   const handleReceiveOffer = async (offer) => {
-    const peerConnection = createPeerConnection();
+    try {
+      const peerConnection = createPeerConnection();
 
-    const localStream = await navigator.mediaDevices.getUserMedia({
-      video: true,
-      audio: true,
-    });
-    localVideoRef.current.srcObject = localStream;
+      const localStream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true,
+      });
+      localVideoRef.current.srcObject = localStream;
 
-    localStream.getTracks().forEach((track) => {
-      peerConnection.addTrack(track, localStream);
-    });
+      localStream.getTracks().forEach((track) => {
+        peerConnection.addTrack(track, localStream);
+      });
 
-    await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
-    processPendingCandidates();
-    const answer = await peerConnection.createAnswer();
-    await peerConnection.setLocalDescription(answer);
+      if (peerConnection.signalingState !== "stable") {
+        await peerConnection.setRemoteDescription(
+          new RTCSessionDescription(offer)
+        );
+      } else {
+        console.error(
+          "RTCPeerConnection is in an invalid state to set remote description"
+        );
+      }
 
-    socket.emit("answer", { answer, receiverId: receiver._id });
+      processPendingCandidates();
+
+      const answer = await peerConnection.createAnswer();
+      await peerConnection.setLocalDescription(answer);
+
+      socket.emit("answer", { answer, receiverId: receiver._id });
+    } catch (error) {
+      handleMediaError(error);
+    }
   };
 
   const handleIceCandidate = (candidate) => {
@@ -104,6 +133,8 @@ const VideoCall = ({ receiver, startCallFromParent }) => {
   };
 
   const createPeerConnection = () => {
+    if (peerConnectionRef.current) return peerConnectionRef.current;
+
     const peerConnection = new RTCPeerConnection();
     peerConnectionRef.current = peerConnection;
 
@@ -123,12 +154,80 @@ const VideoCall = ({ receiver, startCallFromParent }) => {
     return peerConnection;
   };
 
+  const handleEndCall = () => {
+    socket.emit("call-ended", { receiverId: receiver._id });
+    if (localVideoRef.current?.srcObject) {
+      const tracks = localVideoRef.current.srcObject.getTracks();
+      tracks.forEach((track) => track.stop());
+      localVideoRef.current.srcObject = null;
+    }
+    if (remoteVideoRef.current?.srcObject) {
+      const tracks = remoteVideoRef.current.srcObject.getTracks();
+      tracks.forEach((track) => track.stop());
+      remoteVideoRef.current.srcObject = null;
+    }
+    if (peerConnectionRef.current) {
+      peerConnectionRef.current.close();
+      peerConnectionRef.current = null;
+    }
+
+    onClose();
+  };
+
+  useEffect(() => {
+    socket.on("call-ended", () => {
+      toast.success("Call ended by the other participant.");
+      handleEndCall();
+    });
+
+    return () => {
+      socket.off("call-ended");
+    };
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (peerConnectionRef.current) {
+        peerConnectionRef.current.close();
+        peerConnectionRef.current = null;
+      }
+    };
+  }, []);
+
+  const handleMediaError = (error) => {
+    if (error.name === "NotAllowedError") {
+      toast.error(
+        "Microphone or camera access was denied. Please allow access to proceed."
+      );
+    } else if (error.name === "NotFoundError") {
+      toast.error("No camera or microphone found. Please connect them.");
+    } else {
+      toast.error("An error occurred while accessing media devices.");
+    }
+    console.error("Media Error:", error);
+  };
+
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white w-full mx-8 p-6 rounded-lg shadow-lg flex-col md:flex">
-        <video ref={localVideoRef} autoPlay muted className="local-video" />
-        <video ref={remoteVideoRef} autoPlay className="remote-video" />
-      </div>
+    <div className="relative">
+      {isCalling && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white w-[90%] h-[90vh] mx-8 p-6 rounded-lg shadow-lg">
+            <div className="flex justify-between items-center border-b pb-4 mb-4">
+              <h2 className="text-lg font-medium">Video Call</h2>
+              <button
+                className="p-3 py-2 bg-red-500 text-white rounded"
+                onClick={handleEndCall}
+              >
+                End Call
+              </button>
+            </div>
+            <div className="flex gap-3">
+              <video ref={localVideoRef} autoPlay muted className="w-[50%]" />
+              <video ref={remoteVideoRef} autoPlay className="w-[50%]" />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

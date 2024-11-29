@@ -3,6 +3,7 @@ import React, { useState, useRef } from "react";
 import DatePicker from "react-datepicker";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
+import Loader from "../Loader";
 
 const AddSecurity = ({ isOpen, onClose, setGuards }) => {
   const [formData, setFormData] = useState({
@@ -20,6 +21,7 @@ const AddSecurity = ({ isOpen, onClose, setGuards }) => {
   const fileInputRef = useRef(null);
   const photoInputRef = useRef(null);
   const user = useSelector((store) => store.auth.user);
+  const [loader, setLoader] = useState(false);
 
   const handleFileChange = (setter) => (e) => setter(e.target.files[0]?.name || "");
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -42,6 +44,7 @@ const AddSecurity = ({ isOpen, onClose, setGuards }) => {
     if (!validateForm()) return;
 
     try {
+      setLoader(true);
       const formDataToSend = new FormData();
       Object.entries(formData).forEach(([key, value]) => formDataToSend.append(key, value));
       if (fileInputRef.current.files[0]) formDataToSend.append("aadhar_card", fileInputRef.current.files[0]);
@@ -56,7 +59,9 @@ const AddSecurity = ({ isOpen, onClose, setGuards }) => {
         toast.success("Guard Create successful!");
       }
       onClose();
+      setLoader(false);
     } catch (error) {
+      setLoader(false);
       toast.error(error.response?.data?.message);
     }
   };
@@ -199,9 +204,8 @@ const AddSecurity = ({ isOpen, onClose, setGuards }) => {
                 : "bg-gray-300 text-gray-500"
               }`}
             onClick={handleSubmit}
-          >
-            Create
-          </button>
+            disabled={loader}
+          >{!loader ? "Create" : <Loader />}</button>
         </div>
       </div>
     </div>

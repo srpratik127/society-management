@@ -4,6 +4,7 @@ import EditComplaint from "../models/EditComplaint";
 import axios from "axios";
 import DeleteModel from "../models/DeleteModel";
 import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
 
 const ComplainTable = () => {
   const [openViewComplain, setOpenViewComplain] = useState(false);
@@ -12,6 +13,7 @@ const ComplainTable = () => {
   const [selectedComplain, setSelectedComplain] = useState({});
   const [complainList, setComplainList] = useState([]);
   const [complainToDelete, setComplainToDelete] = useState(null);
+  const user = useSelector((store) => store.auth.user);
 
   useEffect(() => {
     const fetchComplainList = async () => {
@@ -41,7 +43,10 @@ const ComplainTable = () => {
   const handleDelete = async () => {
     try {
       await axios.delete(
-        `${process.env.REACT_APP_BASE_URL}/v1/api/complaints/${complainToDelete}`
+        `${process.env.REACT_APP_BASE_URL}/v1/api/complaints/${complainToDelete}`,
+        {
+          withCredentials: true,
+        }
       );
       setComplainList((prev) =>
         prev.filter((complain) => complain._id !== complainToDelete)
@@ -149,8 +154,14 @@ const ComplainTable = () => {
                     <button
                       className="p-1 rounded-xl text-red-600"
                       onClick={() => {
-                        setComplainToDelete(complaint._id);
-                        setOpenDeleteComplain(true);
+                        if (user?.user_role === "admin") {
+                          setComplainToDelete(complaint._id);
+                          setOpenDeleteComplain(true);
+                        } else {
+                          toast.error(
+                            "You are not authorized to perform this action."
+                          );
+                        }
                       }}
                     >
                       <img

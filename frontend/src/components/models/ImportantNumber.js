@@ -44,6 +44,9 @@ const ImportantNumber = ({ closePopup, initialData, setImportantNumbers }) => {
               fullName: formData.fullName,
               phoneNumber: formData.phoneNumber,
               work: formData.work,
+            },
+            {
+              withCredentials: true,
             }
           );
           setImportantNumbers((prev) => {
@@ -59,6 +62,9 @@ const ImportantNumber = ({ closePopup, initialData, setImportantNumbers }) => {
               fullName: formData.fullName,
               phoneNumber: formData.phoneNumber,
               work: formData.work,
+            },
+            {
+              withCredentials: true,
             }
           );
           setImportantNumbers((pre) => [response?.data?.data, ...pre]);

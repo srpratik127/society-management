@@ -3,10 +3,12 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addToken } from "../../store/authSlice";
 import toast from "react-hot-toast";
+import Loader from "../../components/Loader";
 
 const Profile = () => {
   const dispatch = useDispatch();
   const [isEditing, setIsEditing] = useState(false);
+  const [loader, setLoader] = useState(false);
   const [formData, setFormData] = useState({});
   const [profilePicture, setProfilePicture] = useState(null);
   const [userSociety, setUserSociety] = useState({ _id: "", name: "" });
@@ -71,16 +73,21 @@ const Profile = () => {
     });
     if (profilePicture) updatedData.append("profile_picture", profilePicture);
     try {
+      setLoader(true);
       const response = await axios.put(
         `${process.env.REACT_APP_BASE_URL}/v1/api/auth/update/${user._id}`,
         updatedData,
-        { headers: { "Content-Type": "multipart/form-data" } }
+        {
+          withCredentials: true,
+        }
       );
       dispatch(addToken(response.data.token));
       setIsEditing(false);
+      setLoader(false);
       toast.success("User Updated successful!");
     } catch (error) {
       toast.error(error.response?.data?.message);
+      setLoader(false);
     }
   };
 
@@ -141,7 +148,7 @@ const Profile = () => {
                   )}
                 </div>
                 <h2 className="mt-4 text-xl font-medium capitalize">
-                  {!user?.user_role === "admin"
+                  {user?.user_role === "admin"
                     ? `${user?.firstname} ${user?.lastname}`
                     : `${user?.fullName}`}
                 </h2>
@@ -325,7 +332,11 @@ const Profile = () => {
                     <input
                       type="text"
                       disabled
-                      value={user?.user_role === "resident" ? user.unit : user.shiftTime}
+                      value={
+                        user?.user_role === "resident"
+                          ? user.unit
+                          : user.shiftTime
+                      }
                       className={`w-full bg-white border p-2 rounded-md outline-none`}
                     />
                   )}
@@ -334,9 +345,10 @@ const Profile = () => {
                   <div className="col-span-2 flex justify-end mt-4">
                     <button
                       type="submit"
+                      disabled={loader}
                       className="bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white font-medium px-6 py-2 rounded-md"
                     >
-                      Update Profile
+                      {!loader ? "Update Profile" : <Loader />}
                     </button>
                   </div>
                 )}
