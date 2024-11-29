@@ -30,7 +30,7 @@ const MembersData = () => {
               </div>
               <div className="flex justify-between">
                 <p className="text-[#4F4F4F]">Phone Number</p>
-                <p className="truncate font-medium max-w-[10rem] text-right">
+                <p className="truncate font-medium max-w-[10rem] text-right ">
                   {member.phone}
                 </p>
               </div>

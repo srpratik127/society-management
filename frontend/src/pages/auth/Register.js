@@ -28,12 +28,14 @@ const Register = () => {
   useEffect(() => {
     const fetchSocieties = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/v1/api/society`);
-        const societies = response.data.map(society => ({
+        const response = await axios.get(
+          `${process.env.REACT_APP_BASE_URL}/v1/api/society`
+        );
+        const societies = response.data.map((society) => ({
           value: society._id,
           label: society.name,
         }));
-        setOptions(prev => [
+        setOptions((prev) => [
           ...societies,
           { value: "create_society", label: "Create Society", isButton: true },
         ]);
@@ -52,7 +54,7 @@ const Register = () => {
 
   const handleSelectChange = (selectedOption) => {
     console.log(selectedOption);
-    
+
     selectedOption.value === "create_society"
       ? setIsOpen(true)
       : setFormData((prev) => ({ ...prev, select_society: selectedOption }));
@@ -94,7 +96,10 @@ const Register = () => {
           select_society: select_society?.value,
         };
 
-        const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/v1/api/auth/register`, payload);
+        const response = await axios.post(
+          `${process.env.REACT_APP_BASE_URL}/v1/api/auth/register`,
+          payload
+        );
         console.log("Form submitted:", response.data);
         setErrors({});
         toast.success("Register successful!");
@@ -122,18 +127,20 @@ const Register = () => {
       </div>
     );
 
-    const isFormComplete = () =>
-      Object.keys(formData).every((key) => formData[key]) &&
-      formData.password === formData.confirmPassword;
+  const isFormComplete = () =>
+    Object.keys(formData).every((key) => formData[key]) &&
+    formData.password === formData.confirmPassword;
 
   return (
     <div className="min-w-[370px]">
-    <div className="w-full max-w-lg bg-white p-5 md:p-11 rounded-lg shadow">
-  
+      <div className="w-full max-w-lg bg-white p-5 md:p-11 rounded-lg shadow">
         <h1 className="text-3xl font-bold text-gray-800 mb-4 text-left">
           Registration
         </h1>
-        <form className="space-y-5 max-w-lg md:max-w-2xl lg:max-w-3xl mx-auto" onSubmit={handleSubmit}>
+        <form
+          className="space-y-5 max-w-lg md:max-w-2xl lg:max-w-3xl mx-auto"
+          onSubmit={handleSubmit}
+        >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label
@@ -218,6 +225,7 @@ const Register = () => {
               <input
                 type="text"
                 name="phone"
+                maxLength="10"
                 value={formData.phone}
                 onChange={handleChange}
                 placeholder="phone number"
@@ -440,7 +448,12 @@ const Register = () => {
         </form>
       </div>
 
-      {isOpen && <CreateSociety closePopup={() => setIsOpen(false)} setOptions={setOptions} />}
+      {isOpen && (
+        <CreateSociety
+          closePopup={() => setIsOpen(false)}
+          setOptions={setOptions}
+        />
+      )}
     </div>
   );
 };
