@@ -3,6 +3,10 @@ const Resident = require("../models/resident.model");
 const Notification = require("../models/notification.model");
 const Admin = require("../models/admin.model");
 
+const PDFDocument = require("pdfkit");
+const fs = require("fs");
+const path = require("path");
+
 const addMaintenance = async (req, res) => {
   try {
     const { amount, penaltyAmount, dueDate, penaltyDay } = req.body;
@@ -85,6 +89,7 @@ const getStatus = async (req, res) => {
           ...member.toObject(),
           penaltyDay: record.penaltyDay,
           amount: record.amount,
+          penaltyAmount: record.penaltyAmount,
         }))
     );
 
@@ -245,6 +250,62 @@ const getTotalAmount = async (req, res) => {
   }
 };
 
+const generateInvoicePDF = async (req, res) => {
+  const { invoice } = req.body;
+  console.log(req.body);
+
+  if (!invoice) {
+    return res.status(400).send("Invoice data is required.");
+  }
+
+  const doc = new PDFDocument();
+  const filePath = path.join(__dirname, `invoice-${invoice._id}.pdf`);
+
+  const writeStream = fs.createWriteStream(filePath);
+  doc.pipe(writeStream);
+  doc.fontSize(20).text("Maintenance Invoice", { align: "center" });
+  doc.moveDown();
+  doc.fontSize(12).text(`Invoice ID: ${invoice._id.substring(0, 8)}`);
+  doc.text(`Owner Name: ${invoice.user.fullName}`);
+  doc.text(`Phone Number: ${invoice.user.phone}`);
+  doc.text(`Email: ${invoice.user.email}`);
+  doc.moveDown();
+  doc.text(
+    `Bill Date: ${new Date(invoice.penaltyDay).toLocaleDateString("en-GB")}`
+  );
+  doc.text(
+    `Payment Date: ${new Date(invoice.penaltyDay).toLocaleDateString("en-GB")}`
+  );
+  doc.moveDown();
+  doc.text(`Maintenance Amount: ₹${invoice.amount}`);
+  doc.text(
+    `Penalty: ₹${
+      new Date() >= new Date(invoice.penaltyDay) ? invoice.penaltyAmount : "00"
+    }`
+  );
+  doc.moveDown();
+  const grandTotal =
+    new Date() >= new Date(invoice.penaltyDay)
+      ? invoice.penaltyAmount + invoice.amount
+      : invoice.amount;
+  doc.text(`Grand Total: ₹${grandTotal}`, { align: "right" });
+  doc.moveDown();
+  doc.text("Note:");
+  doc.text(
+    "A visual representation of your spending categories visual representation.",
+    { align: "justify" }
+  );
+
+  doc.end();
+
+  writeStream.on("finish", () => {
+    res.download(filePath, `invoice-${invoice._id}.pdf`, (err) => {
+      if (err) console.error(err);
+      fs.unlinkSync(filePath);
+    });
+  });
+};
+
 module.exports = {
   addMaintenance,
   getStatus,
@@ -253,4 +314,5 @@ module.exports = {
   paymentForMaintenance,
   applyPenalties,
   getTotalAmount,
+  generateInvoicePDF,
 };

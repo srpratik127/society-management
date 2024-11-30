@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { socket } from "../../utils/socket";
 import VideoCall from "./VideoCall";
+import Loader from "../../components/Loader";
 
 const ChatComponent = () => {
   const userId = useSelector((store) => store.auth.user._id);
@@ -13,6 +14,7 @@ const ChatComponent = () => {
   const [allResident, setAllResident] = useState([]);
   const [message, setMessage] = useState("");
   const [media, setMedia] = useState(null);
+  const [loader, setLoader] = useState(false);
 
   const [isRecording, setIsRecording] = useState(false);
   const [audioBlob, setAudioBlob] = useState(null);
@@ -72,6 +74,7 @@ const ChatComponent = () => {
   const handleSendMessageOrMedia = async (event) => {
     event.preventDefault();
     try {
+      setLoader(true);
       const formData = new FormData();
       formData.append("senderId", userId);
       formData.append("receiverId", receiver._id);
@@ -91,8 +94,10 @@ const ChatComponent = () => {
 
       setMessage("");
       setMedia(null);
+      setLoader(false);
     } catch (error) {
       toast.error(error.response?.data?.message);
+      setLoader(false);
     }
   };
 
@@ -178,12 +183,12 @@ const ChatComponent = () => {
       toast.error("you can not call yourself.!");
     }
   };
-  
 
   return (
     <div className="flex bg-white m-4 rounded-lg">
       <div className="w-[300px] p-4 ">
         <h2 className="text-xl font-semibold mb-3">Chat</h2>
+        
         <div className={`items-center relative w-full flex mb-3`}>
           <span className="absolute left-3 text-gray-400">
             <img src="/assets/search-Bordere.svg" alt="" />
@@ -282,7 +287,7 @@ const ChatComponent = () => {
                       />
                     )}
 
-                    {msg.message && <p>{msg.message}</p>}
+                    {msg.message && <p className="break-words">{msg.message}</p>}
                   </div>
                   <p className="text-[12px] text-[#A7A7A7]">
                     {msg.createdAt
@@ -312,12 +317,18 @@ const ChatComponent = () => {
                       />
                     </div>
                   )}
+                  {loader && (
+                    <div className="bg-[#5555557c] p-2 rounded-lg absolute top-[-60px] left-[25px] z-30">
+                      {loader && <Loader />}
+                    </div>
+                  )}
                   {/* type text */}
                   <input
                     type="text"
                     className={`pr-10 pl-4 py-2 w-full shadow border rounded-3xl focus:outline-none focus:ring-2 focus:ring-orange-500`}
                     placeholder="Type a message..."
                     value={message}
+                    disabled={loader}
                     onChange={(e) => setMessage(e.target.value)}
                   />
 
@@ -329,6 +340,7 @@ const ChatComponent = () => {
                     <input
                       id="inputFile"
                       type="file"
+                      disabled={loader}
                       accept=".png,.jpeg,.jpg,"
                       onChange={(e) => setMedia(e.target.files[0])}
                       className="hidden"

@@ -39,7 +39,7 @@ const EditSecurity = ({ isOpen, onClose, guardData, setGuards }) => {
     try {
       setLoader(true);
       const response = await axios.put(
-        `http://localhost:5000/v1/api/guard/${guardData._id}`,
+        `${process.env.REACT_APP_BASE_URL}/v1/api/guard/${guardData._id}`,
         formData
       );
       if (response.status === 200) {
