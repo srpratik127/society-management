@@ -9,6 +9,7 @@ const CommunitiesDiscussion = () => {
   const [groups, setGroups] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState();
   const userId = useSelector((store) => store.auth.user._id);
+  const [showAddCommunityModal, setShowAddCommunityModal] = useState(false);
 
   const [showHistoryMessage, setShowHistoryMessage] = useState([]);
   const [message, setMessage] = useState("");
@@ -90,11 +91,41 @@ const CommunitiesDiscussion = () => {
     }
   };
 
+  const handleJoinGroup = async (groupId) => {
+    try {
+      const { data } = await axios.post(
+        `${process.env.REACT_APP_BASE_URL}/v1/api/chat/joingroup`,
+        {
+          userId, 
+          groupId,
+        }
+      );
+      toast.success(data.message); 
+      setSelectedGroup(null);
+    } catch (error) {
+      toast.error(error.response?.data?.message);
+    }
+  };
+
   return (
     <div className="flex m-6">
       {/* Chat Sidebar */}
       <div className="bg-white p-4 rounded-l-lg w-[300px]">
-        <h2 className="text-lg font-semibold mb-4">Chat</h2>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-lg font-semibold">Chat</h2>
+          <button
+            className="bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white py-2 px-4 rounded-lg"
+            onClick={() => {
+              if (selectedGroup) {
+                handleJoinGroup(selectedGroup._id);
+              } else {
+                toast.error("Please select a community to join!");
+              }
+            }}
+          >
+            Add Community
+          </button>
+        </div>
         <div className={`items-center relative w-full flex mb-3`}>
           <span className="absolute left-3 text-gray-400">
             <img src="/assets/search-Bordere.svg" alt="" />
