@@ -15,7 +15,7 @@ dotenv.config();
 app.use(
   cors({
     // origin: "http://localhost:3000",
-    origin: "https://society-management-agt2.onrender.com",
+    origin: "https://society-management-1yhx.onrender.com",
     credentials: true,
   })
 );
