@@ -14,8 +14,17 @@ dotenv.config();
 
 app.use(
   cors({
-    // origin: "http://localhost:3000",
-    origin: "https://society-management-ebon.vercel.app",
+    origin: function (origin, callback) {
+      const allowedOrigins = [
+        "http://localhost:3000",
+        "https://society-management-ebon.vercel.app",
+      ];
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );
@@ -133,7 +142,9 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("sendGroupMessage", async ({ senderId, groupId, message, mediaUrl }) => {
+  socket.on(
+    "sendGroupMessage",
+    async ({ senderId, groupId, message, mediaUrl }) => {
       try {
         const groupChat = await GroupChat.findById(groupId).select(
           "groupMembers"
