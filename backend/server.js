@@ -164,7 +164,6 @@ io.on("connection", (socket) => {
     }
   );
 
-  // for video call
   socket.on("offer", ({ offer, receiverId }) => {
     const receiverSocket = Array.from(io.sockets.sockets.values()).find(
       (s) => s.userId === receiverId
