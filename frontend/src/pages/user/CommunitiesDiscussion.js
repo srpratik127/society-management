@@ -9,8 +9,6 @@ const CommunitiesDiscussion = () => {
   const [groups, setGroups] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState();
   const userId = useSelector((store) => store.auth.user._id);
-  const [showAddCommunityModal, setShowAddCommunityModal] = useState(false);
-
   const [showHistoryMessage, setShowHistoryMessage] = useState([]);
   const [message, setMessage] = useState("");
   const [media, setMedia] = useState(null);
@@ -91,21 +89,24 @@ const CommunitiesDiscussion = () => {
     }
   };
 
-  const handleJoinGroup = async (groupId) => {
+  const handleJoinGroup = async () => {
     try {
+      const lastGroups = groups[0];
       const { data } = await axios.post(
         `${process.env.REACT_APP_BASE_URL}/v1/api/chat/joingroup`,
         {
-          userId, 
-          groupId,
+          userId,
+          groupId: lastGroups._id,
         }
       );
-      toast.success(data.message); 
+      toast.success(data.message);
+      setGroups([data.group]);
       setSelectedGroup(null);
     } catch (error) {
-      toast.error(error.response?.data?.message);
+      toast.error(error.response?.data?.message || "Failed to join group");
     }
   };
+  console.log("group :", groups);
 
   return (
     <div className="flex m-6">
@@ -113,18 +114,16 @@ const CommunitiesDiscussion = () => {
       <div className="bg-white p-4 rounded-l-lg w-[300px]">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold">Chat</h2>
-          <button
-            className="bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white py-2 px-4 rounded-lg"
-            onClick={() => {
-              if (selectedGroup) {
-                handleJoinGroup(selectedGroup._id);
-              } else {
-                toast.error("Please select a community to join!");
-              }
-            }}
-          >
-            Add Community
-          </button>
+
+          {groups[0] &&
+          !groups[0].groupMembers.some((member) => member._id === userId) ? (
+            <button
+              className="bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white py-2 px-4 rounded-lg"
+              onClick={handleJoinGroup}
+            >
+              Add Community
+            </button>
+          ) : null}
         </div>
         <div className={`items-center relative w-full flex mb-3`}>
           <span className="absolute left-3 text-gray-400">
@@ -137,27 +136,29 @@ const CommunitiesDiscussion = () => {
           />
         </div>
         <ul className="space-y-4">
-          {groups.map((chat, idx) => (
-            <li
-              key={idx}
-              onClick={() => handelGroupSelect(chat)}
-              className={`flex items-center justify-between p-2 ${
-                selectedGroup?._id === chat._id && "bg-[#5678E90D]"
-              } hover:bg-[#5678E90D] rounded-lg cursor-pointer`}
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gray-300 rounded-full">
-                  <img src="/assets/empty.png" alt="" />
+          {groups.map((chat, idx) =>
+            chat.groupMembers.some((member) => member._id === userId) ? (
+              <li
+                key={idx}
+                onClick={() => handelGroupSelect(chat)}
+                className={`flex items-center justify-between p-2 ${
+                  selectedGroup?._id === chat._id && "bg-[#5678E90D]"
+                } hover:bg-[#5678E90D] rounded-lg cursor-pointer`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gray-300 rounded-full">
+                    <img src="/assets/empty.png" alt="" />
+                  </div>
+                  <div>
+                    <span>{chat.groupName}</span>
+                    <p className="text-xs">
+                      Members: {chat.groupMembers.length}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <span>{chat.groupName}</span>
-                  <p className="text-xs">
-                    Members : 0{chat.groupMembers?.length}
-                  </p>
-                </div>
-              </div>
-            </li>
-          ))}
+              </li>
+            ) : null
+          )}
         </ul>
       </div>
 
