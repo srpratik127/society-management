@@ -6,7 +6,7 @@ const ViewAnnounce = ({ announcement, onClose }) => {
       <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-semibold text-gray-900">
-            View Security Protocol
+            View Announcement Protocol
           </h3>
           <button
             onClick={onClose}

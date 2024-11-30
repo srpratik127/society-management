@@ -99,7 +99,7 @@ const updateComplaint = async (req, res) => {
     }
 
     if (complaint.userType === "Admin") {
-      complaint.user = await User.findById(complaint.user).select(
+      complaint.user = await Admin.findById(complaint.user).select(
         "name profile_picture"
       );
     } else if (complaint.userType === "Resident") {

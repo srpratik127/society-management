@@ -132,9 +132,7 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on(
-    "sendGroupMessage",
-    async ({ senderId, groupId, message, mediaUrl }) => {
+  socket.on("sendGroupMessage", async ({ senderId, groupId, message, mediaUrl }) => {
       try {
         const groupChat = await GroupChat.findById(groupId).select(
           "groupMembers"

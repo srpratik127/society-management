@@ -6,10 +6,10 @@ import ViewMaintenanceInvoice from "../models/ViewCommunitiesDiscussion";
 const ViewInvoice = () => {
   const [doneMaintenance, setDoneMaintenance] = useState([]);
   const [isInvoiceOpen, setIsInvoiceOpen] = useState(false);
-  const [selectedInvoice, setSelectedInvoice] = useState(null); 
+  const [selectedInvoice, setSelectedInvoice] = useState(null);
 
   useEffect(() => {
-    const fetchPendingMaintenance = async () => {
+    const fetchDoneMaintenance = async () => {
       try {
         const response = await axios.get(
           `${process.env.REACT_APP_BASE_URL}/v1/api/maintenance/done`
@@ -19,13 +19,12 @@ const ViewInvoice = () => {
         toast.error(error.response?.data?.message);
       }
     };
-
-    fetchPendingMaintenance();
+    fetchDoneMaintenance();
   }, []);
 
   const handleOpenInvoice = (invoice) => {
-    setSelectedInvoice(invoice); 
-    setIsInvoiceOpen(true); 
+    setSelectedInvoice(invoice);
+    setIsInvoiceOpen(true);
   };
 
   return (
@@ -46,21 +45,33 @@ const ViewInvoice = () => {
           <table className="w-full border-collapse">
             <thead className="font-poppins">
               <tr className="bg-blue-50">
-                <th className="py-2 px-4 border-b text-left text-nowrap">Invoice ID</th>
-                <th className="py-2 px-4 border-b text-left text-nowrap">Owner Name</th>
-                <th className="py-2 px-4 border-b text-left text-nowrap">Phone Number</th>
+                <th className="py-2 px-4 border-b text-left text-nowrap">
+                  Invoice ID
+                </th>
+                <th className="py-2 px-4 border-b text-left text-nowrap">
+                  Owner Name
+                </th>
+                <th className="py-2 px-4 border-b text-left text-nowrap">
+                  Phone Number
+                </th>
                 <th className="py-2 px-4 border-b text-left">Role</th>
                 <th className="py-2 px-4 border-b text-left">Email</th>
                 <th className="py-2 px-4 border-b text-left">Wing</th>
-                <th className="py-2 px-4 border-b text-left text-nowrap">Maintenance Amount</th>
-                <th className="py-2 px-4 border-b text-left text-nowrap">Penalty Day</th>
+                <th className="py-2 px-4 border-b text-left text-nowrap">
+                  Maintenance Amount
+                </th>
+                <th className="py-2 px-4 border-b text-left text-nowrap">
+                  Penalty Day
+                </th>
                 <th className="py-2 px-4 border-b text-left">Action</th>
               </tr>
             </thead>
             <tbody>
               {doneMaintenance.map((invoice) => (
                 <tr key={invoice._id} className="hover:bg-gray-50">
-                  <td className="py-2 px-4 border-b">{invoice._id}</td>
+                  <td className="py-2 px-4 border-b">
+                    {invoice._id.substring(0, 8)}
+                  </td>
                   <td className="py-2 px-4 border-b capitalize">
                     {invoice?.user?.fullName}
                   </td>
@@ -99,8 +110,8 @@ const ViewInvoice = () => {
       </div>
       {isInvoiceOpen && (
         <ViewMaintenanceInvoice
-          invoice={selectedInvoice} 
-          onClose={() => setIsInvoiceOpen(false)} 
+          invoice={selectedInvoice}
+          onClose={() => setIsInvoiceOpen(false)}
         />
       )}
     </div>

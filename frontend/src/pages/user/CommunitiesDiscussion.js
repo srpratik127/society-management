@@ -184,9 +184,18 @@ const CommunitiesDiscussion = () => {
                         </button>
                       </div>
                     </div>
-                    <p className="text-gray-600 mb-2 line-clamp-2">
-                      {message.message}
-                    </p>
+                    <div>
+                      {message.mediaUrl && (
+                        <img
+                          src={message.mediaUrl}
+                          alt="media"
+                          className="w-[470px] h-[278px] object-cover rounded-lg"
+                        />
+                      )}
+                      <p className="text-gray-600 mb-2 line-clamp-2">
+                        {message.message}
+                      </p>
+                    </div>
                   </div>
                 </div>
               ))}

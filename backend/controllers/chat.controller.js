@@ -156,3 +156,27 @@ exports.getGroupMessages = async (req, res) => {
     res.status(500).json({ message: "Failed to retrieve messages" });
   }
 };
+
+exports.joinGroup = async (req, res) => {
+  const { groupId, userId } = req.body;
+
+  try {
+    const group = await GroupChat.findById(groupId);
+    if (!group) {
+      return res.status(404).json({ message: "Group not found" });
+    }
+
+    const isMember = group.groupMembers.some((member) => member._id.toString() === userId);
+    if (isMember) {
+      return res.status(400).json({ message: "User is already a member of the group" });
+    }
+
+    group.groupMembers.push({ _id: userId });
+    await group.save();
+
+    res.status(200).json({ message: "Successfully joined the group", group });
+  } catch (error) {
+    console.error("Error joining group:", error);
+    res.status(500).json({ message: "Failed to join group" });
+  }
+};

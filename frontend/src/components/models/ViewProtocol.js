@@ -1,11 +1,13 @@
 import React from "react";
+import {formatTime} from "../../utils/validation";
 
 const ViewProtocol = ({ protocol, onClose }) => {
   if (!protocol) return null;
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-white rounded-xl p-6 w-96">
-        <h2 className="flex justify-between text-2xl font-semibold mb-4">
+        <h2 className="flex justify-between text-xl font-semibold mb-4">
           View Security Protocol
           <button
             onClick={onClose}
@@ -35,7 +37,7 @@ const ViewProtocol = ({ protocol, onClose }) => {
           </div>
           <div className="w-1/2">
             <h3 className="font-semibold text-gray-700">Time</h3>
-            <p className="text-gray-700">{protocol.time}</p>
+            <p className="text-gray-700">{formatTime(protocol.time)}</p>
           </div>
         </div>
       </div>
