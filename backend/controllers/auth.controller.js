@@ -6,7 +6,7 @@ const cloudinary = require("../utils/cloudinary");
 const fs = require("fs");
 const Society = require("../models/society.model");
 const Guard = require("../models/guard.model");
-const cookie = require("cookie")
+const cookie = require("cookie");
 
 const Register = async (req, res) => {
   try {
@@ -88,7 +88,8 @@ const Login = async (req, res) => {
     res.cookie("authToken", token, {
       httpOnly: true,
       secure: true,
-      sameSite: "strict",
+      sameSite: "none",
+      domain: ".vercel.app",
       maxAge: 30 * 24 * 60 * 60 * 1000,
     });
 
@@ -135,7 +136,8 @@ const updateUser = async (req, res) => {
             } else {
               console.log("Old image deleted from Cloudinary:", result);
             }
-        });
+          }
+        );
       }
       const result = await cloudinary.uploader.upload(req.file.path, {
         folder: "profile_pictures",
@@ -154,7 +156,9 @@ const updateUser = async (req, res) => {
       try {
         parsedSociety = JSON.parse(select_society);
       } catch (err) {
-        return res.status(400).json({ message: "Invalid select_society format" });
+        return res
+          .status(400)
+          .json({ message: "Invalid select_society format" });
       }
     }
     if (parsedSociety && parsedSociety._id) {
