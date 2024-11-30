@@ -10,7 +10,7 @@ const Main = () => {
         return (
           <div className="hidden lg:block">
             <img
-              src="/assets/register.JPEG"
+              src="./assets/register.JPEG"
               alt="Registration"
               className="w-full max-w-xl"
             />
