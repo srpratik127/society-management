@@ -4,6 +4,7 @@ import { CreateSociety } from "../../components/models/CreateSociety";
 import Select from "react-select";
 import axios from "axios";
 import toast from "react-hot-toast";
+import Loader from "../../components/Loader";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -20,6 +21,7 @@ const Register = () => {
   });
   const [options, setOptions] = useState([]);
   const [errors, setErrors] = useState({});
+  const [loader, setLoader] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -95,17 +97,19 @@ const Register = () => {
           ...dataToSubmit,
           select_society: select_society?.value,
         };
-
+        setLoader(true);
         const response = await axios.post(
           `${process.env.REACT_APP_BASE_URL}/v1/api/auth/register`,
           payload
         );
         console.log("Form submitted:", response.data);
         setErrors({});
+        setLoader(false);
         toast.success("Register successful!");
         navigate("/login");
       } catch (error) {
         toast.error(error.response?.data?.message);
+        setLoader(false);
       }
     }
   };
@@ -434,9 +438,9 @@ const Register = () => {
                 ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white"
                 : "bg-[#F6F8FB] text-[#A7A7A7]"
             }`}
-            // disabled={!isFormComplete()}
+            disabled={!isFormComplete() || loader}
           >
-            Register
+            {!loader ? "Register" : <Loader />}
           </button>
 
           <p className="text-center text-gray-600 mt-4">

@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
+import Loader from "../Loader";
 
 const CreatePoll = ({ onClose, setPollsData }) => {
   const [pollType, setPollType] = useState("");
@@ -10,6 +11,7 @@ const CreatePoll = ({ onClose, setPollsData }) => {
   const [option2, setOption2] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
   const [errors, setErrors] = useState({});
+  const [loader, setLoader] = useState(false);
   const user = useSelector((store) => store.auth.user);
 
   const pollTypes = [
@@ -34,6 +36,7 @@ const CreatePoll = ({ onClose, setPollsData }) => {
     if (validate()) {
       //   console.log({ pollType, question, option1, option2 });
       try {
+        setLoader(true);
         const { data } = await axios.post(
           `${process.env.REACT_APP_BASE_URL}/v1/api/polls/create`,
           {
@@ -43,10 +46,12 @@ const CreatePoll = ({ onClose, setPollsData }) => {
             options: [option1, option2],
           }
         );
+        setLoader(false);
         setPollsData((pre) => [...pre, data.poll]);
         onClose();
       } catch (error) {
         toast.error(error.response?.data?.message);
+        setLoader(false);
       }
     }
   };
@@ -164,6 +169,7 @@ const CreatePoll = ({ onClose, setPollsData }) => {
             </button>
             <button
               type="button"
+              disabled={loader}
               className={`w-full font-semibold py-2 px-4 rounded-md transition-colors ${
                 isFormValid
                   ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white cursor-pointer"
@@ -171,7 +177,7 @@ const CreatePoll = ({ onClose, setPollsData }) => {
               }`}
               onClick={handleCreate}
             >
-              Create
+              {!loader ? "Create" : <Loader />}
             </button>
           </div>
         </form>

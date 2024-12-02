@@ -74,7 +74,7 @@ const Announcement = () => {
         )}
       </div>
 
-      {isViewPopupVisible && selectedItem && (
+      {isViewPopupVisible && (
         <ViewAnnounce
           announcement={selectedItem}
           onClose={() => {
@@ -83,6 +83,7 @@ const Announcement = () => {
           }}
         />
       )}
+      
       {isAddEditAnnouncement && (
         <AddEditAnnouncement
           onClose={() => {

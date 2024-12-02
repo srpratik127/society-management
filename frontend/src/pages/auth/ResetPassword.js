@@ -2,9 +2,11 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import Loader from "../../components/Loader";
 
 const ResetPassword = () => {
   const [password, setPassword] = useState("");
+  const [loader, setLoader] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
@@ -30,12 +32,14 @@ const ResetPassword = () => {
     e.preventDefault();
     if (validate()) {
       try {
+        setLoader(true);
         const response = await axios.post(
           `${process.env.REACT_APP_BASE_URL}/v1/api/forget-password/resetPassword`,
           { password, email: email }
         );
         if (response.data) {
           console.log(response.data);
+          setLoader(false);
           toast.success("Reset Password successful! Please login again!");
           navigate("/login");
           setPassword("");
@@ -44,6 +48,7 @@ const ResetPassword = () => {
         }
       } catch (error) {
         toast.error(error.response?.data?.message);
+        setLoader(false);
       }
     }
   };
@@ -143,9 +148,9 @@ const ResetPassword = () => {
               ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white"
               : "bg-[#F6F8FB] text-[#A7A7A7]"
           }`}
-          disabled={!isFormValid}
+          disabled={!isFormValid || loader}
         >
-          Reset Password
+          {!loader ? "Reset Password" : <Loader />}
         </button>
       </form>
     </div>

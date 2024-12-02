@@ -4,6 +4,7 @@ import DatePicker from "react-datepicker";
 import toast from "react-hot-toast";
 import { AddNotification } from "../../store/NotificationSlice";
 import { useDispatch } from "react-redux";
+import Loader from "../Loader";
 
 const CreateOtherIncome = ({ onClose, setOtherIncomeData }) => {
   const [title, setTitle] = useState("");
@@ -11,6 +12,7 @@ const CreateOtherIncome = ({ onClose, setOtherIncomeData }) => {
   const [dueDate, setDueDate] = useState("");
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
+  const [loader, setLoader] = useState(false);
   const dispatch = useDispatch();
 
   const [errors, setErrors] = useState({
@@ -40,16 +42,19 @@ const CreateOtherIncome = ({ onClose, setOtherIncomeData }) => {
         amount,
       };
       try {
+        setLoader(true);
         const response = await axios.post(
           `${process.env.REACT_APP_BASE_URL}/v1/api/income`,
           incomeData
         );
+        setLoader(false);
         toast.success("Income created successfully!");
         setOtherIncomeData((pre) => [...pre, response.data?.data]);
         dispatch(AddNotification(response.data?.notification));
         onClose();
       } catch (error) {
         toast.error(error.response?.data?.message);
+        setLoader(false);
       }
       onClose();
     }
@@ -155,9 +160,10 @@ const CreateOtherIncome = ({ onClose, setOtherIncomeData }) => {
             </button>
             <button
               type="submit"
+              disabled={loader}
               className="px-4 py-2 w-full bg-gradient-to-r from-[#FE512E] to-[#F09619]  text-white rounded-lg"
             >
-              Save
+              {!loader ? "Save" : <Loader />}
             </button>
           </div>
         </form>

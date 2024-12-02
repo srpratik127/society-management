@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
+import Loader from "../Loader";
 
 export const CreateSociety = ({ closePopup, setOptions }) => {
   const [societyName, setSocietyName] = useState("");
@@ -9,6 +10,7 @@ export const CreateSociety = ({ closePopup, setOptions }) => {
   const [state, setState] = useState("");
   const [city, setCity] = useState("");
   const [zipCode, setZipCode] = useState("");
+  const [loader, setLoader] = useState(false);
   const [errors, setErrors] = useState({});
 
   const handleSubmit = async (e) => {
@@ -22,6 +24,7 @@ export const CreateSociety = ({ closePopup, setOptions }) => {
         city,
         zipCode,
       });
+      setLoader(true);
       const response = await axios.post(
         `${process.env.REACT_APP_BASE_URL}/v1/api/society`,
         {
@@ -35,10 +38,12 @@ export const CreateSociety = ({ closePopup, setOptions }) => {
       );
       const { name, _id } = response.data;
       setOptions((prev) => [{ value: _id, label: name }, ...prev]);
+      setLoader(false);
       toast.success("Society Create successful!");
       closePopup();
     } catch (error) {
       toast.error(error.response?.data?.message);
+      setLoader(false);
     }
   };
 
@@ -195,9 +200,9 @@ export const CreateSociety = ({ closePopup, setOptions }) => {
                   ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-[#FFFFFF]"
                   : "bg-[#F6F8FB] text-[#202224]"
               }`}
-              disabled={!allFieldsFilled}
+              disabled={!allFieldsFilled || loader}
             >
-              Save
+              {!loader ? "Save" : <Loader />}
             </button>
           </div>
         </form>

@@ -2,12 +2,15 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import toast from "react-hot-toast";
+import Loader from "../Loader";
 
 const AddEditAnnouncement = ({
   onClose,
   setAnnouncements,
   editAnnouncement,
 }) => {
+  
+  const [loader, setLoader] = useState(false);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -32,18 +35,21 @@ const AddEditAnnouncement = ({
       });
     }
   }, [editAnnouncement]);
-
+  
   const convertTo24HourFormat = (time12h) => {
     const [time, modifier] = time12h.split(" ");
     let [hours, minutes] = time.split(":");
   
+    hours = hours.toString();  
+  
     if (modifier === "PM" && hours !== "12") hours = parseInt(hours) + 12;
     if (modifier === "AM" && hours === "12") hours = "00";
   
-    hours = hours.padStart(2, "0");
+    hours = hours.toString().padStart(2, "0");
   
     return `${hours}:${minutes}`;
   };
+  
 
   const formatTime = (time) => {
     if (!time) return "";
@@ -86,12 +92,13 @@ const AddEditAnnouncement = ({
     };
     setErrors(newErrors);
     const hasErrors = Object.values(newErrors).some((error) => error);
-
+    
     if (hasErrors) return;
-
+    
     try {
       if (editAnnouncement) {
         // If editing, update the announcement
+        setLoader(true);
         const response = await axios.put(
           `${process.env.REACT_APP_BASE_URL}/v1/api/announcement/${editAnnouncement._id}`,
           {
@@ -108,8 +115,10 @@ const AddEditAnnouncement = ({
               : announcement
           )
         );
+        setLoader(false);
         toast.success("Announcement Updated successful!");
       } else {
+        setLoader(true);
         const response = await axios.post(
           `${process.env.REACT_APP_BASE_URL}/v1/api/announcement`,
           {
@@ -120,18 +129,20 @@ const AddEditAnnouncement = ({
           }
         );
         setAnnouncements((prev) => [...prev, response.data?.data]);
+        setLoader(false);
         toast.success("Announcement Created successful!");
       }
       onClose();
     } catch (error) {
       toast.error(error.response?.data?.message);
+      setLoader(false);
     }
   };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-[410px] h-auto">
-        <h2 className="text-xl font-semibold mb-4">Add Announcement</h2>
+        <h2 className="text-xl font-semibold mb-4">{editAnnouncement ? "Edit" : "Add"} Announcement</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block">Announcement Title<span className="text-red-500">*</span></label>
@@ -213,9 +224,10 @@ const AddEditAnnouncement = ({
             </button>
             <button
               type="submit"
+              disabled={loader}
               className={`w-[175px] font-semibold py-2 px-4 rounded-md ${"bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white"}`}
             >
-              Save
+              {!loader ? "Save" : <Loader />}
             </button>
           </div>
         </form>

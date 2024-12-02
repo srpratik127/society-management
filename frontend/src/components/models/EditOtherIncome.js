@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import axios from "axios";
 import toast from "react-hot-toast";
+import Loader from "../Loader";
 
 const EditOtherIncome = ({ onClose, selectedItem, setIncomeData }) => {
   const [amount, setAmount] = useState(selectedItem?.amount);
   const [date, setDate] = useState(selectedItem?.date);
   const [dueDate, setDueDate] = useState(selectedItem?.dueDate);
   const [description, setDescription] = useState(selectedItem?.description);
+  const [loader, setLoader] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,6 +21,7 @@ const EditOtherIncome = ({ onClose, selectedItem, setIncomeData }) => {
     };
 
     try {
+      setLoader(true);
       const response = await axios.put(
         `${process.env.REACT_APP_BASE_URL}/v1/api/income/${selectedItem._id}`,
         updatedIncome
@@ -28,10 +31,12 @@ const EditOtherIncome = ({ onClose, selectedItem, setIncomeData }) => {
           item.id === selectedItem.id ? { ...item, ...updatedIncome } : item
         )
       );
+      setLoader(false);
       toast.success("Income Update successful!");
       onClose(); 
     } catch (error) {
       toast.error(error.response?.data?.message);
+      setLoader(false);
     }
   };
 
@@ -100,9 +105,10 @@ const EditOtherIncome = ({ onClose, selectedItem, setIncomeData }) => {
             </button>
             <button
               type="submit"
+              disabled={loader}
               className="px-4 py-2 w-full bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white rounded-lg"
             >
-              Save
+              {!loader ? "Save" : <Loader />}
             </button>
           </div>
         </form>

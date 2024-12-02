@@ -4,6 +4,7 @@ import DatePicker from "react-datepicker";
 import { useDispatch } from "react-redux";
 import { AddNotification } from "../../store/NotificationSlice";
 import toast from "react-hot-toast";
+import Loader from "../Loader";
 
 const CreateFacilityManagement = ({ onClose, setFacilities }) => {
   const [facilityName, setFacilityName] = useState("");
@@ -11,6 +12,7 @@ const CreateFacilityManagement = ({ onClose, setFacilities }) => {
   const [scheduleDate, setScheduleDate] = useState("");
   const [remindBefore, setRemindBefore] = useState("");
   const [errors, setErrors] = useState({});
+  const [loader, setLoader] = useState(false);
   const dispatch = useDispatch();
 
   const validateField = (name, value) => {
@@ -40,16 +42,19 @@ const CreateFacilityManagement = ({ onClose, setFacilities }) => {
       remindBefore: parseInt(remindBefore.split("-")[0]),
     };
     try {
+      setLoader(true);
       const response = await axios.post(
         `${process.env.REACT_APP_BASE_URL}/v1/api/facilities`,
         facilityData
       );
       setFacilities((pre) => [...pre, response.data?.data]);
       dispatch(AddNotification(response.data?.notification));
+      setLoader(false);
       toast.success("Facilities Create successful!");
       onClose();
     } catch (error) {
       toast.error(error.response?.data?.message);
+      setLoader(false);
     }
   };
 
@@ -144,13 +149,14 @@ const CreateFacilityManagement = ({ onClose, setFacilities }) => {
             </button>
             <button
               type="submit"
+              disabled={loader}
               className={`py-2 px-4 rounded-lg w-full ${
                 facilityName && description && scheduleDate && remindBefore
                   ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] font-semibold text-white"
                   : "border bg-gray-100"
               }`}
             >
-              Save
+              {!loader ? "Save" : <Loader />}
             </button>
           </div>
         </form>

@@ -2,10 +2,12 @@ import axios from "axios";
 import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import toast from "react-hot-toast";
+import Loader from "../Loader";
 
 const CreateNote = ({ onClose, setNotes }) => {
   const [note, setNote] = useState({ title: "", description: "", date: "" });
   const [errors, setErrors] = useState({});
+  const [loader, setLoader] = useState(false);
   const isFormValid =
     Object.values(note).every((val) => val) &&
     !Object.values(errors).some((err) => err);
@@ -34,6 +36,7 @@ const CreateNote = ({ onClose, setNotes }) => {
 
     if (isFormValid) {
       try {
+        setLoader(true);
         const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/v1/api/notes`, {
           title,
           description,
@@ -41,10 +44,12 @@ const CreateNote = ({ onClose, setNotes }) => {
         });
         setNote({ title: "", description: "", date: "" });
         setNotes((prevNotes) => [...prevNotes, response.data]);
+        setLoader(false);
         toast.success("Notes Create successful!");
         onClose();
       } catch (error) {
         toast.error(error.response?.data?.message);
+        setLoader(false);
       }
     } else {
       ["title", "description", "date"].forEach((field) =>
@@ -105,13 +110,14 @@ const CreateNote = ({ onClose, setNotes }) => {
             </button>
             <button
               type="submit"
+              disabled={loader}
               className={`py-2 px-4 rounded-lg w-full ${
                 isFormValid
                   ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white"
                   : "bg-[#F6F8FB] text-black"
               }`}
             >
-              Save
+              {!loader ? "Save" : <Loader />}
             </button>
           </div>
         </form>

@@ -1,11 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import axios from "axios";
+import Loader from "../Loader";
 
 const ViewMaintenanceInvoice = ({ invoice, onClose }) => {
+  const [loader, setLoader] = useState(false);
   if (!invoice) return null;
-
+  
   const handleDownloadInvoice = async () => {
     try {
+      setLoader(true);
       const response = await axios.post(
         `${process.env.REACT_APP_BASE_URL}/v1/api/maintenance/download`,
         { invoice },
@@ -18,8 +21,10 @@ const ViewMaintenanceInvoice = ({ invoice, onClose }) => {
       document.body.appendChild(link);
       link.click();
       link.remove();
+      setLoader(false);
     } catch (error) {
       console.error("Error downloading the invoice:", error);
+      setLoader(false);
     }
   };
 
@@ -121,11 +126,12 @@ const ViewMaintenanceInvoice = ({ invoice, onClose }) => {
         <button
           className="w-full bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white font-medium py-2 rounded-lg flex justify-center items-center gap-2"
           onClick={handleDownloadInvoice}
+          disabled={loader}
         >
           <span>
             <img src="/assets/arrow-down.svg" alt="Download Icon" />
           </span>{" "}
-          Download Invoice
+          {!loader ? "Download Invoice" : <Loader />}
         </button>
       </div>
     </div>

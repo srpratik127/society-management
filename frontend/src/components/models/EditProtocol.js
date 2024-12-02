@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import toast from "react-hot-toast";
+import Loader from "../Loader";
 
 const EditProtocol = ({ protocol, onClose, setProtocols }) => {
   const [formData, setFormData] = useState({
@@ -11,6 +12,7 @@ const EditProtocol = ({ protocol, onClose, setProtocols }) => {
     time: "",
   });
   const [errors, setErrors] = useState({});
+  const [loader, setLoader] = useState(false);
 
   const convertTo24HourFormat = (time12h) => {
     const [time, modifier] = time12h.split(" ");
@@ -48,6 +50,7 @@ const EditProtocol = ({ protocol, onClose, setProtocols }) => {
 
   const updateProtocol = async () => {
     try {
+      setLoader(true);
       const response = await axios.put(
         `${process.env.REACT_APP_BASE_URL}/v1/api/protocol/${protocol._id}`,
         formData
@@ -57,10 +60,12 @@ const EditProtocol = ({ protocol, onClose, setProtocols }) => {
       setProtocols((prevProtocols) =>
         prevProtocols.map((p) => (p._id === protocol._id ? updatedProtocol : p))
       );
+      setLoader(false);
       toast.success("Protocol Update successful!");
       onClose();
     } catch (error) {
       toast.error(error.response?.data?.message);
+      setLoader(false);
     }
   };
 
@@ -157,9 +162,10 @@ const EditProtocol = ({ protocol, onClose, setProtocols }) => {
             </button>
             <button
               type="submit"
+              disabled={loader}
               className="py-2 px-4 rounded-lg w-[175px] bg-gradient-to-r from-[#FE512E] to-[#F09619] font-semibold text-white"
             >
-              Save
+              {!loader ? "Save" : <Loader />}
             </button>
           </div>
         </form>

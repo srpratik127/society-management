@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import Loader from "../../components/Loader";
 
 const Emergency = () => {
   const [alertType, setAlertType] = useState("");
   const [description, setDescription] = useState("");
+  const [loader, setLoader] = useState(false);
   const user = useSelector((store) => store.auth.user);
 
   const alertOptions = [
@@ -26,6 +28,7 @@ const Emergency = () => {
     }
 
     try {
+      setLoader(true);
       const response = await axios.post(
         `${process.env.REACT_APP_BASE_URL}/v1/api/alert`,
         {
@@ -34,13 +37,14 @@ const Emergency = () => {
           createdBy: user?._id,
         }
       );
-
+    setLoader(false);
       toast.success(`Alert "${alertType}" submitted successfully!`);
 
       setAlertType("");
       setDescription("");
     } catch (error) {
       toast.error("Failed to create alert");
+      setLoader(false); 
     }
   };
 
@@ -91,13 +95,14 @@ const Emergency = () => {
           <div className="flex justify-end">
             <button
               type="submit"
-              className={`w-full py-2 rounded-lg text-sm sm:text-base ${isSubmitDisabled
+              className={`w-full py-2 rounded-lg text-sm sm:text-base ${
+                isSubmitDisabled
                   ? "bg-gray-100 text-black cursor-not-allowed"
                   : "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white"
-                }`}
-              disabled={isSubmitDisabled}
+              }`}
+              disabled={isSubmitDisabled || loader}
             >
-              Send
+              {!loader ? "Send" : <Loader />}
             </button>
           </div>
         </form>
