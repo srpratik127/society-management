@@ -52,22 +52,51 @@ const MaintenanceData = ({ isViewInvoice }) => {
         <div className="flex justify-between flex-col bg-white md:flex-row space-y-4 md:space-y-0 md:space-x-4 mb-4 lg:mb-0 p-4 m-6 rounded-lg items-center">
           <h2 className="text-lg font-semibold">Show Maintenance Details</h2>
           <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-            <div className="bg-white shadow rounded-lg p-4 w-full sm:w-[230px] flex flex-col justify-center border-l-4 border-green-500">
-              <div className="text-gray-500">Maintenance Amount</div>
-              <div className="text-green-500 font-bold text-xl">
-                <h1>
-                  {" "}
-                  ₹ {maintenance[maintenance?.length - 1]?.amount || "00"}
-                </h1>
+            <div className="bg-[white] rounded-lg shadow relative z-[1]">
+              <div className="bg-white flex items-center w-full justify-between p-6 rounded-lg">
+                <div
+                  className={`h-12 w-2 absolute left-0 top-1/2 transform -translate-y-1/2 rounded-tr-lg rounded-br-lg bg-green-500`}
+                ></div>
+                <div
+                  className="flex flex-col justify-center font-poppins px-3 text-left pl-2"
+                  style={{ fontFamily: "Poppins, sans-serif" }}
+                >
+                  <p className="font-medium leading-6">Maintenance Amount</p>
+                  <p className="text-green-500 font-bold text-xl leading-6">
+                    ₹ {maintenance[maintenance?.length - 1]?.amount || "00"}
+                  </p>
+                </div>
+                <div
+                  className={`absolute w-[100%] h-[100%] rounded-e-lg rounded-tl-lg top-[-2px] right-[-2px] z-[-1]`}
+                  style={{
+                    background: `linear-gradient(45deg, #ffff 70%, green)`,
+                  }}
+                ></div>
               </div>
             </div>
-            <div className="bg-white shadow rounded-lg p-4 w-full sm:w-[230px] flex flex-col justify-center border-l-4 border-red-500">
-              <div className="text-gray-500">Penalty Amount</div>
-              <div className="text-red-500 font-bold text-xl">
-                <h1>
-                  ₹{" "}
-                  {maintenance[maintenance?.length - 1]?.penaltyAmount || "00"}
-                </h1>
+
+            <div className="bg-[white] rounded-lg shadow relative z-[1]">
+              <div className="bg-white flex items-center w-full justify-between p-6 rounded-lg">
+                <div
+                  className={`h-12 w-2 absolute left-0 top-1/2 transform -translate-y-1/2 rounded-tr-lg rounded-br-lg bg-red-500`}
+                ></div>
+                <div
+                  className="flex flex-col justify-center font-poppins px-3 text-left pl-2"
+                  style={{ fontFamily: "Poppins, sans-serif" }}
+                >
+                  <p className="font-medium leading-6">Penalty Amount</p>
+                  <p className="text-red-500 font-bold text-xl leading-6">
+                    ₹{" "}
+                    {maintenance[maintenance?.length - 1]?.penaltyAmount ||
+                      "00"}
+                  </p>
+                </div>
+                <div
+                  className={`absolute w-[100%] h-[100%] rounded-e-lg rounded-tl-lg top-[-2px] right-[-2px] z-[-1]`}
+                  style={{
+                    background: `linear-gradient(45deg, #ffff 70%, red)`,
+                  }}
+                ></div>
               </div>
             </div>
           </div>
@@ -129,7 +158,7 @@ const MaintenanceData = ({ isViewInvoice }) => {
                         {new Date() >= new Date(item.penaltyDay)
                           ? `${
                               item.amount + item.penaltyAmount
-                          } - (Penalty Applied)`
+                            } - (Penalty Applied)`
                           : item.amount}
                       </p>
                     </div>
@@ -147,7 +176,9 @@ const MaintenanceData = ({ isViewInvoice }) => {
               ))}
             </div>
           ) : (
-            <p className="text-center text-gray-400 select-none">No Pending Maintenance Found!</p>
+            <p className="text-center text-gray-400 select-none">
+              No Pending Maintenance Found!
+            </p>
           )}
         </div>
 
@@ -195,7 +226,9 @@ const MaintenanceData = ({ isViewInvoice }) => {
               ))}
             </div>
           ) : (
-            <p className="text-center text-gray-400 select-none">No Due Maintenance Found!</p>
+            <p className="text-center text-gray-400 select-none">
+              No Due Maintenance Found!
+            </p>
           )}
         </div>
 
