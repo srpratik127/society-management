@@ -146,7 +146,7 @@ const ComplainTable = () => {
                       onClick={() => ViewComplains(complaint)}
                     >
                       <img
-                        src="/assets/showicon.svg"
+                        src="/assets/show.svg"
                         alt="Show Icon"
                         className="h-7 w-7 cursor-pointer"
                       />
