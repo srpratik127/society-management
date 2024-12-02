@@ -3,7 +3,7 @@ import { socket } from "../../utils/socket";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 
-const VideoCall = ({ receiver, startCallFromParent, onClose }) => {
+const VideoCall = ({ receiver, startCallFromParent, setStartVideoCall }) => {
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
   const peerConnectionRef = useRef(null);
@@ -50,7 +50,9 @@ const VideoCall = ({ receiver, startCallFromParent, onClose }) => {
 
   const startCall = async () => {
     if (userId === receiver._id) {
-      toast.error("you can not call yourself.!");
+      toast.error("You cannot call yourself!");
+      setStartVideoCall(false);
+      setIsCalling(false);
       return;
     }
 
@@ -155,7 +157,16 @@ const VideoCall = ({ receiver, startCallFromParent, onClose }) => {
   };
 
   const handleEndCall = () => {
+    setStartVideoCall(false);
+    setIsCalling(false);
+    if (!receiver || !receiver._id) {
+      setIsCalling(false);
+      console.error("Receiver is not defined");
+      return;
+    }
+
     socket.emit("call-ended", { receiverId: receiver._id });
+
     if (localVideoRef.current?.srcObject) {
       const tracks = localVideoRef.current.srcObject.getTracks();
       tracks.forEach((track) => track.stop());
@@ -166,12 +177,11 @@ const VideoCall = ({ receiver, startCallFromParent, onClose }) => {
       tracks.forEach((track) => track.stop());
       remoteVideoRef.current.srcObject = null;
     }
+
     if (peerConnectionRef.current) {
       peerConnectionRef.current.close();
       peerConnectionRef.current = null;
     }
-
-    onClose();
   };
 
   useEffect(() => {
@@ -197,14 +207,19 @@ const VideoCall = ({ receiver, startCallFromParent, onClose }) => {
   const handleMediaError = (error) => {
     if (error.name === "NotAllowedError") {
       toast.error(
-        "Microphone or camera access was denied. Please allow access to proceed."
+        "Camera or microphone access denied. Please allow permissions."
       );
     } else if (error.name === "NotFoundError") {
       toast.error("No camera or microphone found. Please connect them.");
+    } else if (error.name === "OverconstrainedError") {
+      toast.error(
+        `The constraints cannot be satisfied. Check if your device supports the requested settings.`
+      );
     } else {
-      toast.error("An error occurred while accessing media devices.");
+      toast.error(
+        "An unexpected error occurred while accessing media devices."
+      );
     }
-    console.error("Media Error:", error);
   };
 
   return (

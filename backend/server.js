@@ -15,7 +15,7 @@ dotenv.config();
 app.use(
   cors({
     // origin: "http://localhost:3000",
-    origin: "https://society-management-1yhx.onrender.com",
+    origin: "https://society-management-ebon.vercel.app",
     credentials: true,
   })
 );
@@ -164,7 +164,6 @@ io.on("connection", (socket) => {
     }
   );
 
-  // for video call
   socket.on("offer", ({ offer, receiverId }) => {
     const receiverSocket = Array.from(io.sockets.sockets.values()).find(
       (s) => s.userId === receiverId

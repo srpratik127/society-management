@@ -96,7 +96,7 @@ const ViewInvoice = () => {
                   <td className="py-2 px-4 border-b text-center">
                     <button onClick={() => handleOpenInvoice(invoice)}>
                       <img
-                        src="/assets/showicon.svg"
+                        src="/assets/show.svg"
                         alt="Show Icon"
                         className="w-8 h-8 cursor-pointer"
                       />

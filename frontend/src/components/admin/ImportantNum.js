@@ -80,19 +80,19 @@ export const ImportantNum = () => {
               <div className="space-y-1">
                 <span className="block">
                   <span>Name:</span>{" "}
-                  <span className="text-[#A7A7A7] capitalize">
+                  <span className="text-[#A7A7A7] capitalize inline xl:inline lg:block">
                     {importantNumber.fullName}
                   </span>
                 </span>
                 <span className="block">
                   <span>Ph Number:</span>{" "}
-                  <span className="text-[#A7A7A7]">
+                  <span className="text-[#A7A7A7] inline xl:inline lg:block">
                     +91 {importantNumber.phoneNumber}
                   </span>
                 </span>
                 <span className="block">
                   <span>Work:</span>{" "}
-                  <span className="text-[#A7A7A7]">{importantNumber.work}</span>
+                  <span className="text-[#A7A7A7] inline xl:inline lg:block">{importantNumber.work}</span>
                 </span>
               </div>
               <div className="flex space-x-2 items-center">
