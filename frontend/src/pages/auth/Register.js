@@ -425,9 +425,9 @@ const Register = () => {
             />
             <label htmlFor="agree" className="ml-2 text-sm text-gray-600">
               I agree to all the Terms and{" "}
-              <a href="#" className="text-red-500">
+              <span className="text-red-500">
                 Privacy Policies
-              </a>
+              </span>
             </label>
           </div>
 
