@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import toast from "react-hot-toast";
+import Loader from "../Loader";
 
 const EditFacilityManagement = ({
   onClose,
@@ -13,6 +14,7 @@ const EditFacilityManagement = ({
   const [scheduleDate, setScheduleDate] = useState("");
   const [remindBefore, setRemindBefore] = useState("");
   const [errors, setErrors] = useState({});
+  const [loader, setLoader] = useState(false);
 
   useEffect(() => {
     if (selectedFacility) {
@@ -66,6 +68,7 @@ const EditFacilityManagement = ({
     };
 
     try {
+      setLoader(true);
       const response = await axios.put(
         `${process.env.REACT_APP_BASE_URL}/v1/api/facilities/${selectedFacility._id}`,
         updatedFacilityData
@@ -77,10 +80,12 @@ const EditFacilityManagement = ({
             : facility
         )
       );
+      setLoader(false);
       toast.success("Facilities Update successful!");
       onClose();
     } catch (error) {
       toast.error(error.response?.data?.message);
+      setLoader(false);
     }
   };
 
@@ -182,13 +187,14 @@ const EditFacilityManagement = ({
             </button>
             <button
               type="submit"
+              disabled={loader}
               className={`py-2 px-4 rounded-lg w-full ${
                 facilityName && description && scheduleDate && remindBefore
                   ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] font-semibold text-white"
                   : "bg-gray-300 text-gray-500"
               }`}
             >
-              Save
+              {!loader ? "Save" : <Loader />}
             </button>
           </div>
         </form>

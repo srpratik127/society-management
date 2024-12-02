@@ -5,10 +5,12 @@ import "react-datepicker/dist/react-datepicker.css";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { AddNotification } from "../../store/NotificationSlice";
+import Loader from "../Loader";
 
 const AddMaintenanceDetail = ({ onClose, setMaintenance }) => {
   const [maintenanceAmount, setMaintenanceAmount] = useState("");
   const [penaltyAmount, setPenaltyAmount] = useState("");
+  const [loader, setLoader] = useState(false);
   const [dueDate, setDueDate] = useState(null);
   const [penaltyAfterDays, setPenaltyAfterDays] = useState("");
   const [errors, setErrors] = useState({});
@@ -47,6 +49,7 @@ const AddMaintenanceDetail = ({ onClose, setMaintenance }) => {
         penaltyDay: penaltyDate.toISOString(),
       };
       try {
+        setLoader(true);
         const response = await axios.post(
           `${process.env.REACT_APP_BASE_URL}/v1/api/maintenance`,
           payload
@@ -54,6 +57,7 @@ const AddMaintenanceDetail = ({ onClose, setMaintenance }) => {
         if (response?.data) {
           setMaintenance((pre) => [...pre, response.data?.data]);
           dispatch(AddNotification(response.data?.notification));
+          setLoader(false);
           toast.success("Maintenance Create successful!");
           onClose();
         } else {
@@ -61,6 +65,7 @@ const AddMaintenanceDetail = ({ onClose, setMaintenance }) => {
         }
       } catch (error) {
         toast.error(error.response?.data?.message);
+        setLoader(false);
       }
     }
   };
@@ -163,13 +168,14 @@ const AddMaintenanceDetail = ({ onClose, setMaintenance }) => {
           </button>
           <button
             onClick={handleApply}
+            disabled={loader}
             className={`px-6 py-2 w-full gap-3 font-semibold rounded-md ${
               isFormComplete
                 ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white"
                 : "bg-[#F6F8FB] text-[#202224]"
             }`}
           >
-            Apply
+            {!loader ? "Apply" : <Loader />}
           </button>
         </div>
       </div>

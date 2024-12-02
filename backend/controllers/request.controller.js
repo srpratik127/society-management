@@ -55,7 +55,7 @@ const getRequests = async (req, res) => {
     const requests = await Request.find();
     for (let request of requests) {
       if (request.userType === "Admin") {
-        request.user = await User.findById(request.user).select(
+        request.user = await Admin.findById(request.user).select(
           "name profile_picture"
         );
       } else if (request.userType === "Resident") {

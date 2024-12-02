@@ -2,9 +2,11 @@ import axios from "axios";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
+import Loader from "../Loader";
 
 const CreateComplaintTracking = ({ onClose, setComplaints }) => {
   const user = useSelector((store) => store.auth.user);
+  const [loader, setLoader] = useState(false);
   const [complainerName, setComplainerName] = useState("");
   const [complaintName, setComplaintName] = useState("");
   const [description, setDescription] = useState("");
@@ -30,6 +32,7 @@ const CreateComplaintTracking = ({ onClose, setComplaints }) => {
     if (Object.keys(newErrors).length > 0) return;
 
     try {
+      setLoader(true);
       const response = await axios.post(
         `${process.env.REACT_APP_BASE_URL}/v1/api/complaints`,
         {
@@ -47,6 +50,7 @@ const CreateComplaintTracking = ({ onClose, setComplaints }) => {
       );
 
       if (response.data.success) {
+        setLoader(false);
         toast.success("Complaints Create successful!");
         setComplaints((prevComplaints) => [
           ...prevComplaints,
@@ -56,6 +60,7 @@ const CreateComplaintTracking = ({ onClose, setComplaints }) => {
       }
     } catch (error) {
       toast.error(error.response?.data?.message);
+      setLoader(false);
     }
   };
 
@@ -216,9 +221,10 @@ const CreateComplaintTracking = ({ onClose, setComplaints }) => {
             </button>
             <button
               type="submit"
+              disabled={loader}
               className={`w-full font-semibold py-2 px-4 rounded-md bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white `}
             >
-              Create
+              {!loader ? "Create" : <Loader />}
             </button>
           </div>
         </form>

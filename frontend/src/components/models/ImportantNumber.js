@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import Loader from "../Loader";
 
 const ImportantNumber = ({ closePopup, initialData, setImportantNumbers }) => {
   const [formData, setFormData] = useState({
@@ -9,6 +10,7 @@ const ImportantNumber = ({ closePopup, initialData, setImportantNumbers }) => {
     work: initialData ? initialData.work : "",
   });
   const [errors, setErrors] = useState({});
+  const [loader, setLoader] = useState(false);
 
   const validate = () => {
     const { fullName, phoneNumber, work } = formData;
@@ -38,6 +40,7 @@ const ImportantNumber = ({ closePopup, initialData, setImportantNumbers }) => {
     if (validate()) {
       try {
         if (initialData) {
+          setLoader(true);
           const response = await axios.put(
             `${process.env.REACT_APP_BASE_URL}/v1/api/numbers/${initialData._id}`,
             {
@@ -54,8 +57,10 @@ const ImportantNumber = ({ closePopup, initialData, setImportantNumbers }) => {
               number._id === initialData._id ? response.data.data : number
             );
           });
+          setLoader(false);
           toast.success("Numbers Update successful!");
         } else {
+          setLoader(true);
           const response = await axios.post(
             `${process.env.REACT_APP_BASE_URL}/v1/api/numbers`,
             {
@@ -68,11 +73,13 @@ const ImportantNumber = ({ closePopup, initialData, setImportantNumbers }) => {
             }
           );
           setImportantNumbers((pre) => [response?.data?.data, ...pre]);
+          setLoader(false);
           toast.success("Numbers Created successful!");
         }
         closePopup();
       } catch (error) {
         toast.error(error.response?.data?.message);
+        setLoader(false);
       }
     }
   };
@@ -141,14 +148,14 @@ const ImportantNumber = ({ closePopup, initialData, setImportantNumbers }) => {
             </button>
             <button
               type="submit"
-              disabled={!isFormComplete}
+              disabled={!isFormComplete || loader}
               className={`w-full font-semibold py-2 px-4 rounded-md ${
                 isFormComplete
                   ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white"
                   : "bg-[#F6F8FB] text-gray-500"
               }`}
             >
-              Save
+              {!loader ? "Save" : <Loader />}
             </button>
           </div>
         </form>

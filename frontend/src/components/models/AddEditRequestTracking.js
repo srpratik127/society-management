@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
+import Loader from "../Loader";
 
 const AddEditRequestTracking = ({
   onClose,
@@ -11,6 +12,7 @@ const AddEditRequestTracking = ({
 }) => {
   const user = useSelector((store) => store.auth.user);
   const [complainerName, setComplainerName] = useState("");
+  const [loader, setLoader] = useState(false);
   const [requestDate, setRequestDate] = useState("");
   const [wing, setWing] = useState("");
   const [unit, setUnit] = useState("");
@@ -59,11 +61,13 @@ const AddEditRequestTracking = ({
         let response;
 
         if (existingData) {
+          setLoader(true);
           response = await axios.put(
             `${process.env.REACT_APP_BASE_URL}/v1/api/requests/${existingData._id}`,
             requestData
           );
         } else {
+          setLoader(true);
           response = await axios.post(
             `${process.env.REACT_APP_BASE_URL}/v1/api/requests`,
             requestData
@@ -76,15 +80,18 @@ const AddEditRequestTracking = ({
                 item._id === response.data.data._id ? response.data.data : item
               )
             );
+            setLoader(false);
             toast.success("Requests Updated successful!");
           } else {
             setRequestProtocols((prev) => [...prev, response.data.data]);
+            setLoader(false);
             toast.success("Requests Create successful!");
           }
           onClose();
         }
       } catch (error) {
         toast.error(error.response?.data?.message);
+        setLoader(false);
       }
     }
   };
@@ -255,9 +262,10 @@ const AddEditRequestTracking = ({
             </button>
             <button
               type="submit"
+              disabled={loader}
               className="w-full font-semibold py-2 px-4 rounded-md bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white"
             >
-              {existingData ? "Update" : "Create"}
+              {!loader ? existingData ? "Update" : "Create" : <Loader />}
             </button>
           </div>
         </form>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import DatePicker from "react-datepicker";
+import Loader from "../Loader";
 
 const AddVisitorDetails = ({ isOpen, closeModal, setVisitorData }) => {
   const initialVisitorState = {
@@ -15,6 +16,7 @@ const AddVisitorDetails = ({ isOpen, closeModal, setVisitorData }) => {
 
   const [newVisitor, setNewVisitor] = useState(initialVisitorState);
   const [errors, setErrors] = useState({});
+  const [loader, setLoader] = useState(false);
   const isFormValid = Object.values(newVisitor).every(Boolean);
   const [date, setDate] = useState(null);
 
@@ -73,6 +75,7 @@ const AddVisitorDetails = ({ isOpen, closeModal, setVisitorData }) => {
     }
 
     try {
+      setLoader(true);
       const response = await axios.post(
         `${process.env.REACT_APP_BASE_URL}/v1/api/visitors`,
         newVisitor
@@ -81,12 +84,14 @@ const AddVisitorDetails = ({ isOpen, closeModal, setVisitorData }) => {
       if (response.status === 200) {
         closeModal();
         setVisitorData((prev) => [...prev, response.data.data]);
+        setLoader(false);
         toast.success("Visitor added successfully");
       } else {
         toast.error("Failed to add visitor");
       }
     } catch (error) {
       toast.error("Error: " + error.message);
+      setLoader(false);
     }
   };
   return (
@@ -180,7 +185,9 @@ const AddVisitorDetails = ({ isOpen, closeModal, setVisitorData }) => {
           </div>
           <div className="mb-4 flex space-x-4">
             <div className="w-1/2">
-            <label className="text-sm font-medium">Date<span className="text-red-500">*</span></label>
+              <label className="text-sm font-medium">
+                Date<span className="text-red-500">*</span>
+              </label>
               <DatePicker
                 selected={date}
                 dateFormat="dd-MM-yyyy"
@@ -195,7 +202,9 @@ const AddVisitorDetails = ({ isOpen, closeModal, setVisitorData }) => {
                 }}
                 className="w-full p-2 border rounded-md outline-none"
               />
-              {errors.date && <p className="text-red-500 text-sm">{errors.date}</p>}
+              {errors.date && (
+                <p className="text-red-500 text-sm">{errors.date}</p>
+              )}
             </div>
             <div className="w-1/2">
               <label className="block text-gray-700">
@@ -228,6 +237,7 @@ const AddVisitorDetails = ({ isOpen, closeModal, setVisitorData }) => {
             </button>
             <button
               type="submit"
+              disabled={loader}
               className={`w-1/2 ${
                 isFormValid
                   ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white"
@@ -235,6 +245,7 @@ const AddVisitorDetails = ({ isOpen, closeModal, setVisitorData }) => {
               } rounded-lg py-2`}
             >
               Save
+              {!loader ? "Save" : <Loader />}
             </button>
           </div>
         </form>

@@ -2,9 +2,11 @@ import axios from "axios";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
+import Loader from "../Loader";
 
 const ConfirmPassword = ({ onClose, setIsAddMaintenance }) => {
   const [password, setPassword] = useState("");
+  const [loader, setLoader] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const user = useSelector((store) => store.auth.user);
 
@@ -13,17 +15,20 @@ const ConfirmPassword = ({ onClose, setIsAddMaintenance }) => {
   };
   const onContinue = async () => {
     try {
+      setLoader(true);
       const response = await axios.post(
         `${process.env.REACT_APP_BASE_URL}/v1/api/auth/verify-password`,
         { email: user.email, password }
       );
       if (response.data.success) {
+        setLoader(false);
         toast.success("Verify successful!");
         onClose();
         setIsAddMaintenance(true);
       }
     } catch (error) {
       toast.error("Incorrect password");
+      setLoader(false);
     }
   };
 
@@ -67,10 +72,11 @@ const ConfirmPassword = ({ onClose, setIsAddMaintenance }) => {
             Cancel
           </button>
           <button
+            disabled={loader}
             className="w-1/2 bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white rounded-lg py-2 ml-2"
             onClick={onContinue}
           >
-            Continue
+            {!loader ? "Continue" : <Loader />}
           </button>
         </div>
       </div>

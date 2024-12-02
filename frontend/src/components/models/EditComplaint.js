@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
+import Loader from "../Loader";
 
 const EditComplaint = ({ closePopup, selectedComplain, setComplainList }) => {
   const [complainerName, setComplainerName] = useState(
@@ -14,9 +15,12 @@ const EditComplaint = ({ closePopup, selectedComplain, setComplainList }) => {
   const [unit, setUnit] = useState(selectedComplain.unit);
   const [priority, setPriority] = useState(selectedComplain.priority);
   const [status, setStatus] = useState(selectedComplain.status);
+  const [loader, setLoader] = useState(false);
+
 
   const handleSave = async () => {
     try {
+      setLoader(true);
       const response = await axios.put(
         `${process.env.REACT_APP_BASE_URL}/v1/api/complaints/${selectedComplain._id}`,
         {
@@ -39,10 +43,12 @@ const EditComplaint = ({ closePopup, selectedComplain, setComplainList }) => {
             : complaint
         )
       );
+      setLoader(false);
       toast.success("complaints Update successful!");
       closePopup();
     } catch (error) {
       toast.error(error.response?.data?.message);
+      setLoader(false);
     }
   };
 
@@ -201,10 +207,11 @@ const EditComplaint = ({ closePopup, selectedComplain, setComplainList }) => {
           </button>
           <button
             type="button"
+            disabled={loader}
             onClick={handleSave}
             className={`w-full font-semibold py-2 px-4 rounded-md bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white `}
           >
-            Save
+            {!loader ? "Save" : <Loader />}
           </button>
         </div>
       </div>

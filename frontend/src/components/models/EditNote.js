@@ -2,10 +2,12 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import toast from "react-hot-toast";
+import Loader from "../Loader";
 
 const EditNote = ({ note, onClose, setNotes }) => {
   const [formData, setFormData] = useState(note);
   const [errors, setErrors] = useState({});
+  const [loader, setLoader] = useState(false);
 
   useEffect(() => {
     setFormData(note);
@@ -28,6 +30,7 @@ const EditNote = ({ note, onClose, setNotes }) => {
     const { title, description, date } = formData;
     if (title && description && date) {
       try {
+        setLoader(true);
         const response = await axios.put(
           `${process.env.REACT_APP_BASE_URL}/v1/api/notes/${note._id}`,
           { title, description, date }
@@ -36,9 +39,11 @@ const EditNote = ({ note, onClose, setNotes }) => {
           prev.map((n) => (n._id === note._id ? response.data : n))
         );
         onClose();
+        setLoader(false);
         toast.success("Notes Update successful!");
       } catch (error) {
         toast.error(error.response?.data?.message);
+        setLoader(false);
       }
     } else {
       ["title", "description", "date"].forEach((field) =>
@@ -95,13 +100,14 @@ const EditNote = ({ note, onClose, setNotes }) => {
             </button>
             <button
               type="submit"
+              disabled={loader}
               className={`py-2 px-4 rounded-lg w-full ${
                 formData.title && formData.description && formData.date
                   ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white"
                   : "bg-gray-300 text-gray-500"
               }`}
             >
-              Save
+              {!loader ? "Save" : <Loader />}
             </button>
           </div>
         </form>

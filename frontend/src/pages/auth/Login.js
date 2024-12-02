@@ -4,9 +4,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { addToken } from "../../store/authSlice";
 import toast from "react-hot-toast";
+import Loader from "../../components/Loader";
 
 const Login = () => {
   const [emailOrPhone, setEmailOrPhone] = useState("");
+  const [loader, setLoader] = useState(false);
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
@@ -37,6 +39,7 @@ const Login = () => {
     e.preventDefault();
     if (validate()) {
       try {
+        setLoader(true);
         const response = await axios.post(
           `${process.env.REACT_APP_BASE_URL}/v1/api/auth/login`,
           { email: emailOrPhone, password },
@@ -45,6 +48,7 @@ const Login = () => {
         dispatch(addToken(response.data.token));
         const parts = response.data.token.split(".");
         const user = JSON.parse(atob(parts[1])).user;
+        setLoader(false);
         toast.success("Login successful!");
         navigate(
           user?.user_role === "admin"
@@ -55,6 +59,7 @@ const Login = () => {
         );
       } catch (error) {
         toast.error(error.response?.data?.message);
+        setLoader(false);
       }
     }
   };
@@ -162,9 +167,10 @@ const Login = () => {
               ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white"
               : "bg-[#F6F8FB] text-[#A7A7A7]"
           }`}
-          disabled={!isFormValid}
+          disabled={!isFormValid || loader} 
         >
-          Sign In
+        
+          {!loader ? " Sign In": <Loader />}
         </button>
 
         <p className="mt-4 text-center text-gray-600">

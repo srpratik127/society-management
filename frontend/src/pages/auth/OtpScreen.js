@@ -2,10 +2,12 @@ import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useLocation, useNavigate } from "react-router-dom";
+import Loader from "../../components/Loader";
 
 const OtpScreen = () => {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [timer, setTimer] = useState(180);
+  const [loader, setLoader] = useState(false);
   const [isResendDisabled, setIsResendDisabled] = useState(false);
   const location = useLocation();
   const email = location.state?.emailOrPhone;
@@ -36,6 +38,7 @@ const OtpScreen = () => {
 
   const handleResendOtp = async () => {
     try {
+      setLoader(true);
       const response = await axios.post(
         `${process.env.REACT_APP_BASE_URL}/v1/api/forget-password/otpmail`,
         {
@@ -43,10 +46,12 @@ const OtpScreen = () => {
         }
       );
       if (response.data) {
+        setLoader(false);
         toast.success("Mail sended successful!");
       }
     } catch (error) {
       toast.error(error.response?.data?.message);
+      setLoader(false);
     }
   };
 
@@ -57,6 +62,7 @@ const OtpScreen = () => {
       return;
     }
     try {
+      setLoader(true);
       const response = await axios.post(
         `${process.env.REACT_APP_BASE_URL}/v1/api/forget-password/verify`,
         { otp: otpValue, email: email }
@@ -64,12 +70,14 @@ const OtpScreen = () => {
 
       if (response.status === 200) {
         navigate("/reset", { state: { email } });
+        setLoader(false);
         toast.success("Verify Otp successful!");
         setErrorMessage("");
         setOtp(["", "", "", "", "", ""]);
       }
     } catch (error) {
       toast.error(error.response?.data?.message);
+      setLoader(false);
     }
   };
 
@@ -114,7 +122,7 @@ const OtpScreen = () => {
         </button>
       </div>
       <button
-        disabled={!isOtpValid}
+        disabled={!isOtpValid || loader}
         onClick={handleVerifyOtp}
         className={`w-full font-semibold py-2 mt-4 px-4 rounded-md ${
           isOtpValid
@@ -122,7 +130,7 @@ const OtpScreen = () => {
             : "bg-[#F6F8FB] text-[#A7A7A7]"
         }`}
       >
-        Verify
+        {!loader ? "Verify" : <Loader />}
       </button>
     </div>
   );
