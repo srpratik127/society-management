@@ -13,13 +13,11 @@ input[type="checkbox"] {
   cursor: pointer;
   background-color: transparent;
 }
-
 input[type="checkbox"]:checked {
-  background: linear-gradient(#fe512e, #f09619);
+  background: linear-gradient(90deg,#fe512e, #f09619);
   border: none;
   position: relative;
 }
-
 input[type="checkbox"]:checked::after {
   content: "✔";
   position: absolute;
@@ -29,21 +27,17 @@ input[type="checkbox"]:checked::after {
   left: 4px;
   top: -2px;
 }
-
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;
 }
-
 ::-webkit-scrollbar-track {
   background: #f4f4f4;
 }
-
 ::-webkit-scrollbar-thumb {
   background-color: #202224;
   border-radius: 10px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
   background: #202224;
 }
@@ -106,11 +100,9 @@ input[type="checkbox"]:checked::after {
   font-size: 17px !important;
   width: 5rem !important;
 }
-
 /* ==================================
             media query
 ===================================== */
-
 @media screen and (max-width: 1280px) {
   .main {
     width: calc(100vw);

@@ -82,7 +82,7 @@ const ComplainTable = () => {
               </th>
               <th className="py-3 text-light px-8">Date</th>
               <th className="py-3 text-light text-center px-5">Priority</th>
-              <th className="py-3 text-light text-center px-4">
+              <th className="py-3 text-light text-center px-4 text-nowrap">
                 Complain Status
               </th>
               <th className="py-3 text-light px-14 text-center">Action</th>
@@ -146,7 +146,7 @@ const ComplainTable = () => {
                       onClick={() => ViewComplains(complaint)}
                     >
                       <img
-                        src="/assets/showicon.svg"
+                        src="/assets/show.svg"
                         alt="Show Icon"
                         className="h-7 w-7 cursor-pointer"
                       />

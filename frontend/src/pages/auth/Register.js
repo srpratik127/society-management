@@ -126,7 +126,7 @@ const Register = () => {
         {data.label}
       </div>
     ) : (
-      <div ref={innerRef} {...innerProps} className="cursor-pointer px-4 py-2">
+      <div ref={innerRef} {...innerProps} className="cursor-pointer px-4 py-2 hover:bg-slate-100 my-1">
         {data.label}
       </div>
     );
@@ -425,7 +425,7 @@ const Register = () => {
             />
             <label htmlFor="agree" className="ml-2 text-sm text-gray-600">
               I agree to all the Terms and{" "}
-              <span className="text-red-500">
+              <span className="text-red-500 cursor-pointer">
                 Privacy Policies
               </span>
             </label>
