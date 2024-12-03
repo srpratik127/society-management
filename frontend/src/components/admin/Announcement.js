@@ -45,14 +45,14 @@ const Announcement = () => {
 
   return (
     <div className="p-6 m-6 rounded-xl bg-[#FFFFFF]">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-semibold text-gray-800">Announcement</h2>
-        <button
-          className="bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white py-2 px-4 rounded-lg"
-          onClick={() => setIsAddEditAnnouncement(true)}
-        >
-          Create Announcement
-        </button>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center mb-6 max-w-full">
+        <h2 className="text-xl md:text-2xl font-semibold text-gray-800">Announcement</h2>
+        <div className="flex justify-end md:justify-end">
+          <button className="bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white py-2 px-4 rounded-lg w-full md:w-auto"
+            onClick={() => setIsAddEditAnnouncement(true)} >
+            Create Announcement
+          </button>
+        </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {announcements.length > 0 ? (
