@@ -12,10 +12,20 @@ const http = require("http");
 
 dotenv.config();
 
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://society-management-ebon.vercel.app",
+];
+
 app.use(
   cors({
-    origin: "http://localhost:3000",
-    // origin: "https://society-management-ebon.vercel.app",
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );
