@@ -87,12 +87,12 @@ const Login = async (req, res) => {
 
     res.cookie("authToken", token, {
       httpOnly: true,
-      secure: true,
-      sameSite: "None",
-      maxAge: 30 * 24 * 60 * 60 * 1000,
+      secure: process.env.NODE_ENV === "production", // Enable only in production
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax", // Adjust for development
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
     });
 
-    res.status(200).json({ message: "Login successful", token });
+    res.status(200).json({ message: "Login successful", token,cookieSet: true, });
   } catch (error) {
     console.error("Error during login:", error.message);
     res.status(500).json({ message: "Server error" });

@@ -113,7 +113,7 @@ const ServiceAndComplaint = () => {
         <div className="bg-white p-4 rounded-lg">
           <div className="flex justify-between items-center mb-3">
             <div>
-              <h2 className="text-xl font-semibold mb-4">Complaint</h2>
+              <h2 className="text-xl font-semibold">Complaint</h2>
             </div>
             <div className="bg-gradient-to-r from-[#FE512E] to-[#F09619] rounded-lg px-3 py-2 text-white font-semibold">
               <button onClick={() => setAddComplaintOpen(true)}>

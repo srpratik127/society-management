@@ -64,7 +64,7 @@ const Poll = () => {
 
       <div className="p-4 m-6 mt-0 bg-white rounded-lg">
         <div className="flex justify-between items-center mb-3">
-          <h2 className="text-xl font-semibold mb-4">Polls</h2>
+          <h2 className="text-xl font-semibold">Polls</h2>
           <button
             className="bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white px-4 py-2 rounded-md shadow hover:bg-orange-600"
             onClick={() => setIsCreatePollOpen(true)}
@@ -101,10 +101,10 @@ const Poll = () => {
                   </div>
                 </div>
                 <p className="font-medium">{poll.question}</p>
-                <div className="flex relative gap-4">
-                  <img src="/assets/Radio.svg" alt="" />
-                  <div className="absolute left-3 top-0">
+                <div className="flex gap-4">
+                  <div className="flex">
                     <img src="/assets/Radio.svg" alt="" />
+                    <img src="/assets/Radio.svg" className="ml-[-7px]" alt="" />
                   </div>
                   <p className="text-orange-500 font-semibold text-sm">
                     Select one or more

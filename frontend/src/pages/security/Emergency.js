@@ -51,9 +51,9 @@ const Emergency = () => {
   const isSubmitDisabled = !alertType || !description;
 
   return (
-    <div className="flex justify-center items-center h-full bg-gray-100 ">
-      <div className="bg-white p-6 sm:p-8 rounded-lg shadow max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl w-full mx-4">
-        <h1 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-center">
+    <div className="flex justify-center items-center h-full bg-[#F0F5FB]">
+      <div className="bg-white p-6 sm:p-8 rounded-lg shadow max-w-md sm:max-w-lg md:max-w-xl lg:max-w-xl w-full mx-4">
+        <h1 className="text-xl sm:text-3xl font-semibold mb-4 sm:mb-6">
           Alert
         </h1>
         <form onSubmit={handleSubmit}>
@@ -95,7 +95,7 @@ const Emergency = () => {
           <div className="flex justify-end">
             <button
               type="submit"
-              className={`w-full py-2 rounded-lg text-sm sm:text-base ${
+              className={`w-full py-2 rounded-lg text-sm sm:text-base font-semibold ${
                 isSubmitDisabled
                   ? "bg-gray-100 text-black cursor-not-allowed"
                   : "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white"

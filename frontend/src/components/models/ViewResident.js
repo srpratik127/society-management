@@ -4,8 +4,8 @@ const ViewResident = ({ onClose, selectResidents }) => {
   return (
     <div className="fixed inset-0 flex items-end justify-end z-50">
       <div className="fixed inset-0 bg-black opacity-50"></div>
-      <div className="bg-[#F0F5FB] px-6 py-4 rounded-lg shadow-lg z-10 w-full max-w-lg overflow-y-auto h-full">
-        <div className="flex items-center mb-4 gap-6">
+      <div className="bg-[#F0F5FB] px-6 pb-4 rounded-lg shadow-lg z-10 w-full max-w-lg overflow-y-auto h-full">
+        <div className="flex items-center mb-4 py-4 gap-6 sticky top-0 bg-[#F0F5FB]">
           <button
             onClick={onClose}
             className="text-gray-500 text-2xl border rounded-full h-10 w-10"

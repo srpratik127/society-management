@@ -102,8 +102,8 @@ const MaintenanceData = ({ isViewInvoice }) => {
           </div>
         </div>
         <div className="bg-[#ffff] p-4 m-6 rounded-lg">
-          <div className="flex justify-between">
-            <h2 className="text-lg font-semibold mb-4">Pending Maintenance</h2>
+          <div className="flex justify-between items-center mb-2">
+            <h2 className="text-lg font-semibold">Pending Maintenance</h2>
             {isViewInvoice && (
               <Link
                 to="/resident/view-invoice"

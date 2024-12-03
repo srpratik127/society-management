@@ -93,7 +93,7 @@ const updateRequest = async (req, res) => {
     }
 
     if (updatedRequest.userType === "Admin") {
-      updatedRequest.user = await User.findById(updatedRequest.user).select(
+      updatedRequest.user = await Admin.findById(updatedRequest.user).select(
         "name profile_picture"
       );
     } else if (updatedRequest.userType === "Resident") {
