@@ -69,8 +69,8 @@ const VisitorLogs = ({ isAddable }) => {
           </thead>
           <tbody>
             {visitorData.length > 0 ? (
-              visitorData.map((securityManagement, index) => (
-                <tr key={index} className="border-b">
+              visitorData.map((securityManagement) => (
+                <tr key={securityManagement._id} className="border-b">
                   <td className="py-3 px-6 flex items-center text-center text-nowrap min-w-[200px]">
                     <img
                       src="/assets/empty.png"
