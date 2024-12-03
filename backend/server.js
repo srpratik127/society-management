@@ -14,8 +14,8 @@ dotenv.config();
 
 app.use(
   cors({
-    // origin: "http://localhost:3000",
-    origin: "https://society-management-ebon.vercel.app",
+    origin: "http://localhost:3000",
+    // origin: "https://society-management-ebon.vercel.app",
     credentials: true,
   })
 );
@@ -81,11 +81,11 @@ app.use("/v1/api/chat", chatRoutes);
 app.use("/v1/api/alert", emergencyAlertRoutes);
 
 io.on("connection", (socket) => {
-  console.log("New user connected");
   socket.on("join", ({ userId, receiverId }) => {
     socket.userId = userId;
     socket.receiverId = receiverId;
   });
+
   socket.on("message", ({ senderId, receiverId, message, mediaUrl }) => {
     try {
       const newMessage = { senderId, receiverId, message, mediaUrl };
@@ -179,6 +179,7 @@ io.on("connection", (socket) => {
       (s) => s.userId === receiverId
     );
     if (receiverSocket) {
+      receiverSocket.emit("call-accepted", { senderId: socket.userId });
       receiverSocket.emit("answer", { answer, senderId: socket.userId });
     }
   });

@@ -104,7 +104,8 @@ const AddSecurity = ({ isOpen, onClose, setGuards }) => {
             <input
               name={field}
               type={field === "email" ? "email" : "text"}
-              className={inputStyle(errors[field])}
+              maxLength={field === "phoneNumber" && "10"}
+              className={`${inputStyle(errors[field])} outline-none`}
               placeholder={`Enter ${field}`}
               value={formData[field]}
               onChange={handleChange}
@@ -119,7 +120,7 @@ const AddSecurity = ({ isOpen, onClose, setGuards }) => {
               <label className="block text-gray-700">{`${field.charAt(0).toUpperCase() + field.slice(1)}*`}</label>
               <select
                 name={field}
-                className={inputStyle(errors[field])}
+                className={`${inputStyle(errors[field])} outline-none`}
                 value={formData[field]}
                 onChange={handleChange}
               >
@@ -201,7 +202,7 @@ const AddSecurity = ({ isOpen, onClose, setGuards }) => {
           <button
             className={`px-4 py-2 w-full rounded-lg ${isFormValid
                 ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white"
-                : "bg-gray-300 text-gray-500"
+                : "bg-gray-100 text-gray-500"
               }`}
             onClick={handleSubmit}
             disabled={loader}
