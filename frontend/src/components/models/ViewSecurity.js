@@ -34,9 +34,9 @@ const ViewSecurity = ({ guard, onClose }) => {
             </span>
             <span className="inline-block py-1 text-sm font-medium rounded-full">
               {guard.shift === "Day" ? (
-                <img src="/assets/clips.png" alt="Day Shift" />
+                <img src="/assets/day.png" alt="Day Shift" />
               ) : guard.shift === "Night" ? (
-                <img src="/assets/clips.1.png" alt="Night Shift" />
+                <img src="/assets/night.png" alt="Night Shift" />
               ) : (
                 <span>No shift information available</span>
               )}

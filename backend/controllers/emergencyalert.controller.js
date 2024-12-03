@@ -26,7 +26,7 @@ const createEmergencyAlert = async (req, res) => {
       ...admins.map((id) => ({ _id: id, model: 'Admin' }))
     ];
     const newNotification = new Notification({
-      title: 'Annual Security',
+      title: 'Security Alert',
       name:'Emergency Alert',
       message: `New Alert: ${alertType}. ${description}`,
       users: notificationUsers

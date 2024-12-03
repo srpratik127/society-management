@@ -107,11 +107,11 @@ const SecurityGuard = () => {
                   <td className="py-2 px-2 sm:px-6 text-nowrap text-center">
                     {guard.shift === "Day" ? (
                       <span className="inline-block px-2 py-1 text-xs sm:text-sm font-medium rounded-full">
-                        <img src="/assets/clips.png" alt="Day" />
+                        <img src="/assets/day.png" alt="Day" />
                       </span>
                     ) : (
                       <span className="inline-block px-2 py-1 text-xs sm:text-sm font-medium rounded-full">
-                        <img src="/assets/clips.1.png" alt="Night" />
+                        <img src="/assets/night.png" alt="Night" />
                       </span>
                     )}
                   </td>

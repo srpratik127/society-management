@@ -236,6 +236,7 @@ const vacateflat = async (req, res) => {
       });
     }
     owner.residenceStatus = "Vacate";
+    owner.email = "";
     await owner.save();
     const responseData = {
       wing: owner.wing,
