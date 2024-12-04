@@ -22,6 +22,7 @@ const ChatComponent = () => {
   const mediaRecorderRef = useRef(null);
   const [recordingSeconds, setRecordingSeconds] = useState(0);
   const timerRef = useRef(null);
+  const messagesEndRef = useRef(null);
 
   const [startVideoCall, setStartVideoCall] = useState(false);
 
@@ -29,7 +30,7 @@ const ChatComponent = () => {
     const fetchResidents = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_BASE_URL}/v1/api/resident`
+          `${process.env.REACT_APP_BASE_URL}/v1/api/resident/occupied`
         );
         setAllResident(response?.data?.data);
         setFilteredResidents(response?.data?.data);
@@ -39,6 +40,10 @@ const ChatComponent = () => {
     };
     fetchResidents();
   }, []);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   const handleSearch = (e) => {
     const searchTerm = e.target.value.toLowerCase();
@@ -197,7 +202,7 @@ const ChatComponent = () => {
 
   return (
     <>
-      <div className="block sm:flex bg-white sm:m-4 rounded-lg">
+      <div className="block sm:flex bg-white sm:m-6 rounded-lg">
         <div
           className={`w-[100%] sm:w-[380px] sm:min-h-auto min-h-[86vh] sm:block ${
             receiver ? "hidden" : "block"
@@ -338,6 +343,7 @@ const ChatComponent = () => {
                     </p>
                   </div>
                 ))}
+                <div ref={messagesEndRef} />
               </div>
 
               <div className="sticky bottom-0 bg-white">
@@ -347,13 +353,18 @@ const ChatComponent = () => {
                 >
                   <div className={`items-center relative w-full flex`}>
                     {media && (
-                      <div className="w-14 mb-3 h-14 rounded-lg top-[-68px] ms-4 absolute overflow-hidden border">
-                        <img
-                          src={URL.createObjectURL(media)}
-                          alt="IMG"
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
+                      <>
+                        <div className="w-14 mb-3 h-14 rounded-lg top-[-68px] ms-4 absolute overflow-hidden border">
+                          <img
+                            src={URL.createObjectURL(media)}
+                            alt="IMG"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div onClick={()=> setMedia(null)} className="cursor-pointer">
+                          <img src="/assets/cross.svg" className="top-[-68px] ms-4 absolute bg-white p-1 rounded-full w-4 curser-pointer" alt="close" />
+                        </div>
+                      </>
                     )}
                     {loader && (
                       <div className="bg-[#5555557c] p-2 rounded-lg absolute top-[-60px] left-[25px] z-30">
