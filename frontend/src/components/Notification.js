@@ -91,7 +91,7 @@ const Notification = () => {
           </span>
         </Popover.Button>
 
-        <Popover.Panel className="absolute right-0 mt-2 w-[484px] bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 z-50">
+        <Popover.Panel className="absolute right-0 mt-2 w-[200px] sm:w-[484px] bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 z-50">
           {({ close }) => (
             <>
               <div className="px-4 py-2 border-b border-gray-200 flex justify-between items-center">

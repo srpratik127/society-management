@@ -88,7 +88,7 @@ const ServiceAndComplaint = () => {
     <div className="m-6">
       <div className="flex">
         <button
-          className={`py-3 px-4 font-semibold rounded-tl-lg rounded-tr-lg border-b focus:outline-none ${
+          className={`py-3 px-4 font-semibold rounded-tl-lg rounded-tr-lg border-b-2 border-orange-500 focus:outline-none ${
             activeTab === "complaints"
               ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white"
               : "bg-white text-black"
@@ -98,7 +98,7 @@ const ServiceAndComplaint = () => {
           Complaint Submission
         </button>
         <button
-          className={`py-3 px-4 font-semibold rounded-tl-lg rounded-tr-lg border-b focus:outline-none ${
+          className={`py-3 px-4 font-semibold rounded-tl-lg rounded-tr-lg focus:outline-none border-b-2 border-orange-500 ${
             activeTab === "requests"
               ? "bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white"
               : "bg-white text-black"

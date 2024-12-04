@@ -53,20 +53,24 @@ const Poll = () => {
   return (
     <>
       <div className="flex justify-between items-center border-gray-200 m-6 mb-0">
-        <div className="flex space-x-6">
-          <button className="p-2 px-4 border-b-4 border-orange-500 text-white bg-gradient-to-r from-[#FE512E] to-[#F09619] rounded-t-md font-semibold">
+        <div className="flex">
+          <button className="p-2 px-4 border-b-2 border-orange-500 text-white bg-gradient-to-r from-[#FE512E] to-[#F09619] rounded-t-md font-semibold">
             Own Poll
           </button>
-          <button className="pb-2 text-gray-600">New Poll</button>
-          <button className="pb-2 text-gray-600">Previous Poll</button>
+          <button className="p-2 px-4 border-b-2 border-orange-500 bg-white rounded-t-md">
+            New Poll
+          </button>
+          <button className="p-2 px-4 border-b-2 border-orange-500 bg-white rounded-t-md">
+            Previous Poll
+          </button>
         </div>
-      </div>
+      </div>  
 
       <div className="p-4 m-6 mt-0 bg-white rounded-lg">
         <div className="flex justify-between items-center mb-3">
           <h2 className="text-xl font-semibold mb-4">Polls</h2>
           <button
-            className="bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white px-4 py-2 rounded-md shadow hover:bg-orange-600"
+            className="bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white  px-4 py-2 rounded-md shadow hover:bg-orange-600"
             onClick={() => setIsCreatePollOpen(true)}
           >
             Create Polls
@@ -138,15 +142,13 @@ const Poll = () => {
                       <div className="w-full bg-gray-200 h-2 rounded-full">
                         {poll.totalVotes > 0 ? (
                           <div
-                            className={`h-2 rounded-full ${
-                              poll.options[0] === option
+                            className={`h-2 rounded-full ${poll.options[0] === option
                                 ? "bg-green-500"
                                 : "bg-red-500"
-                            }`}
+                              }`}
                             style={{
-                              width: `${
-                                (option.votes / poll.totalVotes) * 100
-                              }%`,
+                              width: `${(option.votes / poll.totalVotes) * 100
+                                }%`,
                             }}
                           ></div>
                         ) : (

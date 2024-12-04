@@ -61,7 +61,7 @@ const Income = () => {
         )}
         <div className="flex flex-wrap">
           <button
-            className={`py-3 px-4 font-semibold rounded-tl-lg rounded-tr-lg ${
+            className={`py-3 px-4 font-semibold rounded-tl-lg rounded-tr-lg  border-b-2 border-orange-500 ${
               view === "maintenance" ? "text-white" : "text-black"
             }`}
             style={{
@@ -75,7 +75,7 @@ const Income = () => {
             Maintenance
           </button>
           <button
-            className={`py-3 px-4 font-semibold rounded-tl-lg rounded-tr-lg ${
+            className={`py-3 px-4 font-semibold rounded-tl-lg rounded-tr-lg border-b-2 border-orange-500 ${
               view === "other" ? "text-white" : "text-black"
             }`}
             style={{

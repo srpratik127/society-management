@@ -45,17 +45,17 @@ const Announcement = () => {
 
   return (
     <div className="p-6 m-6 rounded-xl bg-[#FFFFFF]">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center mb-6 max-w-full">
-        <h2 className="text-xl md:text-2xl font-semibold text-gray-800">Announcement</h2>
-        <div className="flex justify-end md:justify-end">
-          <button className="bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white py-2 px-4 rounded-lg w-full md:w-auto"
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center mb-6 max-w-full justify-center">
+        <h2 className=" flex justify-center md:justify-start sm:justify-center text-xl md:text-2xl font-semibold text-gray-800">Announcement</h2>
+        <div className="flex justify-center md:justify-end sm:justify-center">
+          <button className="bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white py-2 px-4 rounded-lg flex md:items-center md:w-auto"
             onClick={() => setIsAddEditAnnouncement(true)} >
             Create Announcement
           </button>
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {announcements.length > 0 ? (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 justify-center lg:justify-start">
+      {announcements.length > 0 ? (
           announcements.map((announcement) => (
             <AnnouncementsCard
               announcement={announcement}
