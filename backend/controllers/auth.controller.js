@@ -6,7 +6,6 @@ const cloudinary = require("../utils/cloudinary");
 const fs = require("fs");
 const Society = require("../models/society.model");
 const Guard = require("../models/guard.model");
-const cookie = require("cookie")
 
 const Register = async (req, res) => {
   try {

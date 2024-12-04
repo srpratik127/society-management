@@ -3,22 +3,24 @@ import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import toast from "react-hot-toast";
 import Loader from "../Loader";
+import { Popover } from "@headlessui/react";
 
 const AddEditAnnouncement = ({
   onClose,
   setAnnouncements,
   editAnnouncement,
 }) => {
-  
   const [loader, setLoader] = useState(false);
 
   const [formData, setFormData] = useState({
+    type: "",
     title: "",
     description: "",
     date: "",
     time: "",
   });
   const [errors, setErrors] = useState({
+    type: false,
     title: false,
     description: false,
     date: false,
@@ -28,6 +30,7 @@ const AddEditAnnouncement = ({
   useEffect(() => {
     if (editAnnouncement) {
       setFormData({
+        type: editAnnouncement?.type,
         title: editAnnouncement?.title,
         description: editAnnouncement?.description,
         date: new Date(editAnnouncement?.date),
@@ -35,21 +38,20 @@ const AddEditAnnouncement = ({
       });
     }
   }, [editAnnouncement]);
-  
+
   const convertTo24HourFormat = (time12h) => {
     const [time, modifier] = time12h.split(" ");
     let [hours, minutes] = time.split(":");
-  
-    hours = hours.toString();  
-  
+
+    hours = hours.toString();
+
     if (modifier === "PM" && hours !== "12") hours = parseInt(hours) + 12;
     if (modifier === "AM" && hours === "12") hours = "00";
-  
+
     hours = hours.toString().padStart(2, "0");
-  
+
     return `${hours}:${minutes}`;
   };
-  
 
   const formatTime = (time) => {
     if (!time) return "";
@@ -85,6 +87,7 @@ const AddEditAnnouncement = ({
   const handleSubmit = async (e) => {
     e.preventDefault();
     const newErrors = {
+      type: !formData.type,
       title: !formData.title,
       description: !formData.description,
       date: !formData.date,
@@ -92,16 +95,16 @@ const AddEditAnnouncement = ({
     };
     setErrors(newErrors);
     const hasErrors = Object.values(newErrors).some((error) => error);
-    
+
     if (hasErrors) return;
-    
+
     try {
       if (editAnnouncement) {
-        // If editing, update the announcement
         setLoader(true);
         const response = await axios.put(
           `${process.env.REACT_APP_BASE_URL}/v1/api/announcement/${editAnnouncement._id}`,
           {
+            type: formData.type,
             title: formData.title,
             description: formData.description,
             date: formData.date,
@@ -122,6 +125,7 @@ const AddEditAnnouncement = ({
         const response = await axios.post(
           `${process.env.REACT_APP_BASE_URL}/v1/api/announcement`,
           {
+            type: formData.type,
             title: formData.title,
             description: formData.description,
             date: formData.date,
@@ -142,10 +146,64 @@ const AddEditAnnouncement = ({
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-[410px] h-auto">
-        <h2 className="text-xl font-semibold mb-4">{editAnnouncement ? "Edit" : "Add"} Announcement</h2>
+        <h2 className="text-xl font-semibold mb-4">
+          {editAnnouncement ? "Edit" : "Add"} Announcement
+        </h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block">Announcement Title<span className="text-red-500">*</span></label>
+            <label className="block">
+              Announcement Type<span className="text-red-500">*</span>
+            </label>
+            <Popover className="relative">
+              <Popover.Button
+                className={`outline-none p-2 border w-full text-start flex justify-between rounded ${
+                  errors.type ? "border-red-500" : "border-gray-200"
+                } ${formData.type ? "text-black" : "text-gray-400"}`}
+              >
+                {formData.type || "Select Announcement Type"}
+              </Popover.Button>
+              <Popover.Panel className="mt-2 w-full bg-white rounded-lg shadow ring-1 ring-black ring-opacity-5 z-50">
+                {({ close }) => (
+                  <div className="py-2">
+                    {["Event", "Activity"].map((state) => (
+                      <button
+                        key={state}
+                        type="button"
+                        onClick={() => {
+                          setFormData({ ...formData, type: state });
+                          setErrors({ ...errors, type: false });
+                          close()
+                        }}
+                        className={`px-4 py-1 flex gap-2 rounded-lg font-medium ${
+                          formData.type === state
+                            ? "border-[#FE512E]"
+                            : "border-gray-200 text-[#A7A7A7]"
+                        }`}
+                      >
+                        <img
+                          src={`${
+                            formData.type === state
+                              ? "/assets/fill-redio.svg"
+                              : "/assets/unfill-redio.svg"
+                          }`}
+                          alt=""
+                        />{" "}
+                        {state}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </Popover.Panel>
+            </Popover>
+            {errors.type && (
+              <p className="text-red-500 text-sm mt-1">Type is required</p>
+            )}
+          </div>
+
+          <div className="mb-4">
+            <label className="block">
+              Announcement Title<span className="text-red-500">*</span>
+            </label>
             <input
               type="text"
               placeholder="Enter Name"
@@ -161,7 +219,9 @@ const AddEditAnnouncement = ({
             )}
           </div>
           <div className="mb-4">
-            <label className="block">Description<span className="text-red-500">*</span></label>
+            <label className="block">
+              Description<span className="text-red-500">*</span>
+            </label>
             <textarea
               name="description"
               placeholder="Enter Description"

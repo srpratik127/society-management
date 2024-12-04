@@ -111,7 +111,7 @@ const Expenses = () => {
                         {item.bill.endsWith(".pdf") ? "PDF" : "PNG"}
                       </span>
                     </td>
-                    <td className="px-3 flex justify-center space-x-2">
+                    <td className="px-3 flex justify-center space-x-2 mt-2">
                       <img
                         src="/assets/edit.svg"
                         alt="Edit"

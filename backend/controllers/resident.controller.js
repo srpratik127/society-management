@@ -37,8 +37,10 @@ const createOwner = async (req, res) => {
       });
     }
 
-    const validVehicles = req.body.vehicles.filter(vehicle => 
-      vehicle.vehicleType === "Two Wheeler" || vehicle.vehicleType === "Four Wheeler"
+    const validVehicles = req.body.vehicles.filter(
+      (vehicle) =>
+        vehicle.vehicleType === "Two Wheeler" ||
+        vehicle.vehicleType === "Four Wheeler"
     );
 
     const tempPassword = generateTempPassword();
@@ -256,10 +258,26 @@ const vacateflat = async (req, res) => {
   }
 };
 
+const getOccupiedOwners = async (req, res) => {
+  try {
+    const occupiedOwners = await Resident.find({ residenceStatus: "Occupied" });
+    res.status(200).json({
+      success: true,
+      data: occupiedOwners,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   createOwner,
   getOwners,
   getOwnerById,
   updateOwner,
   vacateflat,
+  getOccupiedOwners,
 };
