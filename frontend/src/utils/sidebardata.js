@@ -125,7 +125,7 @@ export const sidebarResidentData = [
 <path d="M9.78906 12.9602C9.78906 13.3452 9.89906 13.4002 10.1374 13.4918L10.5224 13.6293V12.4102H10.2932C10.0091 12.4102 9.78906 12.6577 9.78906 12.9602Z"/>`,
     dropdown: [
       { id: 61, title: "Maintenance Invoices", link: "maintenance-invoices" },
-      { id: 62, title: "Other Income Invoice", link: "other-invoice" },
+      { id: 62, title: "Other Invoices", link: "other-invoice" },
     ],
   },
   {

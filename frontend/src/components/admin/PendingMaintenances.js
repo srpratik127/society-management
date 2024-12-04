@@ -24,16 +24,16 @@ const PendingMaintenances = () => {
 
   return (
     <>
-      <div className="flex justify-between items-center font-semibold bg-white pb-1">
+      <div className="flex justify-between items-center font-semibold bg-white pb-1 ">
         <h2 className="m-0 text-xl">Pending Maintenances</h2>
         <Link
           to={user?.user_role === "admin" ? "income" : ""}
           className="flex items-center space-x-2 px-3 rounded-md text-[#5678E9]"
         >
-          <span>View all</span>
+          <span className="text-nowrap">View all</span>
         </Link>
       </div>
-      <div className="max-h-[350px] overflow-y-auto bg-white rounded-lg mt-2">
+      <div className="max-h-[350px] overflow-y-auto bg-white rounded-lg mt-2 pr-4">
         {pendingMaintenance.length > 0 ? (
           pendingMaintenance.map((member) => (
             <div

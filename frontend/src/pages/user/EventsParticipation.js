@@ -24,21 +24,19 @@ const EventsParticipation = () => {
     <div>
       <div className="flex border-b m-6 mb-0">
         <button
-          className={`px-4 py-3 font-semibold rounded-t-md ${
-            activeTab === "events"
+          className={`px-4 py-3 font-semibold rounded-t-md border-b-2 border-orange-500 ${activeTab === "events"
               ? "text-white bg-gradient-to-r from-[#FE512E] to-[#F09619]"
               : "text-gray-600 bg-white"
-          }`}
+            }`}
           onClick={() => setActiveTab("events")}
         >
           Events Participate
         </button>
         <button
-          className={`px-4 py-2 font-semibold rounded-t-md ${
-            activeTab === "activity"
+          className={`px-4 py-2 font-semibold rounded-t-md border-b-2 border-orange-500 ${activeTab === "activity"
               ? "text-white bg-gradient-to-r from-[#FE512E] to-[#F09619]"
               : "text-gray-600 bg-white"
-          }`}
+            }`}
           onClick={() => setActiveTab("activity")}
         >
           Activity Participate
@@ -52,15 +50,15 @@ const EventsParticipation = () => {
           </h2>
           <div className="overflow-x-auto">
             <table className="min-w-full table-auto text-left border-collapse">
-              <thead>
-                <tr className="bg-blue-100 text-gray-600">
-                  <th className="px-4 py-2 text-nowrap">Participator Name</th>
-                  <th className="px-4 py-2">Description</th>
-                  <th className="px-4 py-2 text-center text-nowrap">
-                    Phone No.
+              <thead className="rounded-t-lg bg-blue-100 overflow-hidden">
+                <tr className="text-gray-600">
+                  <th className="px-4 py-2 text-nowrap font-semibold rounded-tl-lg">Participator Name</th>
+                  <th className="px-4 py-2 font-semibold">Description</th>
+                  <th className="px-4 py-2 text-center text-nowrap font-semibold">
+                    Event Time
                   </th>
-                  <th className="px-4 py-2 text-nowrap">Event Date</th>
-                  <th className="px-4 py-2 text-nowrap">Event Name</th>
+                  <th className="px-4 py-2 text-nowrap font-semibold">Event Date</th>
+                  <th className="px-4 py-2 text-nowrap font-semibold rounded-tr-lg">Event Name</th>
                 </tr>
               </thead>
               <tbody>
@@ -69,9 +67,8 @@ const EventsParticipation = () => {
                     participant.members.map((member, index) => (
                       <tr
                         key={index}
-                        className={`border-b ${
-                          index % 2 === 0 ? "bg-white" : "bg-gray-50"
-                        }`}
+                        className={`border-b ${index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                          }`}
                       >
                         <td className="px-4 py-2 flex items-center space-x-3">
                           <img
@@ -86,8 +83,8 @@ const EventsParticipation = () => {
                         <td className="px-4 py-2 text-gray-600 max-w-80 min-w-96">
                           {participant.description}
                         </td>
-                        <td className="px-4 py-2 text-center text-gray-600 text-nowrap">
-                          +91 {member.user.phone}
+                        <td className="px-4 py-2 text-center rounded-full bg-[#F6F8FB] text-nowrap">
+                          2:45 PM
                         </td>
                         <td className="px-4 py-2 text-gray-600">
                           {new Date(participant.date).toLocaleString("en-GB", {
@@ -127,13 +124,13 @@ const EventsParticipation = () => {
             <table className="min-w-full table-auto text-left border-collapse">
               <thead>
                 <tr className="bg-blue-100 text-gray-600">
-                  <th className="px-4 py-2 text-nowrap">Participator Name</th>
-                  <th className="px-4 py-2">Description</th>
-                  <th className="px-4 py-2 text-center text-nowrap">
-                    Phone No.
+                  <th className="px-4 py-2 text-nowrap font-semibold rounded-tl-lg">Participator Name</th>
+                  <th className="px-4 py-2 font-semibold">Description</th>
+                  <th className="px-4 py-2 text-center text-nowrap font-semibold">
+                  Event Time
                   </th>
-                  <th className="px-4 py-2 text-nowrap">Event Date</th>
-                  <th className="px-4 py-2 text-nowrap">Event Name</th>
+                  <th className="px-4 py-2 text-nowrap font-semibold">Event Date</th>
+                  <th className="px-4 py-2 text-nowrap font-semibold rounded-tr-lg">Event Name</th>
                 </tr>
               </thead>
               <tbody>
@@ -142,9 +139,8 @@ const EventsParticipation = () => {
                     participant.members.map((member, index) => (
                       <tr
                         key={index}
-                        className={`border-b ${
-                          index % 2 === 0 ? "bg-white" : "bg-gray-50"
-                        }`}
+                        className={`border-b ${index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                          }`}
                       >
                         <td className="px-4 py-2 flex items-center space-x-3">
                           <img
@@ -159,8 +155,8 @@ const EventsParticipation = () => {
                         <td className="px-4 py-2 text-gray-600 max-w-80 min-w-80">
                           {participant.description}
                         </td>
-                        <td className="px-4 py-2 text-center text-gray-600 text-nowrap">
-                          +91 {member.user.phone}
+                        <td className="px-4 py-2 text-center rounded-full bg-[#F6F8FB] text-nowrap">
+                          2:45 PM
                         </td>
                         <td className="px-4 py-2 text-gray-600">
                           {new Date(participant.date).toLocaleString("en-GB", {

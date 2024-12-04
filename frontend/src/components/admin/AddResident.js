@@ -11,7 +11,7 @@ function AddResident() {
     <>
       <div className="flex px-4 pt-4">
         <button
-          className={`py-2 px-4 font-semibold border-b-4 border-orange-500 rounded-tl-lg rounded-tr-lg ${
+          className={`py-2 px-4 font-semibold border-b-2 border-orange-500 rounded-tl-lg rounded-tr-lg ${
             view === "owner" ? "text-white" : "text-black"
           }`}
           style={{
@@ -25,7 +25,7 @@ function AddResident() {
           Owner
         </button>
         <button
-          className={`py-2 px-4 font-semibold border-b-4 border-orange-500 rounded-tl-lg rounded-tr-lg ${
+          className={`py-2 px-4 font-semibold border-b-2 border-orange-500 rounded-tl-lg rounded-tr-lg ${
             view === "tenant" ? "text-white" : "text-black"
           }`}
           style={{

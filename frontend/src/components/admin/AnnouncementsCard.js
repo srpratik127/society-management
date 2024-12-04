@@ -10,8 +10,7 @@ const AnnouncementsCard = ({
   isResident
 }) => {
   return (
-    <div key={announcement._id} className="bg-white shadow rounded-lg relative max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl "
-    >
+    <div key={announcement._id} className="bg-white shadow rounded-lg relative max-w-full sm:max-w-full md:max-w-full lg:max-w-2xl ">
       <div className="bg-[#5678E9] text-white p-2 py-3 rounded-t-lg flex justify-between items-center">
         <h3 className="text-lg font-semibold truncate max-w-[80%]">{announcement.title}</h3>
         {!isResident && (
