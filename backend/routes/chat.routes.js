@@ -24,8 +24,9 @@ const upload = multer({ storage });
 router.post("/message", upload.single("file"), handleMessage);
 router.get("/history/:senderId/:receiverId", getChatHistory);
 router.post("/creategroup", createGroup);
+
 router.get("/groups", getAllGroups);
-router.post("/ask-question", askQuestion); 
-router.post("/answer-question", answerQuestion); 
+router.post("/ask-question", askQuestion);
+router.post("/answer-question", answerQuestion);
 
 module.exports = router;

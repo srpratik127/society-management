@@ -55,10 +55,6 @@ exports.getChatHistory = async (req, res) => {
 exports.getAllGroups = async (req, res) => {
   try {
     const groups = await GroupChat.find({});
-
-    if (!groups || groups.length === 0) {
-      return res.status(404).json({ message: "No groups found." });
-    }
     res.status(200).json(groups);
   } catch (error) {
     console.error("Error retrieving groups:", error);
@@ -77,7 +73,7 @@ exports.createGroup = async (req, res) => {
     // const allMembers = [...residentsMembers];/
 
     const newGroupChat = new GroupChat({
-      groupName
+      groupName,
       // groupMembers: allMembers,
       // messages: [],
     });
@@ -105,7 +101,7 @@ exports.askQuestion = async (req, res) => {
     const newQuestion = {
       questionText,
       askedBy,
-      createdAt: new Date()
+      createdAt: new Date(),
     };
 
     groupChat.questions.push(newQuestion);
