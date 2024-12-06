@@ -134,6 +134,21 @@ io.on("connection", (socket) => {
     console.log(`Answer posted by user ${userId} to question ${questionId} in group ${groupId}`);
   });
 
+  socket.on('getGroupQuestions', async ({ groupId }) => {
+    try {
+      const groupChat = await GroupChat.findById(groupId);
+      if (!groupChat) {
+        socket.emit('error', { message: 'Group not found' });
+        return;
+      }
+      socket.emit('groupQuestions', { questions: groupChat.questions });
+      console.log(`Sent all questions for group ${groupId}`);
+    } catch (error) {
+      socket.emit('error', { message: 'Failed to retrieve questions and answers' });
+      console.error(`Error fetching questions for group ${groupId}: `, error);
+    }
+  });
+
   socket.on("offer", ({ offer, receiverId }) => {
     const receiverSocket = Array.from(io.sockets.sockets.values()).find(
       (s) => s.userId === receiverId
