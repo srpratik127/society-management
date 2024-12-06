@@ -15,15 +15,14 @@ const ChatComponent = () => {
   const [filteredResidents, setFilteredResidents] = useState([]);
   const [message, setMessage] = useState("");
   const [media, setMedia] = useState(null);
+  const fileInputRef = useRef(null);
   const [loader, setLoader] = useState(false);
-
   const [isRecording, setIsRecording] = useState(false);
   const [audioBlob, setAudioBlob] = useState(null);
   const mediaRecorderRef = useRef(null);
   const [recordingSeconds, setRecordingSeconds] = useState(0);
   const timerRef = useRef(null);
   const messagesEndRef = useRef(null);
-
   const [startVideoCall, setStartVideoCall] = useState(false);
 
   useEffect(() => {
@@ -200,6 +199,12 @@ const ChatComponent = () => {
     setStartVideoCall(true);
   };
 
+  // const handleFileReset = () => {
+  //   if (fileInputRef.current) {
+
+  //   }
+  // };
+
   return (
     <>
       <div className="block sm:flex bg-white sm:m-6 rounded-lg">
@@ -345,7 +350,7 @@ const ChatComponent = () => {
                 ))}
                 <div ref={messagesEndRef} />
               </div>
-
+              {/* form */}
               <div className="sticky bottom-0 bg-white">
                 <form
                   onSubmit={handleSendMessageOrMedia}
@@ -361,8 +366,15 @@ const ChatComponent = () => {
                             className="w-full h-full object-cover"
                           />
                         </div>
-                        <div onClick={()=> setMedia(null)} className="cursor-pointer">
-                          <img src="/assets/cross.svg" className="top-[-68px] ms-4 absolute bg-white p-1 rounded-full w-4 curser-pointer" alt="close" />
+                        <div
+                          onClick={() => setMedia(null)}
+                          className="cursor-pointer"
+                        >
+                          <img
+                            src="/assets/cross.svg"
+                            className="top-[-68px] ms-4 absolute bg-white p-1 rounded-full w-4 curser-pointer"
+                            alt="close"
+                          />
                         </div>
                       </>
                     )}
@@ -386,13 +398,23 @@ const ChatComponent = () => {
                       <label htmlFor="inputFile" className="cursor-pointer">
                         <img src="/assets/Paperclip.svg" alt="" />
                       </label>
-                      <input
+                      {/* <input
                         id="inputFile"
                         type="file"
                         disabled={loader}
                         accept=".png,.jpeg,.jpg,"
                         onChange={(e) => setMedia(e.target.files[0])}
                         className="hidden"
+                      /> */}
+                      <input
+                        ref={fileInputRef}
+                        id="inputFile"
+                        type="file"
+                        disabled={loader}
+                        accept=".png,.jpeg,.jpg"
+                        onChange={(e) => setMedia(e.target.files[0])}
+                        className="hidden"
+                        onClick={() => (fileInputRef.current.value = "")} // Reset input when clicking on it
                       />
                     </span>
                     <button

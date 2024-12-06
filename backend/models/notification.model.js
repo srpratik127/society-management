@@ -22,12 +22,13 @@ const notificationSchema = new mongoose.Schema(
         _id: { type: mongoose.Schema.Types.ObjectId },
         model: {
           type: String,
-          enum: ["Resident", "Admin"],
+          enum: ["Resident", "Admin", "Guard"],
         },
       },
     ],
     // extra
     amount: { type: String, default: "" },
+    otherContent: { type: String },
   },
   {
     timestamps: true,

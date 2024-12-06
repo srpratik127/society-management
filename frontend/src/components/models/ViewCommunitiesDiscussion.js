@@ -3,6 +3,8 @@ import axios from "axios";
 import Loader from "../Loader";
 
 const ViewMaintenanceInvoice = ({ invoice, onClose }) => {
+  console.log(invoice);
+  
   const [loader, setLoader] = useState(false);
   if (!invoice) return null;
   
@@ -51,9 +53,9 @@ const ViewMaintenanceInvoice = ({ invoice, onClose }) => {
           </div>
           <div className="grid grid-cols-2 gap-x-6 mb-4">
             <div>
-              <p className="text-sm font-medium text-[#A7A7A7]">Bill Date</p>
+              <p className="text-sm font-medium text-[#A7A7A7]">Due Date</p>
               <p className="text-sm">
-                {new Date(invoice.penaltyDay).toLocaleString("en-GB", {
+                {new Date(invoice.dueDate).toLocaleString("en-GB", {
                   day: "2-digit",
                   month: "2-digit",
                   year: "numeric",
@@ -63,7 +65,7 @@ const ViewMaintenanceInvoice = ({ invoice, onClose }) => {
             <div>
               <p className="text-sm font-medium text-[#A7A7A7]">Payment Date</p>
               <p className="text-sm">
-                {new Date(invoice.penaltyDay).toLocaleString("en-GB", {
+                {new Date(invoice.updatedAt).toLocaleString("en-GB", {
                   day: "2-digit",
                   month: "2-digit",
                   year: "numeric",
@@ -79,12 +81,6 @@ const ViewMaintenanceInvoice = ({ invoice, onClose }) => {
             <p className="text-sm font-medium text-[#A7A7A7]">Email</p>
             <p className="text-sm truncate">{invoice?.user?.email}</p>
           </div>
-          {/* <div>
-            <p className="text-sm font-medium text-[#A7A7A7]">Address</p>
-            <p className="text-sm">
-              {}
-            </p>
-          </div> */}
         </div>
 
         <div className="bg-[#F6F8FB] p-4 rounded-lg mb-6">
@@ -97,7 +93,6 @@ const ViewMaintenanceInvoice = ({ invoice, onClose }) => {
           <div className="flex justify-between mb-2">
             <p className="text-sm font-medium text-gray-600">Penalty</p>
             <p className="text-sm text-red-600">
-              {/* ₹ 350.00  */}
               {new Date() >= new Date(invoice.penaltyDay)
                 ? `${invoice.penaltyAmount}`
                 : "00"}
