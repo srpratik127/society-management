@@ -51,7 +51,7 @@ exports.getChatHistory = async (req, res) => {
     res.status(500).json({ message: "Failed to retrieve chat history" });
   }
 };
-// for group
+
 exports.getAllGroups = async (req, res) => {
   try {
     const groups = await GroupChat.find({});
@@ -69,17 +69,17 @@ exports.getAllGroups = async (req, res) => {
 exports.createGroup = async (req, res) => {
   try {
     const { groupName } = req.body;
-    const allResidents = await Resident.find({});
-    const residentsMembers = allResidents.map((resident) => ({
-      _id: resident._id,
-    }));
+    // const allResidents = await Resident.find({});
+    // const residentsMembers = allResidents.map((resident) => ({
+    //   _id: resident._id,
+    // }));
 
-    const allMembers = [...residentsMembers];
+    // const allMembers = [...residentsMembers];/
 
     const newGroupChat = new GroupChat({
-      groupName,
-      groupMembers: allMembers,
-      messages: [],
+      groupName
+      // groupMembers: allMembers,
+      // messages: [],
     });
 
     await newGroupChat.save();
@@ -94,89 +94,54 @@ exports.createGroup = async (req, res) => {
   }
 };
 
-exports.sendGroupMessage = async (req, res) => {
-  const { groupId, senderId, message } = req.body;
-  const file = req.file;
-
+exports.askQuestion = async (req, res) => {
+  const { groupId, questionText, askedBy } = req.body;
   try {
-    let mediaUrl = null;
-    if (file) {
-      const result = await cloudinary.uploader.upload(file.path, {
-        resource_type: "auto",
-      });
-      mediaUrl = result.secure_url;
-
-      fs.unlink(file.path, (err) => {
-        if (err) {
-          console.error("Failed to delete local file:", err);
-        } else {
-          console.log("Local file deleted successfully:", file.path);
-        }
-      });
-    }
-
     const groupChat = await GroupChat.findById(groupId);
     if (!groupChat) {
       return res.status(404).json({ error: "Group not found" });
     }
 
-    const newMessage = { senderId, message, mediaUrl, createdAt: new Date() };
-    groupChat.messages.push(newMessage);
+    const newQuestion = {
+      questionText,
+      askedBy,
+      createdAt: new Date()
+    };
+
+    groupChat.questions.push(newQuestion);
     await groupChat.save();
 
-    const populatedMessage = await GroupChat.findOne(
-      { _id: groupId },
-      { messages: { $slice: -1 } }
-    ).populate({
-      path: "messages.senderId",
-      select: "fullName profile_picture",
-    });
-
-    res.status(200).json({ message: populatedMessage.messages[0] });
+    res.status(200).json({ message: "Question posted successfully", newQuestion });
   } catch (error) {
-    res.status(500).json({ message: "Failed to send message" });
+    res.status(500).json({ message: "Failed to post question" });
   }
 };
 
-exports.getGroupMessages = async (req, res) => {
-  const { groupId } = req.params;
-  try {
-    const groupChat = await GroupChat.findById(groupId).populate({
-      path: "messages.senderId",
-      select: "fullName profile_picture",
-    });
+exports.answerQuestion = async (req, res) => {
+  const { groupId, questionId, answeredBy, answerText } = req.body;
 
+  try {
+    const groupChat = await GroupChat.findById(groupId);
     if (!groupChat) {
       return res.status(404).json({ error: "Group not found" });
     }
 
-    res.status(200).json(groupChat.messages);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Failed to retrieve messages" });
-  }
-};
-
-exports.joinGroup = async (req, res) => {
-  const { groupId, userId } = req.body;
-
-  try {
-    const group = await GroupChat.findById(groupId);
-    if (!group) {
-      return res.status(404).json({ message: "Group not found" });
+    const question = groupChat.questions.id(questionId);
+    if (!question) {
+      return res.status(404).json({ error: "Question not found" });
     }
 
-    const isMember = group.groupMembers.some((member) => member._id.toString() === userId);
-    if (isMember) {
-      return res.status(400).json({ message: "User is already a member of the group" });
-    }
+    const newAnswer = {
+      answeredBy,
+      answerText,
+      createdAt: new Date(),
+    };
 
-    group.groupMembers.push({ _id: userId });
-    await group.save();
+    question.answers.push(newAnswer);
+    await groupChat.save();
 
-    res.status(200).json({ message: "Successfully joined the group", group });
+    res.status(200).json({ message: "Answer posted successfully", newAnswer });
   } catch (error) {
-    console.error("Error joining group:", error);
-    res.status(500).json({ message: "Failed to join group" });
+    res.status(500).json({ message: "Failed to post answer" });
   }
 };
