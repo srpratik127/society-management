@@ -145,3 +145,20 @@ exports.answerQuestion = async (req, res) => {
     res.status(500).json({ message: "Failed to post answer" });
   }
 };
+
+exports.getGroupQuestions = async (req, res) => {
+  const { groupId } = req.params;
+
+  try {
+    const groupChat = await GroupChat.findById(groupId);
+    
+    if (!groupChat) {
+      return res.status(404).json({ error: "Group not found" });
+    }
+
+    res.status(200).json({ questions: groupChat.questions });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to retrieve questions and answers" });
+  }
+};
+
