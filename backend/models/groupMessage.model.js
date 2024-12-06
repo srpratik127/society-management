@@ -2,19 +2,20 @@ const mongoose = require("mongoose");
 
 const groupChatSchema = new mongoose.Schema({
   groupName: { type: String, required: true },
-  groupMembers: [
+  questions: [
     {
-      _id: { type: mongoose.Schema.Types.ObjectId, ref: "Resident" }
+      questionText: { type: String, required: true },
+      askedBy: { type: mongoose.Schema.Types.ObjectId, ref: "Resident" },
+      createdAt: { type: Date, default: Date.now },
+      answers: [
+        {
+          answeredBy: { type: mongoose.Schema.Types.ObjectId, ref: "Resident" },
+          answerText: { type: String },
+          createdAt: { type: Date, default: Date.now }
+        }
+      ]
     }
-  ],
-  messages: [
-    {
-      senderId: { type: mongoose.Schema.Types.ObjectId, ref: "Resident" },
-      message: { type: String },
-      mediaUrl: { type: String },
-      createdAt: { type: Date, default: Date.now }
-    }
-  ],
+  ]
 });
 
 const GroupChat = mongoose.model("GroupChat", groupChatSchema);
