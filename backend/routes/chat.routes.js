@@ -5,8 +5,8 @@ const {
   createGroup,
   getAllGroups,
   askQuestion,
-  answerQuestion
-
+  answerQuestion,
+  getGroupQuestions
 } = require("../controllers/chat.controller");
 const multer = require("multer");
 const router = express.Router();
@@ -27,5 +27,6 @@ router.post("/creategroup", createGroup);
 router.get("/groups", getAllGroups);
 router.post("/ask-question", askQuestion); 
 router.post("/answer-question", answerQuestion); 
+router.get("/:groupId/questions", getGroupQuestions);
 
 module.exports = router;
