@@ -10,4 +10,6 @@ router.get("/", controller.getAllStatus);
 router.put("/:maintenanceId", controller.paymentForMaintenance);
 router.get("/pending/:userId", controller.getPendingMaintenanceByUser);
 router.post("/download", controller.generateInvoicePDF);
+router.post("/create-order", controller.createOrder);
+router.post("/verify", controller.verifyPayment);
 module.exports = router;
