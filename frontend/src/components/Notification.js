@@ -17,6 +17,7 @@ const Notification = () => {
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [detailsViewPopup, setDetailsViewPopup] = useState(false);
   const [personAmount, setPersonAmount] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchNotification = async () => {
@@ -57,6 +58,27 @@ const Notification = () => {
     }
   };
 
+  const AddMemberAnnouncement = async (announcementId, notification) => {
+    try {
+      setLoading(true);
+      const response = await axios.put(
+        `${process.env.REACT_APP_BASE_URL}/v1/api/announcement/${announcementId}/add-member`,
+        { userId: user._id }
+      );
+
+      toast.success(response.data.message);
+      handleClearSingleNotification(notification._id);
+
+      setLoading(false);
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message || "Error adding member to announcement"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const HandelView = (title, item) => {
     if (user?.user_role === "resident") {
       //resident
@@ -66,6 +88,8 @@ const Notification = () => {
         setIsDetailsOpen(true);
       } else if (title.includes("Maintenance")) {
         navigate("/resident/maintenance-invoices");
+      } else if (title.includes("Announcement")) {
+        AddMemberAnnouncement(item.otherContent, item);
       }
     } else if (user?.user_role === "admin") {
       //admin

@@ -27,7 +27,7 @@ const Note = () => {
   }, []);
 
   return (
-    <div className="p-6 m-4 bg-white rounded-lg">
+    <div className="p-6 m-6 bg-white rounded-lg">
       <div className="flex justify-between items-center ">
         <h1 className="text-2xl font-semibold">Note</h1>
         <button

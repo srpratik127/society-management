@@ -16,6 +16,10 @@ const ViewAnnounce = ({ announcement, onClose }) => {
           </button>
         </div>
         <div className="space-y-4">
+        <div>
+            <p className="text-[#A7A7A7]">Announcement Type </p>
+            <p className="text-base text-gray-900">{announcement.type}</p>
+          </div>
           <div>
             <p className="text-[#A7A7A7]">Title</p>
             <p className="text-base text-gray-900">{announcement.title}</p>

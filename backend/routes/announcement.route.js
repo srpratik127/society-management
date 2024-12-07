@@ -6,5 +6,6 @@ router.post('/',controller.createAnnouncement)
 router.get('/',controller.getAnnouncement)
 router.put('/:id', controller.updateAnnouncement);
 router.delete('/:id', controller.deleteAnnouncement);  
+router.put("/:id/add-member", controller.addAnnouncementMember);
 
 module.exports = router;

@@ -60,7 +60,7 @@ const Resident = () => {
   };
 
   return (
-    <div className="p-4 max-w-full lg:max-w-full mx-auto">
+    <div className="p-6 max-w-full lg:max-w-full mx-auto">
       <div className="bg-white rounded-lg shadow p-4">
         <div className="flex flex-col sm:flex-row justify-between items-center sm:items-center mb-6">
           <h2 className="text-xl font-semibold">

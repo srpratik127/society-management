@@ -4,6 +4,7 @@ const GroupChat = require("../models/groupMessage.model");
 const Resident = require("../models/resident.model");
 const User = require("../models/admin.model");
 const fs = require("fs");
+const { default: mongoose } = require("mongoose");
 
 exports.handleMessage = async (req, res) => {
   const { senderId, receiverId, message } = req.body;
@@ -55,10 +56,6 @@ exports.getChatHistory = async (req, res) => {
 exports.getAllGroups = async (req, res) => {
   try {
     const groups = await GroupChat.find({});
-
-    if (!groups || groups.length === 0) {
-      return res.status(404).json({ message: "No groups found." });
-    }
     res.status(200).json(groups);
   } catch (error) {
     console.error("Error retrieving groups:", error);
@@ -77,7 +74,7 @@ exports.createGroup = async (req, res) => {
     // const allMembers = [...residentsMembers];/
 
     const newGroupChat = new GroupChat({
-      groupName
+      groupName,
       // groupMembers: allMembers,
       // messages: [],
     });
@@ -103,16 +100,19 @@ exports.askQuestion = async (req, res) => {
     }
 
     const newQuestion = {
+      _id: new mongoose.Types.ObjectId(),
       questionText,
       askedBy,
-      createdAt: new Date()
+      createdAt: new Date(),
+      answers: [],
     };
 
     groupChat.questions.push(newQuestion);
     await groupChat.save();
 
-    res.status(200).json({ message: "Question posted successfully", newQuestion });
+    res.status(200).json(newQuestion);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: "Failed to post question" });
   }
 };

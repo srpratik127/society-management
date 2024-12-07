@@ -160,7 +160,8 @@ const AddEditAnnouncement = ({
                   errors.type ? "border-red-500" : "border-gray-200"
                 } ${formData.type ? "text-black" : "text-gray-400"}`}
               >
-                {formData.type || "Select Announcement Type"}
+                {formData.type || "Select Announcement Type"} 
+                <span className="-rotate-90">&#10094;</span>
               </Popover.Button>
               <Popover.Panel className="mt-2 w-full bg-white rounded-lg shadow ring-1 ring-black ring-opacity-5 z-50">
                 {({ close }) => (

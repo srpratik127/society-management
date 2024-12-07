@@ -40,15 +40,10 @@ const addMaintenance = async (req, res) => {
       .populate("member.user", "fullName profile_picture wing unit phone role")
       .exec();
 
-    // for notification
     const notificationUsers = [
       ...(await Resident.find().select("_id")).map(({ _id }) => ({
         _id,
         model: "Resident",
-      })),
-      ...(await Admin.find().select("_id")).map(({ _id }) => ({
-        _id,
-        model: "Admin",
       })),
     ];
     const newNotification = await new Notification({
@@ -144,10 +139,6 @@ const getPendingMaintenanceByUser = async (req, res) => {
         return member ? { ...record.toObject(), member: [member] } : null;
       })
       .filter(Boolean);
-
-    // if (!filteredRecords.length) {
-    //   return res.status(404).json({ message: 'No pending maintenance records found for this user' });
-    // }
 
     res.status(200).json(filteredRecords);
   } catch (error) {
@@ -317,6 +308,47 @@ const getTotalAmount = async (req, res) => {
   }
 };
 
+const getDoneMaintenanceByUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    if (!userId) {
+      return res.status(400).json({ message: "User ID is required." });
+    }
+
+    const maintenanceRecords = await Maintenance.find({
+      "member.user": userId,
+      "member.status": "done",
+    }).populate({
+      path: "member.user",
+      select: "fullName profile_picture wing unit phone role email",
+    });
+
+    console.log("Maintenance Records:", maintenanceRecords);
+
+    const filteredRecords = maintenanceRecords
+      .map((record) => {
+        const member = record.member.find(
+          (m) =>
+            m.user && m.user._id.toString() === userId && m.status === "done"
+        );
+        return member ? { ...record.toObject(), member: [member] } : null;
+      })
+      .filter(Boolean);
+
+    res.status(200).json({
+      message: "Fetched maintenance records with status 'done' successfully.",
+      data: filteredRecords,
+    });
+  } catch (error) {
+    console.error("Error fetching done maintenance records for user:", error);
+    res.status(500).json({
+      message: "Error fetching maintenance records.",
+      error: error.message,
+    });
+  }
+};
+
 const generateInvoicePDF = async (req, res) => {
   const { invoice } = req.body;
   console.log(req.body);
@@ -383,5 +415,6 @@ module.exports = {
   paymentForMaintenance,
   applyPenalties,
   getTotalAmount,
+  getDoneMaintenanceByUser,
   generateInvoicePDF,
 };

@@ -1,4 +1,7 @@
 const Announcement = require("../models/announcement.model");
+const Guard = require("../models/guard.model");
+const Notification = require("../models/notification.model");
+const Resident = require("../models/resident.model");
 
 const createAnnouncement = async (req, res) => {
     try {
@@ -10,8 +13,29 @@ const createAnnouncement = async (req, res) => {
             date,
             time
         });
+
+        const users = [
+            ...(await Resident.find().select("_id")).map(({ _id }) => ({
+              _id,
+              model: "Resident",
+            })),
+            ...(await Guard.find().select("_id")).map(({ _id }) => ({
+              _id,
+              model: "Guard",
+            })),
+          ];
+      
+          const newNotification = await new Notification({
+            title: "New Announcement",
+            name : title,
+            message: `A new Announcement "${title}" has been created.`,
+            otherContent: response._id,
+            users,
+          }).save();
+
+
         await response.save();
-        res.status(200).json({ message: 'Announcement created successfully', data:response });
+        res.status(200).json({ message: 'Announcement created successfully', data:response, notification: newNotification });
     } catch (error) {
         res.status(500).json({ message: 'Error creating Announcement', error: error.message });
     }
@@ -19,10 +43,13 @@ const createAnnouncement = async (req, res) => {
 
 const getAnnouncement = async (req, res) => {
     try {
-        const data = await Announcement.find();
-        res.status(200).json(data)        
+        const data = await Announcement.find().populate({
+            path: 'members.user',
+            select: 'profile_picture fullName'
+        });
+        res.status(200).json(data);
     } catch (error) {
-        res.status(500).json({ message: 'Get Announcement controller error' })
+        res.status(500).json({ message: 'Get Announcement controller error' });
     }
 };
 
@@ -57,9 +84,41 @@ const deleteAnnouncement = async (req, res) => {
     }
 };
 
+const addAnnouncementMember = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { userId } = req.body;
+
+        if (!userId) {
+            return res.status(400).json({ message: "User ID is required" });
+        }
+
+        const updatedAnnouncement = await Announcement.findByIdAndUpdate(
+            id,
+            { $addToSet: { members: { user: userId } } },
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedAnnouncement) {
+            return res.status(404).json({ message: "Announcement not found" });
+        }
+
+        res.status(200).json({ 
+            message: "Member added successfully", 
+            data: updatedAnnouncement 
+        });
+    } catch (error) {
+        res.status(500).json({ 
+            message: "Error adding member to announcement", 
+            error: error.message 
+        });
+    }
+};
+
 module.exports = {
     createAnnouncement,
     getAnnouncement,
     updateAnnouncement,
-    deleteAnnouncement
+    deleteAnnouncement,
+    addAnnouncementMember
 };
