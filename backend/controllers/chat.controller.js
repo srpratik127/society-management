@@ -4,6 +4,7 @@ const GroupChat = require("../models/groupMessage.model");
 const Resident = require("../models/resident.model");
 const User = require("../models/admin.model");
 const fs = require("fs");
+const { default: mongoose } = require("mongoose");
 
 exports.handleMessage = async (req, res) => {
   const { senderId, receiverId, message } = req.body;
@@ -99,16 +100,19 @@ exports.askQuestion = async (req, res) => {
     }
 
     const newQuestion = {
+      _id: new mongoose.Types.ObjectId(),
       questionText,
       askedBy,
       createdAt: new Date(),
+      answers: [],
     };
 
     groupChat.questions.push(newQuestion);
     await groupChat.save();
 
-    res.status(200).json({ message: "Question posted successfully", newQuestion });
+    res.status(200).json(newQuestion);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: "Failed to post question" });
   }
 };

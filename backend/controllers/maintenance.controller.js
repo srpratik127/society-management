@@ -39,10 +39,6 @@ const addMaintenance = async (req, res) => {
         _id,
         model: "Resident",
       })),
-      ...(await Admin.find().select("_id")).map(({ _id }) => ({
-        _id,
-        model: "Admin",
-      })),
     ];
     const newNotification = await new Notification({
       title: "New Maintenance Created",

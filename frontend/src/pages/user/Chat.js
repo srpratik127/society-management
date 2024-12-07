@@ -199,12 +199,6 @@ const ChatComponent = () => {
     setStartVideoCall(true);
   };
 
-  // const handleFileReset = () => {
-  //   if (fileInputRef.current) {
-
-  //   }
-  // };
-
   return (
     <>
       <div className="block sm:flex bg-white sm:m-6 rounded-lg">

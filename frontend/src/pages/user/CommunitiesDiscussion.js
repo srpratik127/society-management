@@ -8,12 +8,12 @@ import { Popover } from "@headlessui/react";
 import Loader from "../../components/Loader";
 
 const CommunitiesDiscussion = () => {
+  const userId = useSelector((store) => store.auth.user._id);
   const [groups, setGroups] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState();
-  const userId = useSelector((store) => store.auth.user._id);
-  const [showHistoryMessage, setShowHistoryMessage] = useState([]);
+  const [selectedQuestion, setSelectedQuestion] = useState();
+  const [historyMessage, setHistoryMessage] = useState([]);
   const [message, setMessage] = useState("");
-  const [media, setMedia] = useState(null);
   const [showQuestion, setShowQuestion] = useState(true);
   const [showAnswer, setShowAnswer] = useState(false);
   const messagesEndRef = useRef(null);
@@ -33,16 +33,106 @@ const CommunitiesDiscussion = () => {
   }, []);
 
   useEffect(() => {
+    const fetchGroupMessage = async () => {
+      try {
+        const { data } = await axios.get(
+          `${process.env.REACT_APP_BASE_URL}/v1/api/chat/${selectedGroup._id}/questions`
+        );
+        setHistoryMessage(data?.questions);
+      } catch (error) {
+        toast.error(error.response?.data?.message);
+      }
+    };
+    if (selectedGroup) {
+      fetchGroupMessage();
+    }
+  }, [selectedGroup]);
+
+  useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [showHistoryMessage]);
+  }, [historyMessage]);
 
   const handelGroupSelect = async (chat) => {
     setSelectedGroup(chat);
+    setShowQuestion(true);
     socket.emit("joinGroup", { userId, groupId: chat._id });
   };
 
-  const handelMessageSend = async () => {
+  const handelAskQuestion = async (event) => {
+    event.preventDefault();
+    const tempQuestion = {
+      _id: Date.now().toString(),
+      questionText: message,
+      askedBy: userId,
+      createdAt: new Date().toISOString(),
+      answers: [],
+    };
+    setMessage("");
+    try {
+      const { data } = await axios.post(
+        `${process.env.REACT_APP_BASE_URL}/v1/api/chat/ask-question`,
+        {
+          groupId: selectedGroup._id,
+          questionText: message,
+          askedBy: userId,
+        }
+      );
 
+      console.log(data);
+      setHistoryMessage((prev) => [...prev, data]);
+      toast.success("Question posted successfully");
+      setShowQuestion(true);
+    } catch (error) {
+      setHistoryMessage((prev) =>
+        prev.filter((q) => q._id !== tempQuestion._id)
+      );
+      toast.error(error.response?.data?.message || "Failed to post question");
+    }
+  };
+
+  const handelPostAnswer = async (event) => {
+    event.preventDefault();
+    const answerText = document.querySelector("textarea").value;
+
+    if (!answerText) {
+      toast.error("Answer cannot be empty");
+      return;
+    }
+
+    try {
+      const { data } = await axios.post(
+        `${process.env.REACT_APP_BASE_URL}/v1/api/chat/answer-question`,
+        {
+          groupId: selectedGroup._id,
+          questionId: selectedQuestion._id,
+          answeredBy: userId,
+          answerText,
+        }
+      );
+      setSelectedQuestion((prev) => ({
+        ...prev,
+        answers: [...prev.answers, data.newAnswer],
+      }));
+      setHistoryMessage((prev) =>
+        prev.map((q) =>
+          q._id === selectedQuestion._id
+            ? { ...q, answers: [...q.answers, data.newAnswer] }
+            : q
+        )
+      );
+      document.querySelector("textarea").value = "";
+      toast.success("Answer posted successfully!");
+      setShowQuestion(true);
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to post answer");
+    }
+  };
+
+  const handelSelectedMessage = (question) => {
+    setSelectedQuestion(question);
+    setShowAnswer(true);
+    setShowQuestion(false);
+    console.log(question);
   };
 
   return (
@@ -63,7 +153,7 @@ const CommunitiesDiscussion = () => {
           />
         </div>
         <ul className="space-y-4">
-          {groups.map((chat, idx) => (
+          {(groups || []).map((chat, idx) => (
             <li
               key={idx}
               onClick={() => handelGroupSelect(chat)}
@@ -99,7 +189,10 @@ const CommunitiesDiscussion = () => {
               <div className="flex items-center gap-2">
                 <button
                   className="bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white px-4 py-2 rounded-lg"
-                  onClick={() => setShowQuestion(false)}
+                  onClick={() => {
+                    setShowQuestion(false);
+                    setShowAnswer(false);
+                  }}
                 >
                   Ask Question
                 </button>
@@ -126,58 +219,68 @@ const CommunitiesDiscussion = () => {
 
             <div className="p-4 h-[72vh] overflow-y-auto">
               {showQuestion ? (
-                showHistoryMessage.map((message) => (
-                  <div
-                    key={message.id}
-                    className={`flex flex-col md:flex-row gap-2 mb-4 p-4 rounded-lg ${
-                      message.senderId._id === userId
-                        ? "bg-[#acbdf73d]"
-                        : "bg-[#5678E90D]"
-                    }`}
-                  >
-                    <div className="w-full">
-                      <div className="flex justify-between w-full">
-                        <div className="flex items-center text-sm text-gray-500">
-                          <button className="flex items-center gap-1 bg-white px-2 rounded-full uppercase">
-                            {new Date(message?.createdAt).toLocaleString(
-                              "en-GB",
-                              {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                                hour12: true,
-                              }
-                            )}
-                          </button>
+                <>
+                  {(historyMessage || []).map((question) => (
+                    <div
+                      key={question._id}
+                      onClick={() => handelSelectedMessage(question)}
+                      className={`flex flex-col items-start md:flex-row gap-2 mb-4 p-4 rounded-lg bg-[#eceef3] cursor-pointer`}
+                    >
+                      <div className="w-full">
+                        <div className="flex w-full gap-4">
+                          <div className="text-sm text-[#A7A7A7]">
+                            <p className="mb-2">0 votes</p>
+                            <p className="text-[#5678E9] text-nowrap">
+                              {question?.answers?.length} answers
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-[#4F4F4F]">
+                              {question?.questionText}
+                            </p>
+                            {question?.answers.map((answer, index) => (
+                              <p
+                                key={answer?._id}
+                                className="text-[#A7A7A7] mt-2"
+                              >
+                                {index + 1}. {answer.answerText}
+                              </p>
+                            ))}
+                          </div>
                         </div>
                       </div>
-                      <div>
-                        <p className="text-gray-600 mb-2 line-clamp-2">
-                          {message.message}
-                        </p>
+                      <div className="ml-auto bg-white text-[#4F4F4F] px-3 py-1 rounded-full flex gap-2">
+                        <img
+                          src="/assets/whiteeye.svg"
+                          className="brightness-50"
+                          alt=""
+                        />{" "}
+                        20
                       </div>
                     </div>
-                  </div>
-                ))
+                  ))}
+                  <div ref={messagesEndRef} />
+                </>
               ) : !showAnswer ? (
                 <>
-                  <div class="mx-auto p-6 bg-[#5678E91A] rounded-lg border border-[#5678E9]">
-                    <h2 class="text-lg font-normal text-gray-800">
+                  <div className="mx-auto p-6 bg-[#5678E91A] rounded-lg border border-[#5678E9]">
+                    <h2 className="text-lg font-normal text-gray-800">
                       Writing a good question
                     </h2>
-                    <p class="mt-2 text-gray-800 text-sm">
+                    <p className="mt-2 text-gray-800 text-sm">
                       You're ready to
-                      <span class="text-blue-500 hover:underline">
+                      <span className="text-blue-500 hover:underline">
                         ask a programming-related question
                       </span>
                       and this form will help guide you through the process.
                       Looking to ask a non-programming question?
-                      <span class="text-blue-500 hover:underline">
+                      <span className="text-blue-500 hover:underline">
                         See the topics here
                       </span>
                       to find a relevant site.
                     </p>
-                    <h3 class="mt-3 font-medium text-gray-700">Steps</h3>
-                    <ul class="mt-1 space-y-2 text-gray-800 text-sm">
+                    <h3 className="mt-3 font-medium text-gray-700">Steps</h3>
+                    <ul className="mt-1 space-y-2 text-gray-800 text-sm">
                       <li>• Summarize your problem in a one-line title.</li>
                       <li>• Describe your problem in more detail.</li>
                       <li>
@@ -208,7 +311,7 @@ const CommunitiesDiscussion = () => {
                       <button
                         className="cursor-pointer bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white px-4 py-2 rounded-lg mt-3"
                         disabled={message === ""}
-                        onClick={handelMessageSend}
+                        onClick={handelAskQuestion}
                       >
                         Next
                       </button>
@@ -216,10 +319,47 @@ const CommunitiesDiscussion = () => {
                   </div>
                 </>
               ) : (
-                <></>
+                <div className="d-flex">
+                  <div></div>
+                  <div>
+                    <div
+                      className={`flex flex-col md:flex-row gap-2 mb-4 p-4 rounded-lg bg-[#eceef3] cursor-pointer`}
+                    >
+                      <div className="w-full">
+                        <p className="border-b-2 border-[#F6F8FB] text-[#4F4F4F] mb-2 pb-2">
+                          {selectedQuestion.questionText}
+                        </p>
+                        <p className="text-[#5678E9]">Answers</p>
+                        {selectedQuestion?.answers.map((answer, index) => (
+                          <p
+                            key={answer?._id}
+                            className="flex text-[#4F4F4F] mt-3"
+                          >
+                            <span>{index + 1}.</span>
+                            {answer.answerText}
+                          </p>
+                        ))}
+                      </div>
+                    </div>
+                    <form>
+                      <p>Your Answer</p>
+                      <textarea
+                        className="w-full outline-none p-2 border border-[#D3D3D3] rounded-lg"
+                        name=""
+                        id=""
+                        rows="6"
+                        placeholder="Type Here"
+                      ></textarea>
+                      <button
+                        className="cursor-pointer bg-gradient-to-r from-[#FE512E] to-[#F09619] text-white px-4 py-2 rounded-lg block ml-auto mt-3"
+                        onClick={handelPostAnswer}
+                      >
+                        Post Your Answer
+                      </button>
+                    </form>
+                  </div>
+                </div>
               )}
-
-              {/* <div ref={messagesEndRef} /> */}
             </div>
           </>
         ) : (
