@@ -2,10 +2,16 @@ const Maintenance = require("../models/maintenance.model");
 const Resident = require("../models/resident.model");
 const Notification = require("../models/notification.model");
 const Admin = require("../models/admin.model");
-
+const Razorpay = require("razorpay");
 const PDFDocument = require("pdfkit");
 const fs = require("fs");
 const path = require("path");
+const crypto = require("crypto");
+
+const razorpay = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_SECRET_KEY,
+});
 
 const addMaintenance = async (req, res) => {
   try {
@@ -175,6 +181,67 @@ const applyPenalties = async () => {
   // }
 };
 
+const createOrder = async (req, res) => {
+  const { amount, userId, paymentMethod } = req.body;
+  try {
+    const order = await razorpay.orders.create({
+      amount: amount * 100,
+      currency: "INR",
+      receipt: `order_rcptid_${new Date().getTime()}`,
+      notes: { userId, paymentMethod },
+    });
+
+    res.status(200).json({
+      order,
+      razorpayKey: process.env.RAZORPAY_KEY_ID,
+    });
+  } catch (error) {
+    console.error("Error creating Razorpay order:", error);
+    res.status(500).json({ message: "Error creating order." });
+  }
+};
+
+const verifyPayment = async (req, res) => {
+  try {
+    const { razorpayOrderId, razorpayPaymentId, razorpaySignature, maintenanceId, userId, paymentMethod } = req.body;
+    const body = razorpayOrderId + "|" + razorpayPaymentId;
+    const expectedSignature = crypto
+      .createHmac("sha256", process.env.RAZORPAY_SECRET_KEY) 
+      .update(body.toString())
+      .digest("hex");
+
+    if (expectedSignature !== razorpaySignature) {
+      return res.status(400).json({ message: "Invalid payment signature" });
+    }
+
+    const maintenance = await Maintenance.findById(maintenanceId);
+
+    if (!maintenance) {
+      return res.status(404).json({ message: "Maintenance record not found" });
+    }
+
+    const member = maintenance.member.find(m => m.user.toString() === userId);
+
+    if (!member) {
+      return res.status(404).json({ message: "User not found in maintenance record" });
+    }
+
+    member.status = "done";
+    member.paymentMethod = paymentMethod;
+
+    await maintenance.save();
+
+    res.status(200).json({
+      message: "Payment verified and maintenance record updated successfully",
+      data: maintenance,
+    });
+  } catch (error) {
+    console.error("Error verifying payment:", error);
+    res.status(500).json({ message: "Error verifying payment", error: error.message });
+  }
+};
+
+
 const paymentForMaintenance = async (req, res) => {
   try {
     const { maintenanceId } = req.params;
@@ -203,10 +270,10 @@ const paymentForMaintenance = async (req, res) => {
 
     await maintenance.save();
 
-    res.status(200).json({
-      message: "Payment status updated successfully.",
-      data: maintenance,
-    });
+      res.status(200).json({
+        message: "Payment status updated successfully.",
+        data: maintenance,
+      });
   } catch (error) {
     console.error("Error updating payment status:", error);
     res.status(500).json({
@@ -343,6 +410,8 @@ module.exports = {
   getStatus,
   getAllStatus,
   getPendingMaintenanceByUser,
+  createOrder,
+  verifyPayment,
   paymentForMaintenance,
   applyPenalties,
   getTotalAmount,

@@ -11,4 +11,6 @@ router.put("/:maintenanceId", controller.paymentForMaintenance);
 router.get("/pending/:userId", controller.getPendingMaintenanceByUser);
 router.get("/done/:userId", controller.getDoneMaintenanceByUser);
 router.post("/download", controller.generateInvoicePDF);
+router.post("/create-order", controller.createOrder);
+router.post("/verify", controller.verifyPayment);
 module.exports = router;

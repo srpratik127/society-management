@@ -1,5 +1,6 @@
 import axios from "axios";
-import React, { useState } from "react";
+import Razorpay from "razorpay";
+import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
@@ -40,7 +41,6 @@ const PaymentPopup = ({
 
   const handleConfirmClick = async () => {
     if (payMethod === "Cash Payment") {
-      // Directly process cash payment
       try {
         if (selectOtherIncome) {
           const response = await axios.put(
@@ -75,47 +75,143 @@ const PaymentPopup = ({
         toast.error(error.response?.data?.message);
       }
     } else {
-      // For online payment, check if already confirmed
       if (!isConform) {
         setIsConform(true);
       } else {
         if (validateForm()) {
-          const paymentType =
-            payMethod === "Master Card" || payMethod === "Visa Card"
-              ? "online"
-              : null;
-          try {
-            if (selectOtherIncome) {
-              const response = await axios.put(
-                `${process.env.REACT_APP_BASE_URL}/v1/api/income/add-member/${selectOtherIncome._id}`,
+          const paymentData = {
+            amount: selectMaintenance
+              ? selectMaintenance.amount
+              : selectOtherIncome.amount,
+            userId: userId,
+            incomeId: selectMaintenance
+              ? selectMaintenance._id
+              : selectOtherIncome._id,
+            paymentMethod: "online",
+          };
+          if (selectMaintenance) {
+            try {
+              const response = await axios.post(
+                `${process.env.REACT_APP_BASE_URL}/v1/api/maintenance/create-order`,
                 {
-                  user: userId,
-                  paymentMethod: paymentType,
-                  payAmount: selectOtherIncome.amount,
+                  amount: selectMaintenance.amount,
+                  currency: "INR",
+                  receipt: `maintenance_${selectMaintenance._id}`,
+                  userId,
+                  paymentMethod: "online",
                 }
               );
-              setOtherIncomeData((prev) =>
-                prev.filter(
-                  (OtherIncome) => OtherIncome._id !== selectOtherIncome._id
-                )
-              );
+              const { order, razorpayKey } = response.data;
+              if (!order) throw new Error("Order creation failed");
+              const options = {
+                key: razorpayKey,
+                amount: order.amount,
+                currency: order.currency,
+                order_id: order.id,
+                name: "Society Maintenance Payment",
+                description: `Payment for maintenance ${selectMaintenance._id}`,
+                handler: async (paymentResponse) => {
+                  const paymentData = {
+                    razorpayOrderId: paymentResponse.razorpay_order_id,
+                    razorpayPaymentId: paymentResponse.razorpay_payment_id,
+                    razorpaySignature: paymentResponse.razorpay_signature,
+                    paymentMethod: "online",
+                    userId: userId,
+                    maintenanceId: selectMaintenance._id,
+                    incomeId: null, 
+                  };
+
+                  try {
+                    const verifyResponse = await axios.post(
+                      `${process.env.REACT_APP_BASE_URL}/v1/api/maintenance/verify`,
+                      paymentData
+                    );
+                    toast.success("Payment Successful!");
+                    setMaintenance((prev) =>
+                      prev.filter(
+                        (Maintenance) =>
+                          Maintenance._id !== selectMaintenance._id
+                      )
+                    );
+                    onClose();
+                  } catch (error) {
+                    toast.error("Payment verification failed.");
+                  }
+                },
+                prefill: {
+                  name: "Your Name",
+                  email: "your-email@example.com",
+                  contact: "1234567890",
+                },
+              };
+
+              const razorpay = new window.Razorpay(options);
+              razorpay.open();
+            } catch (error) {
+              console.error("Error initiating Razorpay payment:", error);
+              toast.error("Error initiating Razorpay payment.");
             }
-            if (selectMaintenance) {
-              const response = await axios.put(
-                `${process.env.REACT_APP_BASE_URL}/v1/api/maintenance/${selectMaintenance._id}`,
-                { userId, paymentMethod: paymentType }
+          } else if (selectOtherIncome) {
+            try {
+              const response = await axios.post(
+                `${process.env.REACT_APP_BASE_URL}/v1/api/income/create-order`,
+                {
+                  amount: selectOtherIncome.amount,
+                  currency: "INR",
+                  receipt: `income_${selectOtherIncome._id}`,
+                  userId,
+                  paymentMethod: "online",
+                }
               );
-              setMaintenance((prev) =>
-                prev.filter(
-                  (Maintenance) => Maintenance._id !== selectMaintenance._id
-                )
-              );
+              const { order, razorpayKey } = response.data;
+              if (!order) throw new Error("Order creation failed");
+              const options = {
+                key: razorpayKey,
+                amount: order.amount,
+                currency: order.currency,
+                order_id: order.id,
+                name: "Other Income Payment",
+                description: `Payment for income ${selectOtherIncome._id}`,
+                handler: async (paymentResponse) => {
+                  const paymentData = {
+                    razorpayOrderId: paymentResponse.razorpay_order_id,
+                    razorpayPaymentId: paymentResponse.razorpay_payment_id,
+                    razorpaySignature: paymentResponse.razorpay_signature,
+                    paymentMethod: "online",
+                    amount: selectOtherIncome.amount,
+                    userId: userId,
+                    maintenanceId: null,
+                    incomeId: selectOtherIncome._id,
+                  };
+                  try {
+                    const verifyResponse = await axios.post(
+                      `${process.env.REACT_APP_BASE_URL}/v1/api/income/verify`,
+                      paymentData
+                    );
+                    toast.success("Payment Successful!");
+                    setOtherIncomeData((prev) =>
+                      prev.filter(
+                        (OtherIncome) =>
+                          OtherIncome._id !== selectOtherIncome._id
+                      )
+                    );
+                    onClose();
+                  } catch (error) {
+                    toast.error("Payment verification failed.");
+                  }
+                },
+                prefill: {
+                  name: "Your Name",
+                  email: "your-email@example.com",
+                  contact: "1234567890",
+                },
+              };
+              const razorpay = new window.Razorpay(options);
+              razorpay.open();
+            } catch (error) {
+              console.error("Error initiating Razorpay payment:", error);
+              toast.error("Error initiating Razorpay payment.");
             }
-            toast.success("Online Payment Successful!");
-            onClose();
-            resetForm();
-          } catch (error) {
-            toast.error(error.response?.data?.message);
           }
         }
       }
@@ -143,7 +239,7 @@ const PaymentPopup = ({
     setFormData((prev) => ({ ...prev, expiryDate: date }));
   };
 
-  if (!isOpen) return null;
+  if (!isOpen) return null; 
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">

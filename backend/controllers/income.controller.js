@@ -2,6 +2,14 @@ const Income = require("../models/income.model");
 const Notification = require("../models/notification.model");
 const Resident = require("../models/resident.model");
 const Admin = require("../models/admin.model");
+const Razorpay = require("razorpay");
+const crypto = require("crypto");
+
+const razorpayInstance = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_SECRET_KEY,
+});
+
 
 const createIncome = async (req, res) => {
   try {
@@ -161,6 +169,70 @@ const getIncomeExcludingMembers = async (req, res) => {
   }
 };
 
+
+const createOrder = async (req, res) => {
+  try {
+    const { amount, userId, paymentMethod, incomeId } = req.body;
+    const options = {
+      amount: amount * 100, 
+      currency: "INR",
+      receipt: `income_${incomeId}`,
+      notes: { userId, paymentMethod },
+    };
+    const order = await razorpayInstance.orders.create(options);
+    res.status(200).json({
+      order: order,
+      razorpayKey: process.env.RAZORPAY_KEY_ID, 
+    });
+  } catch (error) {
+    console.error("Error creating Razorpay order:", error);
+    res.status(500).json({
+      message: "Error creating Razorpay order",
+      error: error,
+    });
+  }
+};
+
+const verifyPayment = async (req, res) => {
+  try {
+    const {razorpayOrderId, razorpayPaymentId, razorpaySignature, incomeId, userId, amount, paymentMethod } = req.body;
+    const shasum = crypto.createHmac('sha256', process.env.RAZORPAY_SECRET_KEY);
+    shasum.update(`${razorpayOrderId}|${razorpayPaymentId}`);
+    const digest = shasum.digest('hex');
+    if (digest === razorpaySignature) {
+      if (incomeId) {
+        const income = await Income.findByIdAndUpdate(
+          incomeId,
+          {
+            $push: {
+              members: {
+                user: userId,
+                paymentMethod: paymentMethod,
+                payAmount: amount,
+                status: "done",
+              },
+            },
+          },
+          { new: true }
+        )
+        res.status(200).json({
+          message: 'Payment verified successfully and income record deleted'
+        });
+      } else {
+        res.status(400).json({ message: 'Income ID is missing' });
+      }
+
+    } else {
+      res.status(400).json({ message: 'Invalid signature' });
+    }
+  } catch (error) {
+    console.error("Error verifying payment:", error);
+    res.status(500).json({ message: 'Error verifying payment', error: error.message });
+  }
+};
+
+
+
 module.exports = {
   createIncome,
   getIncome,
@@ -168,4 +240,6 @@ module.exports = {
   getIncomeExcludingMembers,
   deleteIncome,
   addMemberToIncome,
+  createOrder,
+  verifyPayment
 };
