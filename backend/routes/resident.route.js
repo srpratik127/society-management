@@ -1,5 +1,5 @@
 const express = require('express');
-const { createOwner, getOwners, getOwnerById, vacateUnit, vacateflat, updateOwner } = require('../controllers/resident.controller');
+const { createOwner, getOwners, getOwnerById, vacateUnit, vacateflat, updateOwner, getOccupiedOwners } = require('../controllers/resident.controller');
 const router = express.Router();
 const multer = require('multer');
 
@@ -20,6 +20,7 @@ router.post('/', upload.fields([
   { name: 'addressProof', maxCount: 1 },
   { name: 'rentAgreement', maxCount: 1 },
 ]), createOwner);
+router.get('/occupied', getOccupiedOwners);
 router.get('/', getOwners);
 router.get('/:id', getOwnerById);
 router.put('/:id', upload.fields([

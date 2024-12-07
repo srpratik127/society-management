@@ -3,10 +3,10 @@ const {
   handleMessage,
   getChatHistory,
   createGroup,
-  sendGroupMessage,
-  getGroupMessages,
   getAllGroups,
-  joinGroup,
+  askQuestion,
+  answerQuestion,
+  getGroupQuestions
 } = require("../controllers/chat.controller");
 const multer = require("multer");
 const router = express.Router();
@@ -24,9 +24,9 @@ const upload = multer({ storage });
 router.post("/message", upload.single("file"), handleMessage);
 router.get("/history/:senderId/:receiverId", getChatHistory);
 router.post("/creategroup", createGroup);
-router.post("/sendgroupmessage", upload.single("file"), sendGroupMessage);
-router.post("/joingroup", joinGroup);
-router.get("/messages/:groupId", getGroupMessages);
 router.get("/groups", getAllGroups);
+router.post("/ask-question", askQuestion); 
+router.post("/answer-question", answerQuestion); 
+router.get("/:groupId/questions", getGroupQuestions);
 
 module.exports = router;

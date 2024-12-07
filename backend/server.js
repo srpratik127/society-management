@@ -115,64 +115,49 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("joinGroup", async ({ userId, groupId }) => {
+  socket.on('joinGroup', ({ userId, groupId }) => {
+    socket.userId = userId;
+    socket.groupId = groupId;
+    socket.join(groupId);
+    socket.emit('message', { message: 'Joined group successfully' });
+    console.log(`User ${userId} joined group ${groupId}`);
+  });
+
+  socket.on('askQuestion', ({ userId, groupId, questionText }) => {
+    const newQuestion = {
+      questionText,
+      askedBy: userId,
+      createdAt: new Date(),
+      answers: []
+    };
+    io.to(groupId).emit('newQuestion', newQuestion);
+    console.log(`Question asked by user ${userId} in group ${groupId}`);
+  });
+
+  socket.on('answerQuestion', ({ userId, groupId, questionId, answerText }) => {
+    const newAnswer = {
+      answeredBy: userId,
+      answerText,
+      createdAt: new Date(),
+    };
+    io.to(groupId).emit('newAnswer', { questionId, newAnswer });
+    console.log(`Answer posted by user ${userId} to question ${questionId} in group ${groupId}`);
+  });
+
+  socket.on('getGroupQuestions', async ({ groupId }) => {
     try {
       const groupChat = await GroupChat.findById(groupId);
       if (!groupChat) {
-        socket.emit("error", { message: "Group not found" });
+        socket.emit('error', { message: 'Group not found' });
         return;
       }
-
-      const isResident = await Resident.findById(userId);
-      const isUser = await User.findById(userId);
-
-      if (!isResident && !isUser) {
-        socket.emit("error", {
-          message: "User not found in either Residents or Users",
-        });
-        return;
-      }
-
-      socket.userId = userId;
-      socket.groupId = groupId;
-
-      socket.join(groupId);
-      socket.emit("groupMembers", groupChat.groupMembers);
+      socket.emit('groupQuestions', { questions: groupChat.questions });
+      console.log(`Sent all questions for group ${groupId}`);
     } catch (error) {
-      socket.emit("error", { message: "Error joining group" });
+      socket.emit('error', { message: 'Failed to retrieve questions and answers' });
+      console.error(`Error fetching questions for group ${groupId}: `, error);
     }
   });
-
-  socket.on("sendGroupMessage", async ({ senderId, groupId, message, mediaUrl }) => {
-      try {
-        const groupChat = await GroupChat.findById(groupId).select(
-          "groupMembers"
-        );
-        if (!groupChat) {
-          socket.emit("error", { message: "Group not found" });
-          return;
-        }
-        const newMessage = {
-          senderId,
-          message,
-          mediaUrl,
-          createdAt: new Date(),
-        };
-        groupChat.groupMembers.forEach((member) => {
-          const memberSocketId = Array.from(io.sockets.sockets.values()).find(
-            (s) => s.userId === member._id.toString()
-          )?.id;
-
-          if (memberSocketId && member._id.toString() !== senderId) {
-            io.to(memberSocketId).emit("receiveGroupMessage", newMessage);
-          }
-        });
-        socket.emit("sendGroupMessage", newMessage);
-      } catch (error) {
-        socket.emit("error", { message: "Error sending message" });
-      }
-    }
-  );
 
   socket.on("offer", ({ offer, receiverId }) => {
     const receiverSocket = Array.from(io.sockets.sockets.values()).find(

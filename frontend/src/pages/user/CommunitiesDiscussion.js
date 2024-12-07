@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { io } from "socket.io-client";
 import { useSelector } from "react-redux";
 import { socket } from "../../utils/socket";
+import { Popover } from "@headlessui/react";
+import Loader from "../../components/Loader";
 
 const CommunitiesDiscussion = () => {
   const [groups, setGroups] = useState([]);
@@ -12,6 +14,8 @@ const CommunitiesDiscussion = () => {
   const [showHistoryMessage, setShowHistoryMessage] = useState([]);
   const [message, setMessage] = useState("");
   const [media, setMedia] = useState(null);
+  const [loader, setLoader] = useState(false);
+  const messagesEndRef = useRef(null);
 
   useEffect(() => {
     const fetchGroups = async () => {
@@ -26,6 +30,10 @@ const CommunitiesDiscussion = () => {
     };
     fetchGroups();
   }, []);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [showHistoryMessage]);
 
   const handelGroupSelect = async (chat) => {
     setSelectedGroup(chat);
@@ -57,6 +65,7 @@ const CommunitiesDiscussion = () => {
   const handleSendMessageOrMedia = async (event) => {
     event.preventDefault();
     try {
+      setLoader(true);
       const formData = new FormData();
       formData.append("senderId", userId);
       formData.append("groupId", selectedGroup?._id);
@@ -84,8 +93,10 @@ const CommunitiesDiscussion = () => {
 
       setMessage("");
       setMedia(null);
+      setLoader(false);
     } catch (error) {
       toast.error(error.response?.data?.message);
+      setLoader(false);
     }
   };
 
@@ -106,7 +117,6 @@ const CommunitiesDiscussion = () => {
       toast.error(error.response?.data?.message || "Failed to join group");
     }
   };
-  console.log("group :", groups);
 
   return (
     <div className="flex m-6">
@@ -174,9 +184,24 @@ const CommunitiesDiscussion = () => {
                 <p className="text-[#A7A7A7] text-sm">9:00 PM</p>
               </div>
               <div className="flex items-center gap-2">
-                <button>
-                  <img src="/assets/info.svg" alt="" />
-                </button>
+                <Popover className="relative">
+                  <Popover.Button className="text-white outline-none">
+                    <img
+                      src="/assets/info.svg"
+                      className="md:w-10 md:h-10 w-8 h-8 rounded-full cursor-pointer hover:shadow-md"
+                    />
+                  </Popover.Button>
+                  <Popover.Panel className="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 z-50">
+                    <div className="py-2">
+                      <button className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">
+                        Copy
+                      </button>
+                      <button className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">
+                        Forward
+                      </button>
+                    </div>
+                  </Popover.Panel>
+                </Popover>
               </div>
             </div>
             <div className="p-4 h-[72vh] overflow-y-auto">
@@ -185,16 +210,10 @@ const CommunitiesDiscussion = () => {
                   key={message.id}
                   className={`flex flex-col md:flex-row gap-2 mb-4 p-4 rounded-lg ${
                     message.senderId._id === userId
-                      ? "bg-[#6f768e3d]"
+                      ? "bg-[#acbdf73d]"
                       : "bg-[#5678E90D]"
                   }`}
                 >
-                  {/* <div className="flex-shrink-0 text-sm gap-4 flex flex-col">
-                <span>{item.votes} votes</span>
-                <span className="text-blue-500 text-xs">
-                  {item.answers} answers
-                </span>
-              </div> */}
                   <div className="w-full">
                     <div className="flex justify-between w-full">
                       <h3 className="font-semibold mb-2 capitalize">
@@ -202,9 +221,6 @@ const CommunitiesDiscussion = () => {
                       </h3>
                       <div className="flex items-center text-sm text-gray-500">
                         <button className="flex items-center gap-1 bg-white px-2 rounded-full uppercase">
-                          {/* <span>
-                        <img src="/assets/eye.svg" className="w-5 h-5" alt="" />
-                      </span> */}
                           {new Date(message?.createdAt).toLocaleString(
                             "en-GB",
                             {
@@ -231,6 +247,7 @@ const CommunitiesDiscussion = () => {
                   </div>
                 </div>
               ))}
+              <div ref={messagesEndRef} />
             </div>
 
             <div className="sticky bottom-0 bg-white">
@@ -240,12 +257,29 @@ const CommunitiesDiscussion = () => {
               >
                 <div className={`items-center relative w-full flex`}>
                   {media && (
-                    <div className="w-14 mb-3 h-14 rounded-lg top-[-68px] ms-4 absolute overflow-hidden border">
-                      <img
-                        src={URL.createObjectURL(media)}
-                        alt="IMG"
-                        className="w-full h-full object-cover"
-                      />
+                    <>
+                      <div className="w-14 mb-3 h-14 rounded-lg top-[-68px] ms-4 absolute overflow-hidden border">
+                        <img
+                          src={URL.createObjectURL(media)}
+                          alt="IMG"
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div
+                        onClick={() => setMedia(null)}
+                        className="cursor-pointer"
+                      >
+                        <img
+                          src="/assets/cross.svg"
+                          className="top-[-68px] ms-4 absolute bg-white p-1 rounded-full w-4 curser-pointer"
+                          alt="close"
+                        />
+                      </div>
+                    </>
+                  )}
+                  {loader && (
+                    <div className="bg-[#5555557c] p-2 rounded-lg absolute top-[-60px] left-[25px] z-30">
+                      {loader && <Loader />}
                     </div>
                   )}
                   {/* type text */}
@@ -258,7 +292,7 @@ const CommunitiesDiscussion = () => {
                   />
 
                   {/* type media */}
-                  <span className="absolute right-3 text-gray-400 cursor-pointer">
+                  <span className="absolute right-11 text-gray-400 cursor-pointer">
                     <label htmlFor="inputFile" className="cursor-pointer">
                       <img src="/assets/Paperclip.svg" alt="" />
                     </label>
@@ -270,6 +304,16 @@ const CommunitiesDiscussion = () => {
                       className="hidden"
                     />
                   </span>
+
+                  <button
+                    className="absolute right-3 text-gray-400 cursor-pointer"
+                    disabled={message === "" && media === null}
+                    onClick={handleSendMessageOrMedia}
+                  >
+                    <div className="cursor-pointer ">
+                      <img src="/assets/send-2.svg" alt="" />
+                    </div>
+                  </button>
                 </div>
               </form>
             </div>
