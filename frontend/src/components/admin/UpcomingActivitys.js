@@ -1,24 +1,49 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { filterComplains } from "../../utils/validation";
 
 const UpcomingActivitys = () => {
-  const [upcomingactivities, setUpcomingactivities] = useState([]);
+  const [eventsParticipation, setEventsParticipation] = useState([]);
+  const [filteredComplainList, setFilteredComplainList] = useState([]);
+  const [timeFilter, setTimeFilter] = useState("");
+
+
+  // useEffect(() => {
+  //   const fetchPendingMaintenance = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         `${process.env.REACT_APP_BASE_URL}/v1/api/announcement`
+  //       );
+  //       setUpcomingactivities(response?.data);
+  //     } catch (error) {
+  //       toast.error(error.response?.data?.message);
+  //     }
+  //   };
+
+  //   fetchPendingMaintenance();
+  // }, []);
 
   useEffect(() => {
-    const fetchPendingMaintenance = async () => {
+    const fetchAnnouncements = async () => {
       try {
         const response = await axios.get(
           `${process.env.REACT_APP_BASE_URL}/v1/api/announcement`
         );
-        setUpcomingactivities(response?.data);
+       const activityData = response.data.filter((item) => item.type === "Activity")
+        setEventsParticipation(activityData);
+        setFilteredComplainList(activityData);
       } catch (error) {
-        toast.error(error.response?.data?.message);
+        toast.error(error.response?.data?.message || "Failed to fetch data.");
       }
     };
-
-    fetchPendingMaintenance();
+    fetchAnnouncements();
   }, []);
+
+  useEffect(() => {
+    filterComplains(timeFilter, eventsParticipation, setFilteredComplainList,"date");
+  }, [timeFilter]);
+
 
   const getRandomColor = () => {
     const letters = "0123456789ABCDEF";
@@ -34,16 +59,20 @@ const UpcomingActivitys = () => {
       <div className="flex justify-between items-center p-2 pb-1 mb-1">
         <h1 className="text-xl font-semibold">Upcoming Activity</h1>
         <div className="relative">
-          <select className="bg-gray-100 border border-gray-300 rounded-md p-2">
-            <option>Week</option>
-            <option>Month</option>
-            <option>Year</option>
+        <select
+            className="bg-gray-100 border border-gray-300 rounded-md p-2 outline-none"
+            value={timeFilter}
+            onChange={(e) => setTimeFilter(e.target.value)} 
+          >
+            <option value="Week">Week</option>
+            <option value="Month">Month</option>
+            <option value="Year">Year</option>
           </select>
         </div>
       </div>
       <div className="h-[218px] overflow-y-auto rounded-b-lg">
-        {upcomingactivities?.length > 0 ? (
-          upcomingactivities.map((activity, index) => (
+        {filteredComplainList?.length > 0 ? (
+          filteredComplainList?.map((activity, index) => (
             <div
               key={index}
               className="flex justify-between items-center p-1 border-b border-gray-200"

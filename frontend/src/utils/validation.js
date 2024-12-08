@@ -62,3 +62,32 @@ export const formatTime = (timeString) => {
   });
   return formattedTime;
 };
+
+export const filterComplains = (filter, originalArray, setFilteredData,dateField ) => {
+  const currentDate = new Date();
+  let filteredData = [];
+  
+  if (filter === "Week") {
+    const weekAgo = new Date(currentDate.setDate(currentDate.getDate() - 7));
+    filteredData = originalArray?.filter((complaint) => {
+      const complaintDate = new Date(complaint[dateField]);
+      return complaintDate >= weekAgo;
+    });
+  } else if (filter === "Month") {
+    const monthAgo = new Date(currentDate.setMonth(currentDate.getMonth() - 1));
+    filteredData = originalArray?.filter((complaint) => {
+      const complaintDate = new Date(complaint[dateField]);
+      return complaintDate >= monthAgo;
+    });
+  } else if (filter === "Year") {
+    const yearAgo = new Date(currentDate.setFullYear(currentDate.getFullYear() - 1));
+    filteredData = originalArray?.filter((complaint) => {
+      const complaintDate = new Date(complaint[dateField]);
+      return complaintDate >= yearAgo;
+    });
+  } else {
+    filteredData = originalArray;
+  }
+
+  setFilteredData(filteredData);
+};
