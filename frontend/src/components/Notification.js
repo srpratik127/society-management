@@ -16,8 +16,14 @@ const Notification = () => {
   const notification = useSelector((store) => store.notification.notification);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [detailsViewPopup, setDetailsViewPopup] = useState(false);
-  const [personAmount, setPersonAmount] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const [incomePopupContent, setIncomePopupContent] = useState(null);
+  const [membersOfIncomeDetails, setMembersOfIncomeDetails] = useState({
+    members: "",
+    totalAmount: "",
+    perPersonAmount: "",
+  });
 
   useEffect(() => {
     const fetchNotification = async () => {
@@ -79,17 +85,52 @@ const Notification = () => {
     }
   };
 
+  const handelAcceptorRejectMaintenance = async (notification, status) => {
+    try {
+      setLoading(true);
+      const response = await axios.put(
+        `${process.env.REACT_APP_BASE_URL}/v1/api/maintenance/update-status/${notification?.otherContent?.maintenanceId}`,
+        {
+          userId: notification?.otherContent?.userId,
+          paymentMethod: "cash",
+          status,
+        }
+      );
+      toast.success(response.data.message);
+      handleClearSingleNotification(notification._id);
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message || "Error processing acceptance."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const acceptorRejectOtherIncome = async (notification, status) => {
+    const response = await axios.put(
+      `${process.env.REACT_APP_BASE_URL}/v1/api/income/add-member/${notification?.otherContent?.incomeId}`,
+      {
+        userId: notification?.otherContent?.userId,
+        paymentMethod: "cash",
+        status,
+        payAmount: notification?.otherContent?.payAmount,
+      }
+    );
+    toast.success(response.data.message);
+    handleClearSingleNotification(notification._id);
+  };
+
   const HandelView = (title, item) => {
     if (user?.user_role === "resident") {
       //resident
       if (title.trim().includes("Income")) {
-        // show popup
-        setPersonAmount(item.amount);
+        setIncomePopupContent(item.otherContent);
         setIsDetailsOpen(true);
       } else if (title.includes("Maintenance")) {
         navigate("/resident/maintenance-invoices");
       } else if (title.includes("Announcement")) {
-        AddMemberAnnouncement(item.otherContent, item);
+        AddMemberAnnouncement(item?.otherContent?.announcementId, item);
       }
     } else if (user?.user_role === "admin") {
       //admin
@@ -152,7 +193,7 @@ const Notification = () => {
                             <span className="text-blue-500">{item.name}</span>
                           </p>
                           <p className="text-[#4F4F4F] my-2">
-                            Schedule Date:{" "}
+                            createdAt Date:{" "}
                             <span className="">
                               {new Date(item.date).toLocaleString("en-GB", {
                                 day: "2-digit",
@@ -169,21 +210,59 @@ const Notification = () => {
                               <button
                                 className="bg-white border border-gray-300 font-semibold text-gray-700 py-1 px-4 rounded-lg me-3"
                                 onClick={() => {
-                                  HandelView(item.title, item);
-                                  close();
+                                  if (
+                                    item.name ===
+                                    "Maintenance Payment Notification"
+                                  ) {
+                                    handelAcceptorRejectMaintenance(
+                                      item,
+                                      "done"
+                                    );
+                                  } else if (
+                                    item.name ===
+                                    "Other Income Payment Notification"
+                                  ) {
+                                    acceptorRejectOtherIncome(item, "done");
+                                  } else {
+                                    HandelView(item.title, item);
+                                    close();
+                                  }
                                 }}
                               >
-                                View
+                                {item.name ===
+                                  "Maintenance Payment Notification" ||
+                                item.name ===
+                                  "Other Income Payment Notification"
+                                  ? "Accept"
+                                  : "View"}
                               </button>
 
                               <button
                                 type="submit"
-                                onClick={() =>
-                                  handleClearSingleNotification(item._id)
-                                }
+                                onClick={() => {
+                                  if (
+                                    item.name ===
+                                    "Maintenance Payment Notification"
+                                  ) {
+                                    handelAcceptorRejectMaintenance(
+                                      item,
+                                      "rejected"
+                                    );
+                                  } else if (
+                                    item.name ===
+                                    "Other Income Payment Notification"
+                                  ) {
+                                    acceptorRejectOtherIncome(item, "rejected");
+                                  } else {
+                                    handleClearSingleNotification(item._id);
+                                  }
+                                }}
                                 className={`py-1 px-4 rounded-lg ${"bg-[#5678E9] font-semibold text-white"}`}
                               >
-                                Decline
+                                {item.name ===
+                                "Maintenance Payment Notification"
+                                  ? "Reject"
+                                  : "Decline"}
                               </button>
                             </div>
                             <p className="text-sm text-[#A7A7A7]">
@@ -211,16 +290,15 @@ const Notification = () => {
             onClose={() => {
               setIsDetailsOpen(false);
             }}
-            personAmount={personAmount}
+            incomePopupContent={incomePopupContent}
             setDetailsViewPopup={setDetailsViewPopup}
+            setMembersOfIncomeDetails={setMembersOfIncomeDetails}
           />
         )}
         {detailsViewPopup && (
           <DetailsViewPopup
             onClose={() => setDetailsViewPopup(false)}
-            // perPersonAmount={perPersonAmount}
-            // members={members}
-            // totalAmount={totalAmount}
+            membersOfIncomeDetails={membersOfIncomeDetails}
           />
         )}
       </Popover>

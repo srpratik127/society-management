@@ -87,11 +87,11 @@ const Dashboard = () => {
         ))}
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-4 mb-4">
-        <div className="w-full lg:w-2/4 bg-white p-3 rounded-lg shadow overflow-hidden">
+      <div className="block lg:flex gap-4 mb-4">
+        <div className="w-full lg:w-2/4 bg-white p-3 rounded-lg shadow overflow-hidden mb-4 lg:mb-0 ">
           <LineChart />
         </div>
-        <div className="flex flex-col lg:flex-row gap-4 w-full lg:w-2/4">
+        <div className="flex flex-col md:flex-row gap-4 w-full lg:w-2/4">
           <div className="shadow bg-white rounded-lg w-full lg:w-1/2 p-3">
             <ImportantNum />
           </div>

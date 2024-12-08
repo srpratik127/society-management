@@ -49,11 +49,11 @@ const Sidebar = () => {
         onClick={() => dispatch(ToggleMenu())}
       />
       <div className="px-4 pb-2 text-center">
-        <h1 className="text-4xl font-bold p-4 text-[#FE512E] to-[#F09619] select-none cursor-pointer">
+        <h1 className="text-4xl font-bold p-4 text-[#FE512E] to-[#F09619] select-none cursor-pointer border-b">
           Dash<span className="text-black">Stack</span>
         </h1>
       </div>
-      <div className="flex-1">
+      <div className="flex-1 mt-3">
         <ul className="space-y-2">
           {sidebarData.map((sidebar) => {
             const isActive =

@@ -1,16 +1,25 @@
 import { useState } from "react";
 import DetailsViewPopup from "./DetailsViewPopup";
 
-const DetailPopup = ({ onClose, personAmount, setDetailsViewPopup }) => {
+const DetailPopup = ({
+  onClose,
+  incomePopupContent,
+  setDetailsViewPopup,
+  setMembersOfIncomeDetails,
+}) => {
   const [members, setMembers] = useState(1);
-  const perPersonAmount = personAmount;
+  const perPersonAmount = incomePopupContent.amount;
   const totalAmount = members * perPersonAmount;
 
   const handleGetPassClick = () => {
     setDetailsViewPopup(true);
+    setMembersOfIncomeDetails({
+      members,
+      totalAmount,
+      perPersonAmount: incomePopupContent.amount,
+    });
     onClose();
   };
-
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">

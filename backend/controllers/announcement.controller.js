@@ -29,7 +29,7 @@ const createAnnouncement = async (req, res) => {
             title: "New Announcement",
             name : title,
             message: `A new Announcement "${title}" has been created.`,
-            otherContent: response._id,
+            otherContent: {announcementId: response._id},
             users,
           }).save();
 

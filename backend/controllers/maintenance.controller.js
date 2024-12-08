@@ -203,10 +203,17 @@ const createOrder = async (req, res) => {
 
 const verifyPayment = async (req, res) => {
   try {
-    const { razorpayOrderId, razorpayPaymentId, razorpaySignature, maintenanceId, userId, paymentMethod } = req.body;
+    const {
+      razorpayOrderId,
+      razorpayPaymentId,
+      razorpaySignature,
+      maintenanceId,
+      userId,
+      paymentMethod,
+    } = req.body;
     const body = razorpayOrderId + "|" + razorpayPaymentId;
     const expectedSignature = crypto
-      .createHmac("sha256", process.env.RAZORPAY_SECRET_KEY) 
+      .createHmac("sha256", process.env.RAZORPAY_SECRET_KEY)
       .update(body.toString())
       .digest("hex");
 
@@ -220,10 +227,12 @@ const verifyPayment = async (req, res) => {
       return res.status(404).json({ message: "Maintenance record not found" });
     }
 
-    const member = maintenance.member.find(m => m.user.toString() === userId);
+    const member = maintenance.member.find((m) => m.user.toString() === userId);
 
     if (!member) {
-      return res.status(404).json({ message: "User not found in maintenance record" });
+      return res
+        .status(404)
+        .json({ message: "User not found in maintenance record" });
     }
 
     member.status = "done";
@@ -237,10 +246,11 @@ const verifyPayment = async (req, res) => {
     });
   } catch (error) {
     console.error("Error verifying payment:", error);
-    res.status(500).json({ message: "Error verifying payment", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error verifying payment", error: error.message });
   }
 };
-
 
 const paymentForMaintenance = async (req, res) => {
   try {
@@ -251,29 +261,40 @@ const paymentForMaintenance = async (req, res) => {
       return res.status(400).json({ message: "All fields are required." });
     }
 
-    const maintenance = await Maintenance.findById(maintenanceId);
+    const resident = await Resident.findById(userId);
 
-    if (!maintenance) {
-      return res.status(404).json({ message: "Maintenance record not found." });
-    }
-
-    const member = maintenance.member.find((m) => m.user.toString() === userId);
-
-    if (!member) {
-      return res
-        .status(404)
-        .json({ message: "Admin not found in maintenance record." });
-    }
-
-    member.status = "done";
-    member.paymentMethod = paymentMethod;
-
-    await maintenance.save();
+    if (paymentMethod === "cash") {
+      const notificationUsers = [
+        ...(await Admin.find().select("_id")).map(({ _id }) => ({
+          _id,
+          model: "Admin",
+        })),
+      ];
+      const newNotification = await new Notification({
+        title: `Cash payment received for Maintenance from ${resident.fullName}`,
+        name: "Maintenance Payment Notification",
+        message: `Amount has been received or not ??`,
+        users: notificationUsers,
+        otherContent: {
+          maintenanceId,
+          userId,
+        },
+      }).save();
 
       res.status(200).json({
-        message: "Payment status updated successfully.",
-        data: maintenance,
+        notification: newNotification,
       });
+    }
+
+    // member.status = "done";
+    // member.paymentMethod = paymentMethod;
+
+    // await maintenance.save();
+
+    // res.status(200).json({
+    //   message: "Payment status updated successfully.",
+    //   data: maintenance,
+    // });
   } catch (error) {
     console.error("Error updating payment status:", error);
     res.status(500).json({
@@ -324,8 +345,6 @@ const getDoneMaintenanceByUser = async (req, res) => {
       select: "fullName profile_picture wing unit phone role email",
     });
 
-    console.log("Maintenance Records:", maintenanceRecords);
-
     const filteredRecords = maintenanceRecords
       .map((record) => {
         const member = record.member.find(
@@ -341,7 +360,6 @@ const getDoneMaintenanceByUser = async (req, res) => {
       data: filteredRecords,
     });
   } catch (error) {
-    console.error("Error fetching done maintenance records for user:", error);
     res.status(500).json({
       message: "Error fetching maintenance records.",
       error: error.message,
@@ -405,6 +423,66 @@ const generateInvoicePDF = async (req, res) => {
   });
 };
 
+const updateOrRejectPayment = async (req, res) => {
+  try {
+    const { maintenanceId } = req.params;
+    const { userId, paymentMethod, status } = req.body;
+
+    const maintenance = await Maintenance.findById(maintenanceId);
+    if (!maintenance) {
+      return res.status(404).json({ message: "Maintenance record not found." });
+    }
+    const member = maintenance.member.find((m) => m.user.toString() === userId);
+    if (!member) {
+      return res
+        .status(404)
+        .json({ message: "Member not found in this maintenance record." });
+    }
+
+    if (status === "done") {
+      member.status = "done";
+      if (paymentMethod) member.paymentMethod = paymentMethod;
+
+      await maintenance.save();
+
+      const repaymentNotification = new Notification({
+        title: "Maintenance Payment Approved",
+        name: "Approved maintenance Payment",
+        message: `Your payment for maintenance has been Approved.`,
+        users: [{ _id: userId, model: "Resident" }],
+      });
+      await repaymentNotification.save();
+      
+      return res.status(200).json({
+        message: "Payment accepted successfully.",
+        updatedMember: member,
+      });
+    } else if (status === "rejected") {
+      // Handle payment rejection
+      const newNotification = new Notification({
+        title: "Payment Rejected",
+        name: "Rejected maintenance Payment",
+        message: `Your payment for maintenance has been rejected. Please make the payment again.`,
+        users: [{ _id: userId, model: "Resident" }],
+      });
+      await newNotification.save();
+
+      return res.status(200).json({
+        message: "Payment rejected and notification sent to the resident.",
+        updatedMember: member,
+      });
+    } else {
+      return res.status(400).json({ message: "Invalid status provided." });
+    }
+  } catch (error) {
+    console.error("Error updating payment status:", error);
+    res.status(500).json({
+      message: "Error updating payment status.",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   addMaintenance,
   getStatus,
@@ -417,4 +495,5 @@ module.exports = {
   getTotalAmount,
   getDoneMaintenanceByUser,
   generateInvoicePDF,
+  updateOrRejectPayment,
 };
