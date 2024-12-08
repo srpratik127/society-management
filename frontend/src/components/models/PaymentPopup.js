@@ -44,17 +44,12 @@ const PaymentPopup = ({
       try {
         if (selectOtherIncome) {
           const response = await axios.put(
-            `${process.env.REACT_APP_BASE_URL}/v1/api/income/add-member/${selectOtherIncome._id}`,
+            `${process.env.REACT_APP_BASE_URL}/v1/api/income/notify/${selectOtherIncome._id}`,
             {
               user: userId,
               paymentMethod: "cash",
               payAmount: selectOtherIncome.amount,
             }
-          );
-          setOtherIncomeData((prev) =>
-            prev.filter(
-              (OtherIncome) => OtherIncome._id !== selectOtherIncome._id
-            )
           );
         }
         if (selectMaintenance) {
@@ -62,13 +57,8 @@ const PaymentPopup = ({
             `${process.env.REACT_APP_BASE_URL}/v1/api/maintenance/${selectMaintenance._id}`,
             { userId, paymentMethod: "cash" }
           );
-          setMaintenance((prev) =>
-            prev.filter(
-              (Maintenance) => Maintenance._id !== selectMaintenance._id
-            )
-          );
         }
-        toast.success("Cash Payment Successful!");
+        toast.success("Cash Payment requited Admin Approve Required.");
         onClose();
         resetForm();
       } catch (error) {
@@ -79,16 +69,6 @@ const PaymentPopup = ({
         setIsConform(true);
       } else {
         if (validateForm()) {
-          const paymentData = {
-            amount: selectMaintenance
-              ? selectMaintenance.amount
-              : selectOtherIncome.amount,
-            userId: userId,
-            incomeId: selectMaintenance
-              ? selectMaintenance._id
-              : selectOtherIncome._id,
-            paymentMethod: "online",
-          };
           if (selectMaintenance) {
             try {
               const response = await axios.post(
@@ -118,7 +98,7 @@ const PaymentPopup = ({
                     paymentMethod: "online",
                     userId: userId,
                     maintenanceId: selectMaintenance._id,
-                    incomeId: null, 
+                    incomeId: null,
                   };
 
                   try {
@@ -239,7 +219,7 @@ const PaymentPopup = ({
     setFormData((prev) => ({ ...prev, expiryDate: date }));
   };
 
-  if (!isOpen) return null; 
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">

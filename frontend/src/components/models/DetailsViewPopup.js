@@ -1,15 +1,9 @@
 import React, { useState } from "react";
 import PaymentPopup from "./PaymentPopup";
 
-const DetailsViewPopup = ({ onClose, perPersonAmount, members, totalAmount }) => {
-  const [isViewOpen, setIsViewOpen] = useState(false);
+const DetailsViewPopup = ({ onClose, membersOfIncomeDetails }) => {
 
   const handleOpen = () => {
-    setIsViewOpen(true);
-  };
-
-  const handleClosePopup = () => {
-    setIsViewOpen(false);
   };
 
   return (
@@ -18,21 +12,23 @@ const DetailsViewPopup = ({ onClose, perPersonAmount, members, totalAmount }) =>
         <h2 className="text-lg font-semibold mb-4">Detail of the Per Person</h2>
 
         <div className="flex justify-between items-center mb-4">
-          <label className="text-gray-600 font-medium">Per Person Amount:</label>
+          <label className="text-gray-600 font-medium">
+            Per Person Amount:
+          </label>
           <span className="font-medium text-gray-700">
-            {/* ₹ {perPersonAmount.toLocaleString()} */}
+            ₹ {membersOfIncomeDetails.perPersonAmount}
           </span>
         </div>
 
         <div className="flex justify-between items-center mb-4">
           <label className="text-gray-600 font-medium">Total Member:</label>
-          {/* <span className="font-medium text-gray-700">{members}</span> */}
+          <span className="font-medium text-gray-700">{membersOfIncomeDetails.members}</span>
         </div>
 
         <div className="flex justify-between items-center mb-6">
           <label className="text-gray-600 font-medium">Total Amount:</label>
           <span className="font-medium text-gray-800">
-            {/* ₹ {totalAmount.toLocaleString()} */}
+            ₹ {membersOfIncomeDetails.totalAmount}
           </span>
         </div>
 
@@ -51,8 +47,6 @@ const DetailsViewPopup = ({ onClose, perPersonAmount, members, totalAmount }) =>
           </button>
         </div>
       </div>
-
-      {isViewOpen && <PaymentPopup onClose={handleClosePopup} />}
     </div>
   );
 };

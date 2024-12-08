@@ -84,7 +84,7 @@ const ComplainTable = () => {
           </select>
         </div>
       </div>
-      <div className="max-w-[91vw] overflow-auto h-[225px] ">
+      <div className="max-w-[91vw] overflow-auto h-[218px] ">
         <table className="min-w-full  bg-white">
           <thead className="sticky top-0 bg-gray-100">
             <tr className="text-left text-sm ">
@@ -189,8 +189,8 @@ const ComplainTable = () => {
               ))
             ) : (
               <tr className="text-gray-500 select-none">
-                <td className="text-center py-4 leading-[149px]" colSpan="100%">
-                  No Data found.
+                <td className="text-center py-4 leading-[140px]" colSpan="100%">
+                  No Complaint Data found.
                 </td>
               </tr>
             )}

@@ -81,7 +81,7 @@ const Poll = () => {
             {pollsData.map((poll) => (
               <div
                 key={poll._id}
-                className="bg-white shadow rounded-lg p-4 space-y-4"
+                className="bg-white shadow rounded-lg p-4 space-y-4 border"
               >
                 <div className="flex items-center justify-between border-b pb-3">
                   <div className="flex items-center space-x-4">

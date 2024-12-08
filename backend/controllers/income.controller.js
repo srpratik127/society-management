@@ -10,7 +10,6 @@ const razorpayInstance = new Razorpay({
   key_secret: process.env.RAZORPAY_SECRET_KEY,
 });
 
-
 const createIncome = async (req, res) => {
   try {
     const { title, date, dueDate, description, amount } = req.body;
@@ -39,6 +38,7 @@ const createIncome = async (req, res) => {
       message: `Per Person Amount : ₹${amount}
       A new income "${title}" has been created. `,
       users,
+      otherContent: savedIncome,
     }).save();
 
     res.status(201).json({
@@ -105,34 +105,35 @@ const deleteIncome = async (req, res) => {
   }
 };
 
-const addMemberToIncome = async (req, res) => {
+const notifyToIncome = async (req, res) => {
   try {
     const { user, payAmount, paymentMethod } = req.body;
-    const income = await Income.findByIdAndUpdate(
-      req.params.id,
-      {
-        $push: {
-          members: {
-            user: user,
-            paymentMethod: paymentMethod,
-            payAmount: payAmount,
-            status: "done",
-          },
+    const notificationUsers = [
+      ...(await Admin.find().select("_id")).map(({ _id }) => ({
+        _id,
+        model: "Admin",
+      })),
+    ];
+
+    const resident = await Resident.findById(user);
+
+    if (paymentMethod === "cash") {
+      const newNotification = await new Notification({
+        title: `Cash payment received for OtherIncome from ${resident.fullName}`,
+        name: "Other Income Payment Notification",
+        message: `Amount has been received or not ??`,
+        users: notificationUsers,
+        otherContent: {
+          incomeId: req.params.id,
+          userId: user,
+          payAmount: payAmount,
         },
-      },
-      { new: true }
-    ).populate("members.user", "fullName wing unit role phone");
-    if (!income) {
-      return res.status(404).json({
-        success: false,
-        message: "Income event not found",
+      }).save();
+
+      res.status(200).json({
+        notification: newNotification,
       });
     }
-    res.status(200).json({
-      success: true,
-      message: "Member added successfully to the income event",
-      data: income,
-    });
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -145,14 +146,8 @@ const addMemberToIncome = async (req, res) => {
 const getIncomeExcludingMembers = async (req, res) => {
   try {
     const { userId } = req.params;
-
-    // 1. userId is not in members.user
-    // 2. dueDate is in the past  -- not applied
     const incomes = await Income.find({
-      $and: [
-        { "members.user": { $ne: userId } },
-        // { dueDate: { $lt: new Date() } },
-      ],
+      $and: [{ "members.user": { $ne: userId } }],
     }).select("-members");
 
     res.status(200).json({
@@ -169,12 +164,11 @@ const getIncomeExcludingMembers = async (req, res) => {
   }
 };
 
-
 const createOrder = async (req, res) => {
   try {
     const { amount, userId, paymentMethod, incomeId } = req.body;
     const options = {
-      amount: amount * 100, 
+      amount: amount * 100,
       currency: "INR",
       receipt: `income_${incomeId}`,
       notes: { userId, paymentMethod },
@@ -182,7 +176,7 @@ const createOrder = async (req, res) => {
     const order = await razorpayInstance.orders.create(options);
     res.status(200).json({
       order: order,
-      razorpayKey: process.env.RAZORPAY_KEY_ID, 
+      razorpayKey: process.env.RAZORPAY_KEY_ID,
     });
   } catch (error) {
     console.error("Error creating Razorpay order:", error);
@@ -195,10 +189,18 @@ const createOrder = async (req, res) => {
 
 const verifyPayment = async (req, res) => {
   try {
-    const {razorpayOrderId, razorpayPaymentId, razorpaySignature, incomeId, userId, amount, paymentMethod } = req.body;
-    const shasum = crypto.createHmac('sha256', process.env.RAZORPAY_SECRET_KEY);
+    const {
+      razorpayOrderId,
+      razorpayPaymentId,
+      razorpaySignature,
+      incomeId,
+      userId,
+      amount,
+      paymentMethod,
+    } = req.body;
+    const shasum = crypto.createHmac("sha256", process.env.RAZORPAY_SECRET_KEY);
     shasum.update(`${razorpayOrderId}|${razorpayPaymentId}`);
-    const digest = shasum.digest('hex');
+    const digest = shasum.digest("hex");
     if (digest === razorpaySignature) {
       if (incomeId) {
         const income = await Income.findByIdAndUpdate(
@@ -214,24 +216,86 @@ const verifyPayment = async (req, res) => {
             },
           },
           { new: true }
-        )
+        );
         res.status(200).json({
-          message: 'Payment verified successfully and income record deleted'
+          message: "Payment verified successfully and income record deleted",
         });
       } else {
-        res.status(400).json({ message: 'Income ID is missing' });
+        res.status(400).json({ message: "Income ID is missing" });
       }
-
     } else {
-      res.status(400).json({ message: 'Invalid signature' });
+      res.status(400).json({ message: "Invalid signature" });
     }
   } catch (error) {
     console.error("Error verifying payment:", error);
-    res.status(500).json({ message: 'Error verifying payment', error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error verifying payment", error: error.message });
   }
 };
 
+const updateOrRejectPayment = async (req, res) => {
+  try {
+    const { userId, payAmount, paymentMethod, status } = req.body;
+    if (status === "done") {
+      const income = await Income.findByIdAndUpdate(
+        req.params.incomeId,
+        {
+          $push: {
+            members: {
+              user: userId,
+              paymentMethod: paymentMethod,
+              payAmount: payAmount,
+              status: "done",
+            },
+          },
+        },
+        { new: true }
+      ).populate("members.user", "fullName wing unit role phone");
 
+      if (!income) {
+        return res.status(404).json({
+          success: false,
+          message: "Income event not found",
+        });
+      }
+
+      const repaymentNotification = new Notification({
+        title: "Other Income Payment Approved",
+        name: "Approved Other Income Payment",
+        message: `Your payment for Other Income has been Approved.`,
+        users: [{ _id: userId, model: "Resident" }],
+      });
+      await repaymentNotification.save();
+
+      res.status(200).json({
+        success: true,
+        message: "Member added successfully to the income event",
+        data: income,
+      });
+    } else if (status === "rejected") {
+      const newNotification = new Notification({
+        title: "Payment Rejected",
+        name: "Rejected Other Income Payment",
+        message: `Your payment for Other Income has been rejected. Please make the payment again.`,
+        users: [{ _id: userId, model: "Resident" }],
+      });
+      await newNotification.save();
+
+      return res.status(200).json({
+        message: "Payment rejected and notification sent to the resident.",
+      });
+    } else {
+      return res.status(400).json({ message: "Invalid status provided." });
+    }
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error added members in incomes",
+      error: error.message,
+    });
+  }
+};
 
 module.exports = {
   createIncome,
@@ -239,7 +303,8 @@ module.exports = {
   updateIncome,
   getIncomeExcludingMembers,
   deleteIncome,
-  addMemberToIncome,
+  notifyToIncome,
   createOrder,
-  verifyPayment
+  verifyPayment,
+  updateOrRejectPayment,
 };
