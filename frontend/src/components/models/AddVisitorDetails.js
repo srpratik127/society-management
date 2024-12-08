@@ -244,7 +244,6 @@ const AddVisitorDetails = ({ isOpen, closeModal, setVisitorData }) => {
                   : "bg-gray-100 text-gray-500"
               } rounded-lg py-2`}
             >
-              Save
               {!loader ? "Save" : <Loader />}
             </button>
           </div>

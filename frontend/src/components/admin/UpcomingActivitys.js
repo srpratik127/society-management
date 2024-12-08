@@ -3,21 +3,36 @@ import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 const UpcomingActivitys = () => {
-  const [upcomingactivities, setUpcomingactivities] = useState([]);
+  const [eventsParticipation, setEventsParticipation] = useState([]);
+
+  // useEffect(() => {
+  //   const fetchPendingMaintenance = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         `${process.env.REACT_APP_BASE_URL}/v1/api/announcement`
+  //       );
+  //       setUpcomingactivities(response?.data);
+  //     } catch (error) {
+  //       toast.error(error.response?.data?.message);
+  //     }
+  //   };
+
+  //   fetchPendingMaintenance();
+  // }, []);
 
   useEffect(() => {
-    const fetchPendingMaintenance = async () => {
+    const fetchAnnouncements = async () => {
       try {
         const response = await axios.get(
           `${process.env.REACT_APP_BASE_URL}/v1/api/announcement`
         );
-        setUpcomingactivities(response?.data);
+       const activityData = response.data.filter((item) => item.type === "Activity")
+        setEventsParticipation(activityData);
       } catch (error) {
-        toast.error(error.response?.data?.message);
+        toast.error(error.response?.data?.message || "Failed to fetch data.");
       }
     };
-
-    fetchPendingMaintenance();
+    fetchAnnouncements();
   }, []);
 
   const getRandomColor = () => {
@@ -42,8 +57,8 @@ const UpcomingActivitys = () => {
         </div>
       </div>
       <div className="h-[225px] overflow-y-auto rounded-b-lg">
-        {upcomingactivities?.length > 0 ? (
-          upcomingactivities.map((activity, index) => (
+        {eventsParticipation?.length > 0 ? (
+          eventsParticipation?.map((activity, index) => (
             <div
               key={index}
               className="flex justify-between items-center p-1 border-b border-gray-200"
