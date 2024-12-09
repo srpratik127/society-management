@@ -11,14 +11,18 @@ const Income = () => {
   const [isConfirmPassword, setIsConfirmPassword] = useState(false);
   const [isAddMaintenance, setIsAddMaintenance] = useState(false);
   const [maintenance, setMaintenance] = useState([]);
+  const [loader, setLoader] = useState(false);
 
   const viewMaintenanceFn = async () => {
     try {
+      setLoader(true);
       const response = await axios.get(
         `${process.env.REACT_APP_BASE_URL}/v1/api/maintenance`
       );
       setMaintenance(response?.data);
+      setLoader(false);
     } catch (error) {
+      setLoader(false);
       toast.error(error.response?.data?.message);
     }
   };
@@ -118,10 +122,15 @@ const Income = () => {
             Other Income
           </button>
         </div>
+
         {view === "maintenance" && (
-          <ViewMaintenance maintenance={maintenance} />
+          <ViewMaintenance maintenance={maintenance} loader={loader}/>
         )}
+
+        
         {view === "other" && <OtherIncome />}
+
+
       </div>
       {isConfirmPassword && (
         <ConfirmPassword

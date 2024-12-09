@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import ViewMaintenanceDetails from "../models/ViewMaintenanceDetails";
+import Loader from "../Loader";
 
-const ViewMaintenance = ({ maintenance }) => {
+const ViewMaintenance = ({ maintenance, loader }) => {
   const [selectedMaintenance, setSelectedMaintenance] = useState();
   const [showMaintenancePopup, setShowMaintenancePopup] = useState(false);
 
@@ -27,7 +28,13 @@ const ViewMaintenance = ({ maintenance }) => {
             </tr>
           </thead>
           <tbody>
-            {maintenance?.length > 0 ? (
+            {loader ? (
+              <tr className="text-gray-500 select-none">
+                <td className="text-center py-4 leading-[140px]" colSpan="100%">
+                  <Loader />
+                </td>
+              </tr>
+            ) : maintenance?.length > 0 ? (
               maintenance.map((record, index) =>
                 record.member.map((member, memberIndex) => {
                   const currentDate = new Date();
@@ -46,7 +53,9 @@ const ViewMaintenance = ({ maintenance }) => {
                           src={member?.user?.profile_picture}
                           alt="Profile"
                         />
-                        <span className="text-nowrap">{member?.user?.fullName}</span>
+                        <span className="text-nowrap">
+                          {member?.user?.fullName}
+                        </span>
                       </td>
                       <td className="text-center">
                         <span className="p-2 text-[#5678E9] bg-[#F6F8FB] font-semibold py-1 rounded-full">
@@ -81,7 +90,9 @@ const ViewMaintenance = ({ maintenance }) => {
                           {member?.user?.role}
                         </span>
                       </td>
-                      <td className="px-4 py-2 text-nowrap">+91 {member?.user?.phone}</td>
+                      <td className="px-4 py-2 text-nowrap">
+                        +91 {member?.user?.phone}
+                      </td>
                       <td className="px-4 py-2 text-green-600">
                         ₹ {record.amount}
                       </td>
@@ -92,7 +103,7 @@ const ViewMaintenance = ({ maintenance }) => {
                               ? "text-[#FFFFFF] font-semibold bg-[#E74C3C]"
                               : "bg-[#F6F8FB]"
                           }`}
-                        >                          
+                        >
                           {isPenaltyApplied ? record.penaltyAmount : "--"}
                         </span>
                       </td>

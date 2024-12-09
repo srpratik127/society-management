@@ -3,23 +3,28 @@ import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import AddVisitorDetails from "../../components/models/AddVisitorDetails";
 import { filterComplains } from "../../utils/validation";
+import Loader from "../../components/Loader";
 
 const VisitorLogs = ({ isAddable }) => {
   const [visitorData, setVisitorData] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [filteredComplainList, setFilteredComplainList] = useState([]);
   const [timeFilter, setTimeFilter] = useState("");
+  const [loader, setLoader] = useState(false);
 
   useEffect(() => {
     const fetchComplainList = async () => {
       try {
+        setLoader(true);
         const response = await axios.get(
           `${process.env.REACT_APP_BASE_URL}/v1/api/visitors`
         );
         setVisitorData(response?.data);
         setFilteredComplainList(response?.data);
+        setLoader(false);
       } catch (error) {
         toast.error(error.response.data.message);
+        setLoader(false);
       }
     };
 
@@ -27,18 +32,18 @@ const VisitorLogs = ({ isAddable }) => {
   }, []);
 
   useEffect(() => {
-    filterComplains(timeFilter, visitorData, setFilteredComplainList,"date");
-  }, [timeFilter,visitorData]);
+    filterComplains(timeFilter, visitorData, setFilteredComplainList, "date");
+  }, [timeFilter, visitorData]);
 
   return (
     <div className="bg-white rounded-lg px-4 pt-2 m-6 shadow">
       <div className="flex justify-between items-center mb-2">
         <h1 className="text-xl font-semibold">Visitor Logs</h1>
         <div className="flex gap-3">
-        <select
+          <select
             className="bg-gray-100 border border-gray-300 rounded-md p-2 outline-none"
             value={timeFilter}
-            onChange={(e) => setTimeFilter(e.target.value)} 
+            onChange={(e) => setTimeFilter(e.target.value)}
           >
             <option value="Week">Week</option>
             <option value="Month">Month</option>
@@ -80,7 +85,13 @@ const VisitorLogs = ({ isAddable }) => {
             </tr>
           </thead>
           <tbody>
-            {filteredComplainList.length > 0 ? (
+            {loader ? (
+              <tr className="text-gray-500 select-none">
+                <td className="text-center py-4 leading-[140px]" colSpan="100%">
+                  <Loader />
+                </td>
+              </tr>
+            ) : filteredComplainList.length > 0 ? (
               filteredComplainList.map((securityManagement) => (
                 <tr key={securityManagement._id} className="border-b">
                   <td className="py-3 px-6 flex items-center text-center text-nowrap min-w-[200px]">

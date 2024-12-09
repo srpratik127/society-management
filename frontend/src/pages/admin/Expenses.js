@@ -5,6 +5,7 @@ import ViewExpense from "../../components/models/ViewExpense";
 import EditExpensesDetails from "../../components/models/EditExpensesDetails";
 import DeleteModel from "../../components/models/DeleteModel";
 import toast from "react-hot-toast";
+import Loader from "../../components/Loader";
 
 const Expenses = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -13,16 +14,20 @@ const Expenses = () => {
   const [isPopupDelete, setIsPopupDelete] = useState(false);
   const [selectedItem, setSelectedItem] = useState({});
   const [expansesData, setExpansesData] = useState([]);
+  const [loader, setLoader] = useState(false);
 
   useEffect(() => {
     const fetchExpensesList = async () => {
       try {
+        setLoader(true);
         const response = await axios.get(
           `${process.env.REACT_APP_BASE_URL}/v1/api/expenses`
         );
         setExpansesData(response?.data);
+        setLoader(false);
       } catch (error) {
         toast.error(error.response?.data?.message);
+        setLoader(false);
       }
     };
     fetchExpensesList();
@@ -78,7 +83,16 @@ const Expenses = () => {
               </tr>
             </thead>
             <tbody>
-              {expansesData.length > 0 ? (
+              {loader ? (
+                <tr className="text-gray-500 select-none">
+                  <td
+                    className="text-center py-4 leading-[140px]"
+                    colSpan="100%"
+                  >
+                    <Loader />
+                  </td>
+                </tr>
+              ) : expansesData.length > 0 ? (
                 expansesData.map((item, index) => (
                   <tr key={index} className="border-b hover:bg-gray-50">
                     <td className="px-3">{item.title}</td>
@@ -145,7 +159,7 @@ const Expenses = () => {
               ) : (
                 <tr className="text-gray-500 select-none">
                   <td
-                    className="text-center py-4 leading-[74vh]"
+                    className="text-center py-4 leading-[68vh]"
                     colSpan="100%"
                   >
                     No Data found.
