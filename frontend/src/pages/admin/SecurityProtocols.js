@@ -5,6 +5,7 @@ import ViewProtocol from "../../components/models/ViewProtocol";
 import axios from "axios";
 import DeleteModel from "../../components/models/DeleteModel";
 import toast from "react-hot-toast";
+import Loader from "../../components/Loader";
 
 const SecurityProtocols = () => {
   const [protocols, setProtocols] = useState([]);
@@ -13,16 +14,20 @@ const SecurityProtocols = () => {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const [selectedProtocol, setSelectedProtocol] = useState(null);
+  const [loader, setLoader] = useState(false);
 
   useEffect(() => {
+    setLoader(true);
     const fetchProtocols = async () => {
       try {
         const response = await axios.get(
           `${process.env.REACT_APP_BASE_URL}/v1/api/protocol`
         );
         setProtocols(response?.data);
+        setLoader(false);
       } catch (error) {
         toast.error(error.response?.data?.message);
+        setLoader(false);
       }
     };
 
@@ -35,7 +40,7 @@ const SecurityProtocols = () => {
         `${process.env.REACT_APP_BASE_URL}/v1/api/protocol/${selectedProtocol._id}`
       );
       toast.success("Protocol Deleted successful!");
-  
+
       setProtocols((prev) =>
         prev.filter((request) => request._id !== selectedProtocol._id)
       );
@@ -56,10 +61,13 @@ const SecurityProtocols = () => {
     }
     if (typeof timeString === "number") {
       if (timeString.toString().length === 10) {
-        timeString *= 1000; 
+        timeString *= 1000;
       }
       time = new Date(timeString);
-    } else if (typeof timeString === "string" && /^[0-9]{2}:[0-9]{2}$/.test(timeString)) {
+    } else if (
+      typeof timeString === "string" &&
+      /^[0-9]{2}:[0-9]{2}$/.test(timeString)
+    ) {
       const [hours, minutes] = timeString.split(":");
       time = new Date();
       time.setHours(hours, minutes, 0, 0);
@@ -75,7 +83,7 @@ const SecurityProtocols = () => {
   };
   return (
     <div className="p-6 bg-white m-6 rounded-lg shadow max-w-full">
-      <div className="flex flex-col md:flex-row justify-between items-center mb-6">
+      <div className="flex flex-col md:flex-row justify-between items-center mb-4">
         <h2 className="text-2xl font-semibold mb-4 md:mb-0">
           Security Protocols
         </h2>
@@ -108,7 +116,13 @@ const SecurityProtocols = () => {
             </tr>
           </thead>
           <tbody>
-            {protocols.length > 0 ? (
+            {loader ? (
+              <tr className="text-gray-500 select-none">
+                <td className="text-center py-4 leading-[140px]" colSpan="100%">
+                  <Loader />
+                </td>
+              </tr>
+            ) : protocols.length > 0 ? (
               protocols.map((protocol) => (
                 <tr key={protocol._id} className="border-b border-gray-200">
                   <td className="py-3 px-4 text-gray-700 text-nowrap capitalize">
@@ -125,7 +139,7 @@ const SecurityProtocols = () => {
                     })}
                   </td>
                   <td className="py-3 px-4 text-gray-700 text-center text-nowrap">
-                  {formatTime(protocol.time)}
+                    {formatTime(protocol.time)}
                   </td>
                   <td className="py-3 px-4 flex justify-center space-x-3">
                     <button

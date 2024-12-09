@@ -5,6 +5,7 @@ import ViewComplain from "../../components/models/ViewComplain";
 import EditComplaint from "../../components/models/EditComplaint";
 import DeleteModel from "../../components/models/DeleteModel";
 import toast from "react-hot-toast";
+import Loader from "../../components/Loader";
 
 const CreateComplaint = () => {
   const [complaints, setComplaints] = useState([]);
@@ -13,16 +14,20 @@ const CreateComplaint = () => {
   const [openViewComplain, setOpenViewComplain] = useState(false);
   const [openEditComplain, setOpenEditComplain] = useState(false);
   const [openDeleteComplain, setOpenDeleteComplain] = useState(false);
+  const [loader, setLoader] = useState(false);
 
   useEffect(() => {
     const fetchComplainList = async () => {
       try {
+        setLoader(true);
         const response = await axios.get(
           `${process.env.REACT_APP_BASE_URL}/v1/api/complaints`
         );
+        setLoader(false);
         setComplaints(response?.data?.data);
       } catch (error) {
         toast.error(error.response?.data?.message);
+        setLoader(false);
       }
     };
 
@@ -70,7 +75,7 @@ const CreateComplaint = () => {
               <th className="py-2 px-4 text-nowrap text-gray-600 text-center">
                 Complaint Name
               </th>
-              <th className="py-2 px-4 text-nowrap text-gray-600 text-center">
+              <th className="py-2 px-4 text-nowrap text-gray-600 text-left">
                 Description
               </th>
               <th className="py-2 px-4 text-nowrap text-gray-600 text-center">
@@ -88,7 +93,13 @@ const CreateComplaint = () => {
             </tr>
           </thead>
           <tbody>
-            {complaints.length > 0 ? (
+            {loader ? (
+              <tr className="text-gray-500 select-none">
+                <td className="text-center py-4 leading-[140px]" colSpan="100%">
+                  <Loader />
+                </td>
+              </tr>
+            ) : complaints.length > 0 ? (
               complaints.map((entry, index) => (
                 <tr key={index} className="border-b border-gray-200 capitalize">
                   <td className="py-3 px-4 text-gray-700 flex text-nowrap gap-3 items-center mr-6">
@@ -102,7 +113,7 @@ const CreateComplaint = () => {
                   <td className="py-3 px-4 text-gray-700 text-center text-nowrap">
                     {entry.complaintName}
                   </td>
-                  <td className="py-3 px-4 text-gray-700 text-center text-nowrap">
+                  <td className="py-3 px-4 text-gray-700 ">
                     {entry.description}
                   </td>
                   <td className="py-3 px-4 text-gray-700 text-center text-nowrap">

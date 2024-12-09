@@ -5,6 +5,7 @@ import ViewSecurity from "../../components/models/ViewSecurity";
 import axios from "axios";
 import DeleteModel from "../../components/models/DeleteModel";
 import toast from "react-hot-toast";
+import Loader from "../../components/Loader";
 
 const SecurityGuard = () => {
   const [guards, setGuards] = useState([]);
@@ -14,16 +15,20 @@ const SecurityGuard = () => {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [selectedGuard, setSelectedGuard] = useState(null);
   const [selectedViewGuard, setSelectedViewGuard] = useState(null);
+  const [loader, setLoader] = useState(false);
 
   useEffect(() => {
     const fetchGuards = async () => {
       try {
+        setLoader(true);
         const response = await axios.get(
           `${process.env.REACT_APP_BASE_URL}/v1/api/guard`
         );
         setGuards(response?.data);
+        setLoader(false);
       } catch (error) {
         toast.error(error.response?.data?.message);
+        setLoader(false);
       }
     };
 
@@ -90,7 +95,13 @@ const SecurityGuard = () => {
             </tr>
           </thead>
           <tbody>
-            {guards.length > 0 ? (
+            {loader ? (
+              <tr className="text-gray-500 select-none">
+                <td className="text-center py-4 leading-[140px]" colSpan="100%">
+                  <Loader />
+                </td>
+              </tr>
+            ) : guards.length > 0 ? (
               guards.map((guard) => (
                 <tr key={guard._id} className="border-b hover:bg-gray-50">
                   <td className="py-2 px-2 sm:px-6 flex items-center text-nowrap capitalize">

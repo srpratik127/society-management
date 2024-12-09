@@ -4,10 +4,12 @@ import axios from "axios";
 import AddEditRequestTracking from "../../components/models/AddEditRequestTracking";
 import DeleteModel from "../../components/models/DeleteModel";
 import toast from "react-hot-toast";
+import Loader from "../../components/Loader";
 
 const RequestTracking = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [loader, setLoader] = useState(false);
   const [openDeleteComplain, setOpenDeleteComplain] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState({});
   const [requestProtocols, setRequestProtocols] = useState([]);
@@ -15,12 +17,15 @@ const RequestTracking = () => {
   useEffect(() => {
     const fetchRequestList = async () => {
       try {
+        setLoader(true);
         const response = await axios.get(
           `${process.env.REACT_APP_BASE_URL}/v1/api/requests`
         );
         setRequestProtocols(response?.data);
+        setLoader(false);
       } catch (error) {
         toast.error(error.response?.data?.message);
+        setLoader(false);
       }
     };
     fetchRequestList();
@@ -72,7 +77,9 @@ const RequestTracking = () => {
               ].map((header, idx) => (
                 <th
                   key={idx}
-                  className="py-2 px-2 sm:px-4 text-nowrap font-semibold text-gray-600 text-center"
+                  className={`py-2 px-2 sm:px-4 text-nowrap font-semibold text-gray-600 ${
+                    header !== "Complainer Name" ? "text-center" : "text-left"
+                  }`}
                 >
                   {header}
                 </th>
@@ -80,7 +87,13 @@ const RequestTracking = () => {
             </tr>
           </thead>
           <tbody>
-            {requestProtocols.length > 0 ? (
+            {loader ? (
+              <tr className="text-gray-500 select-none">
+                <td className="text-center py-4 leading-[140px]" colSpan="100%">
+                  <Loader />
+                </td>
+              </tr>
+            ) : requestProtocols.length > 0 ? (
               requestProtocols?.map((entry, index) => (
                 <tr key={index} className="border-b border-gray-200 ">
                   <td className="p-2 sm:px-4 text-gray-700 flex items-center text-nowrap mx-3 capitalize">

@@ -6,6 +6,7 @@ import axios from "axios";
 import DeleteModel from "../models/DeleteModel";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import Loader from "../Loader";
 
 const OtherIncome = () => {
   const [isCreatePopupOpen, setCreatePopupOpen] = useState(false);
@@ -13,17 +14,21 @@ const OtherIncome = () => {
   const [openDeleteIncome, setOpenDeleteIncome] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [otherIncomeData, setOtherIncomeData] = useState([]);
+  const [loader, setLoader] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const viewOtherIncome = async () => {
       try {
+        setLoader(true);
         const response = await axios.get(
           `${process.env.REACT_APP_BASE_URL}/v1/api/income`
         );
+        setLoader(false);
         setOtherIncomeData(response?.data);
       } catch (error) {
         toast.error(error.response?.data?.message);
+        setLoader(false);
       }
     };
     viewOtherIncome();
@@ -62,86 +67,94 @@ const OtherIncome = () => {
           Create Other Income
         </button>
       </div>
-      {otherIncomeData.length > 0 ? (
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4 rounded-lg">
-        {otherIncomeData.map((item, index) => (
-          <div key={index} className="border-2 border-[#5678E9] rounded-xl">
-            <div className="flex mb-2 py-3 w-full rounded-t-lg px-2 bg-[#5678E9] justify-between">
-              <h3 className="text-lg text-white">{item.title}</h3>
-              <Popover className="relative">
-                <Popover.Button>
-                  <img src="/assets/3dots.svg" alt="options" />
-                </Popover.Button>
-                <Popover.Panel className="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 z-50">
-                  <div className="py-2">
-                    <button
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
-                      onClick={() => {
-                        setSelectedItem(item);
-                        setIsEditPopupVisible(true);
-                      }}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
-                      onClick={() => {
-                        navigate("/admin/maintenance-details", {
-                          state: { otherIncome: item },
-                        });
-                      }}
-                    >
-                      View
-                    </button>
-                    <button
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
-                      onClick={() => {
-                        setOpenDeleteIncome(true);
-                        setSelectedItem(item);
-                      }}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </Popover.Panel>
-              </Popover>
+      {loader ? (
+        <Loader />
+      ) : otherIncomeData.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4 rounded-lg">
+          {otherIncomeData.map((item, index) => (
+            <div key={index} className="border-2 border-[#5678E9] rounded-xl">
+              <div className="flex mb-2 py-3 w-full rounded-t-lg px-2 bg-[#5678E9] justify-between">
+                <h3 className="text-lg text-white">{item.title}</h3>
+                <Popover className="relative">
+                  <Popover.Button>
+                    <img src="/assets/3dots.svg" alt="options" />
+                  </Popover.Button>
+                  <Popover.Panel className="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 z-50">
+                    <div className="py-2">
+                      <button
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                        onClick={() => {
+                          setSelectedItem(item);
+                          setIsEditPopupVisible(true);
+                        }}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                        onClick={() => {
+                          navigate("/admin/maintenance-details", {
+                            state: { otherIncome: item },
+                          });
+                        }}
+                      >
+                        View
+                      </button>
+                      <button
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                        onClick={() => {
+                          setOpenDeleteIncome(true);
+                          setSelectedItem(item);
+                        }}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </Popover.Panel>
+                </Popover>
+              </div>
+              <div className="flex justify-between px-3 py-1">
+                <span className="text-sm text-gray-600">
+                  Amount Per Member:
+                </span>
+                <span className="font-medium">₹{item.amount}</span>
+              </div>
+              <div className="flex justify-between px-3 py-1">
+                <span className="text-sm text-gray-600">Total Members:</span>
+                <span className="font-medium">
+                  {item.members?.length || "0"}
+                </span>
+              </div>
+              <div className="flex justify-between px-3 py-1">
+                <span className="text-sm text-gray-600">Date:</span>
+                <span className="font-medium">
+                  {new Date(item.date).toLocaleString("en-GB", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                  })}
+                </span>
+              </div>
+              <div className="flex justify-between px-3 py-1">
+                <span className="text-sm text-gray-600">Due Date:</span>
+                <span className="font-medium">
+                  {new Date(item.dueDate).toLocaleString("en-GB", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                  })}
+                </span>
+              </div>
+              <div className="flex justify-between px-3 py-1">
+                <span className="text-sm mt-2">{item.description}</span>
+              </div>
             </div>
-            <div className="flex justify-between px-3 py-1">
-              <span className="text-sm text-gray-600">Amount Per Member:</span>
-              <span className="font-medium">₹{item.amount}</span>
-            </div>
-            <div className="flex justify-between px-3 py-1">
-              <span className="text-sm text-gray-600">Total Members:</span>
-              <span className="font-medium">{item.members?.length || "0"}</span>
-            </div>
-            <div className="flex justify-between px-3 py-1">
-              <span className="text-sm text-gray-600">Date:</span>
-              <span className="font-medium">
-                {new Date(item.date).toLocaleString("en-GB", {
-                  day: "2-digit",
-                  month: "2-digit",
-                  year: "numeric",
-                })}
-              </span>
-            </div>
-            <div className="flex justify-between px-3 py-1">
-              <span className="text-sm text-gray-600">Due Date:</span>
-              <span className="font-medium">
-                {new Date(item.dueDate).toLocaleString("en-GB", {
-                  day: "2-digit",
-                  month: "2-digit",
-                  year: "numeric",
-                })}
-              </span>
-            </div>
-            <div className="flex justify-between px-3 py-1">
-              <span className="text-sm mt-2">{item.description}</span>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
       ) : (
-        <p className="text-center text-gray-400 select-none">No Other Income Found!</p>
+        <p className="text-center text-gray-400 select-none">
+          No Other Income Found!
+        </p>
       )}
       {isCreatePopupOpen && (
         <CreateOtherIncome
