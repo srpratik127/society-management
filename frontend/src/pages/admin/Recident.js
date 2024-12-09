@@ -5,6 +5,7 @@ import ViewResident from "../../components/models/ViewResident";
 import { useNavigate } from "react-router-dom";
 import DeleteModel from "../../components/models/DeleteModel";
 import toast from "react-hot-toast";
+import Loader from "../../components/Loader";
 
 const Resident = () => {
   const navigate = useNavigate();
@@ -14,16 +15,20 @@ const Resident = () => {
   const [selectedResident, setSelectedResident] = useState(null);
   const [residents, setResidents] = useState([]);
   const [selectViewResidents, setSelectViewResidents] = useState(null);
+  const [loader, setLoader] = useState(false);
 
   useEffect(() => {
     const fetchResidents = async () => {
       try {
+        setLoader(true);
         const response = await axios.get(
           `${process.env.REACT_APP_BASE_URL}/v1/api/resident`
         );
         setResidents(response?.data?.data);
+        setLoader(false);
       } catch (error) {
         toast.error(error.response?.data?.message);
+        setLoader(false);
       }
     };
 
@@ -93,7 +98,13 @@ const Resident = () => {
               </tr>
             </thead>
             <tbody>
-              {residents.length > 0 ? (
+              {loader ? (
+              <tr className="text-gray-500 select-none">
+                <td className="text-center py-4 leading-[140px]" colSpan="100%">
+                  <Loader />
+                </td>
+              </tr>
+            ) : residents.length > 0 ? (
                 residents?.map((resident) => {
                   const Vacate = resident.residenceStatus === "Vacate";
                   return (

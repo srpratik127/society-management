@@ -3,26 +3,31 @@ import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
+import Loader from "../Loader";
 const PendingMaintenances = () => {
+  const [loader, setLoader] = useState(false);
   const [pendingMaintenance, setPendingMaintenance] = useState([]);
   const user = useSelector((store) => store.auth.user);
 
   useEffect(() => {
     const fetchPendingMaintenance = async () => {
       try {
+        setLoader(true);
         const response = await axios.get(
           `${process.env.REACT_APP_BASE_URL}/v1/api/maintenance/pending`
         );
         setPendingMaintenance(response?.data);
+        setLoader(false);
       } catch (error) {
         toast.error(error.response?.data?.message);
+        setLoader(false);
       }
     };
 
     fetchPendingMaintenance();
   }, []);
 
-  return (
+  return loader ? <Loader /> :(
     <>
       <div className="flex justify-between items-center font-semibold bg-white pb-1 ">
         <h2 className="m-0 text-xl">Pending Maintenances</h2>
