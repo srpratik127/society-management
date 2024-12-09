@@ -148,15 +148,14 @@ const Notification = () => {
         <Popover.Button className="relative focus:outline-none p-2 border border-gray-200 rounded-xl hover:shadow-md">
           <img src="/assets/notification-bing.svg" alt="" />
           <span
-            className={`absolute top-1 right-1 ${
-              notification?.length > 0 ? "h-4 w-4" : "h-2 w-2"
-            } bg-red-500 text-white rounded-full text-[10px]`}
+            className={`absolute top-1 right-1 ${notification?.length > 0 ? "h-4 w-4" : "h-2 w-2"
+              } bg-red-500 text-white rounded-full text-[10px]`}
           >
             {notification?.length > 0 && notification?.length}
           </span>
         </Popover.Button>
 
-        <Popover.Panel className="absolute right-0 mt-2 w-[200px] sm:w-[484px] bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 z-50">
+        <Popover.Panel className="absolute right-0 mt-2 w-[250px] sm:w-[484px] bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 z-50">
           {({ close }) => (
             <>
               <div className="px-4 py-2 border-b border-gray-200 flex justify-between items-center">
@@ -179,18 +178,15 @@ const Notification = () => {
                     notification.map((item) => (
                       <div
                         key={item._id}
-                        className="w-full flex items-start gap-3 p-2 border-b mb-2"
+                        className="w-full flex flex-col sm:flex-row items-start gap-3 p-2 border-b mb-2"
                       >
                         <p className="w-12 h-12 bg-[#e74d3c81] text-[#E74C3C] rounded-full text-center text-xl leading-[3rem]">
                           {item.name?.charAt(0).toUpperCase()}
                         </p>
                         <div className="w-full">
-                          <h2 className="text-lg font-semibold">
-                            {item.title}
-                          </h2>
+                          <h2 className="text-lg font-semibold break-words">{item.title}</h2>
                           <p className="text-[#4F4F4F]">
-                            Name:{" "}
-                            <span className="text-blue-500">{item.name}</span>
+                            Name: <span className="text-blue-500">{item.name}</span>
                           </p>
                           <p className="text-[#4F4F4F] my-2">
                             createdAt Date:{" "}
@@ -202,13 +198,13 @@ const Notification = () => {
                               })}
                             </span>
                           </p>
-                          <p className="text-[#4F4F4F] my-2">
-                            Message: <span className="">{item.message}</span>
+                          <p className="text-[#4F4F4F] my-2 break-words">
+                            Message: <span>{item.message}</span>
                           </p>
-                          <div className="flex items-end justify-between gap-3">
-                            <div>
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mt-2">
+                            <div className="flex gap-2">
                               <button
-                                className="bg-white border border-gray-300 font-semibold text-gray-700 py-1 px-4 rounded-lg me-3"
+                                className="bg-white border border-gray-300 font-semibold text-gray-700 py-1 px-4 rounded-lg"
                                 onClick={() => {
                                   if (
                                     item.name ===
@@ -236,7 +232,6 @@ const Notification = () => {
                                   ? "Accept"
                                   : "View"}
                               </button>
-
                               <button
                                 type="submit"
                                 onClick={() => {
@@ -265,7 +260,7 @@ const Notification = () => {
                                   : "Decline"}
                               </button>
                             </div>
-                            <p className="text-sm text-[#A7A7A7]">
+                            <p className="text-sm text-[#A7A7A7] sm:mt-0 mt-2">
                               {format(item.createdAt)}
                             </p>
                           </div>
