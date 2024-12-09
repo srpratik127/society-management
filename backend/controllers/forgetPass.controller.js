@@ -12,8 +12,8 @@ const otpStore = {};
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "pratik.desai@swiftrut.com",
-    pass: "bilvlipbgxhsslev",
+    user: "maulik.rasadiya@swiftrut.com",
+    pass: "iruqfffzzazzlynr",
   },
 });
 
@@ -36,7 +36,7 @@ const otpmail = async (req, res) => {
     const otp = generateOTP();
     otpStore[email] = { otp, expiresAt: Date.now() + 3 * 60 * 1000 };
     const mailOptions = {
-      from: "pratik.desai@swiftrut.com",
+      from: "maulik.rasadiya@swiftrut.com",
       to: email,
       subject: "Your OTP Code",
       html: `<h1><img src="https://res.cloudinary.com/dwvfquvxy/image/upload/f_auto,q_auto/bwlmo07am1aio3ppkty0" alt="logo" /></h1><h3>welcome to DashStack</h3><p>Your OTP is: ${otp}</p>`,
