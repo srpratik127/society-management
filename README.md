@@ -48,6 +48,26 @@ A comprehensive Society Management System built with React and Node.js. The app 
 - **File Storage**: Cloudinary 
 
 
+## .ENV file (Backend)
+```
+# MONGODB_URI= mongodb+srv://pratikdesai:YFWGH8faHgUKdPpb@cluster0.tr0d7.mongodb.net/society-management?retryWrites=true&w=majority&appName=Cluster0
+MONGODB_URI= mongodb://localhost:27017/society-management-system
+JWT_SECRET=1246dadsk
+PORT=5000
+CLOUDINARY_CLOUD_NAME=dwvfquvxy
+CLOUDINARY_API_KEY=599942543851369
+CLOUDINARY_API_SECRET=2JfcvUoTVVrGF7Vu27YWuWBkFI0
+RAZORPAY_KEY_ID=rzp_test_PgVT4Gj6UOqxFK
+RAZORPAY_SECRET_KEY=Z6An9bvwVFkLiHPSfHxM1InP
+NODE_ENV=production
+```
+
+## .ENV file (Frontend)
+```
+REACT_APP_BASE_URL=http://localhost:5000
+REACT_APP_RAZORPAY_KEY_ID=rzp_test_PgVT4Gj6UOqxFK
+```
+
 ## Default Login Credentials
 
 ### Admin
@@ -55,7 +75,7 @@ A comprehensive Society Management System built with React and Node.js. The app 
 ```
 admin@gmail.com
 ```  
-- **Password**: 
+- **Password**:
 ```
 admin123
 ```
@@ -78,7 +98,7 @@ security@gmail.com
 ```
 - **Password**: 
 ```
-security123  
+security123
 ```
 
 
@@ -86,7 +106,7 @@ security123
 ## Getting Started
 #### Clone the Repository
 ```
-   git clone https://github.com/srpratik127/society-management.git
+git clone https://github.com/srpratik127/society-management.git
 ```
 
 #### main directory

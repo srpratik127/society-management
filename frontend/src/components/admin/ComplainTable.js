@@ -6,11 +6,13 @@ import DeleteModel from "../models/DeleteModel";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 import { filterComplains } from "../../utils/validation";
+import Loader from "../Loader";
 
 const ComplainTable = () => {
   const [openViewComplain, setOpenViewComplain] = useState(false);
   const [openEditComplain, setOpenEditComplain] = useState(false);
   const [openDeleteComplain, setOpenDeleteComplain] = useState(false);
+  const [loader, setLoader] = useState(false);
   const [selectedComplain, setSelectedComplain] = useState({});
   const [complainList, setComplainList] = useState([]);
   const [complainToDelete, setComplainToDelete] = useState(null);
@@ -21,23 +23,29 @@ const ComplainTable = () => {
   useEffect(() => {
     const fetchComplainList = async () => {
       try {
+        setLoader(true);
         const response = await axios.get(
           `${process.env.REACT_APP_BASE_URL}/v1/api/complaints`
         );
         setComplainList(response?.data?.data);
         setFilteredComplainList(response?.data?.data);
+        setLoader(false);
       } catch (error) {
         toast.error(error.response?.data?.message);
+        setLoader(false);
       }
     };
 
     fetchComplainList();
   }, []);
 
-
-
   useEffect(() => {
-    filterComplains(timeFilter, complainList, setFilteredComplainList,"updatedAt");
+    filterComplains(
+      timeFilter,
+      complainList,
+      setFilteredComplainList,
+      "updatedAt"
+    );
   }, [timeFilter]);
 
   const ViewComplains = (complaint) => {
@@ -73,10 +81,10 @@ const ComplainTable = () => {
       <div className="flex justify-between items-center mb-2">
         <h1 className="text-xl font-semibold">Complaint List</h1>
         <div className="relative">
-        <select
+          <select
             className="bg-gray-100 border border-gray-300 rounded-md p-2 outline-none"
             value={timeFilter}
-            onChange={(e) => setTimeFilter(e.target.value)} 
+            onChange={(e) => setTimeFilter(e.target.value)}
           >
             <option value="Week">Week</option>
             <option value="Month">Month</option>
@@ -103,7 +111,13 @@ const ComplainTable = () => {
             </tr>
           </thead>
           <tbody className="text-gray-700 text-sm">
-            {filteredComplainList.length > 0 ?  (
+            {loader ? (
+              <tr className="text-gray-500 select-none">
+                <td className="text-center py-4 leading-[140px]" colSpan="100%">
+                  <Loader />
+                </td>
+              </tr>
+            ) : filteredComplainList.length > 0 ? (
               filteredComplainList.map((complaint, index) => (
                 <tr key={index} className="border-b capitalize">
                   <td className="py-1 px-4 flex items-center space-x-3 text-nowrap">
