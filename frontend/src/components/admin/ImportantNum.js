@@ -3,9 +3,11 @@ import ImportantNumber from "../models/ImportantNumber";
 import DeleteModel from "../models/DeleteModel";
 import axios from "axios";
 import toast from "react-hot-toast";
+import Loader from "../Loader";
 
 export const ImportantNum = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [loader, setLoader] = useState(false);
   const [selectedNumber, setSelectedNumber] = useState(null);
   const [openDelete, setOpenDelete] = useState(false);
   const [importantNumbers, setImportantNumbers] = useState([]);
@@ -14,12 +16,15 @@ export const ImportantNum = () => {
   useEffect(() => {
     const fetchImportantNumbers = async () => {
       try {
+        setLoader(true);
         const response = await axios.get(
           `${process.env.REACT_APP_BASE_URL}/v1/api/numbers`
         );
         setImportantNumbers(response?.data?.data);
+        setLoader(false);
       } catch (error) {
         toast.error(error.response?.data?.message);
+        setLoader(false);
       }
     };
 
@@ -53,7 +58,7 @@ export const ImportantNum = () => {
     setOpenDelete(false);
   };
 
-  return (
+  return loader ? <Loader /> : (
     <>
       <div className="flex justify-between items-center text-xl font-semibold bg-white pb-1 rounded-lg">
         <h1 className="">Important Numbers</h1>
@@ -92,7 +97,9 @@ export const ImportantNum = () => {
                 </span>
                 <span className="block">
                   <span>Work:</span>{" "}
-                  <span className="text-[#A7A7A7] inline xl:inline lg:block">{importantNumber.work}</span>
+                  <span className="text-[#A7A7A7] inline xl:inline lg:block">
+                    {importantNumber.work}
+                  </span>
                 </span>
               </div>
               <div className="flex space-x-2 items-center">

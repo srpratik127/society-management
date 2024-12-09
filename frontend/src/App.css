@@ -14,7 +14,7 @@ input[type="checkbox"] {
   background-color: transparent;
 }
 input[type="checkbox"]:checked {
-  background: linear-gradient(90deg,#fe512e, #f09619);
+  background: linear-gradient(90deg, #fe512e, #f09619);
   border: none;
   position: relative;
 }
@@ -62,7 +62,7 @@ input[type="checkbox"]:checked::after {
   padding: 20px !important;
   position: relative;
 }
-.react-datepicker__day-names div{
+.react-datepicker__day-names div {
   margin: 5px;
 }
 .react-datepicker__navigation {
@@ -82,10 +82,10 @@ input[type="checkbox"]:checked::after {
 }
 .react-datepicker__day--selected {
   border-radius: 50% !important;
-  background-image: linear-gradient(to right, #FE512E , #F09619);
+  background-image: linear-gradient(to right, #fe512e, #f09619);
   color: #fff !important;
 }
-.react-datepicker__day--today{
+.react-datepicker__day--today {
   background-color: rgb(202, 202, 202);
   border-radius: 50% !important;
 }
@@ -95,7 +95,7 @@ input[type="checkbox"]:checked::after {
 .react-datepicker-popper[data-placement^="bottom"] .react-datepicker__triangle {
   display: none;
 }
-.react-datepicker__month .react-datepicker__month-text{
+.react-datepicker__month .react-datepicker__month-text {
   margin: 8px 0px !important;
   font-size: 17px !important;
   width: 5rem !important;

@@ -2,48 +2,43 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { filterComplains } from "../../utils/validation";
+import Loader from "../Loader";
 
 const UpcomingActivitys = () => {
   const [eventsParticipation, setEventsParticipation] = useState([]);
   const [filteredComplainList, setFilteredComplainList] = useState([]);
   const [timeFilter, setTimeFilter] = useState("");
-
-
-  // useEffect(() => {
-  //   const fetchPendingMaintenance = async () => {
-  //     try {
-  //       const response = await axios.get(
-  //         `${process.env.REACT_APP_BASE_URL}/v1/api/announcement`
-  //       );
-  //       setUpcomingactivities(response?.data);
-  //     } catch (error) {
-  //       toast.error(error.response?.data?.message);
-  //     }
-  //   };
-
-  //   fetchPendingMaintenance();
-  // }, []);
+  const [loader, setLoader] = useState(false);
 
   useEffect(() => {
     const fetchAnnouncements = async () => {
       try {
+        setLoader(true);
         const response = await axios.get(
           `${process.env.REACT_APP_BASE_URL}/v1/api/announcement`
         );
-       const activityData = response.data.filter((item) => item.type === "Activity")
+        const activityData = response.data.filter(
+          (item) => item.type === "Activity"
+        );
         setEventsParticipation(activityData);
         setFilteredComplainList(activityData);
+        setLoader(false);
       } catch (error) {
         toast.error(error.response?.data?.message || "Failed to fetch data.");
+        setLoader(false);
       }
     };
     fetchAnnouncements();
   }, []);
 
   useEffect(() => {
-    filterComplains(timeFilter, eventsParticipation, setFilteredComplainList,"date");
+    filterComplains(
+      timeFilter,
+      eventsParticipation,
+      setFilteredComplainList,
+      "date"
+    );
   }, [timeFilter]);
-
 
   const getRandomColor = () => {
     const letters = "0123456789ABCDEF";
@@ -59,10 +54,10 @@ const UpcomingActivitys = () => {
       <div className="flex justify-between items-center p-2 pb-1 mb-1">
         <h1 className="text-xl font-semibold">Upcoming Activity</h1>
         <div className="relative">
-        <select
+          <select
             className="bg-gray-100 border border-gray-300 rounded-md p-2 outline-none"
             value={timeFilter}
-            onChange={(e) => setTimeFilter(e.target.value)} 
+            onChange={(e) => setTimeFilter(e.target.value)}
           >
             <option value="Week">Week</option>
             <option value="Month">Month</option>
@@ -71,7 +66,9 @@ const UpcomingActivitys = () => {
         </div>
       </div>
       <div className="h-[218px] overflow-y-auto rounded-b-lg">
-        {filteredComplainList?.length > 0 ? (
+        {loader ? (
+          <Loader />
+        ) : filteredComplainList?.length > 0 ? (
           filteredComplainList?.map((activity, index) => (
             <div
               key={index}
